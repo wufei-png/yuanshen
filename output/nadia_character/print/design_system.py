@@ -4,7 +4,6 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Iterable
 
-from PIL import Image
 from reportlab.lib.colors import Color, HexColor, white
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfbase import pdfmetrics
@@ -18,9 +17,6 @@ OUTPUT_DIR = ROOT.parent / "pdf"
 TMP_DIR = ROOT.parents[1] / "tmp" / "pdfs"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 TMP_DIR.mkdir(parents=True, exist_ok=True)
-PDF_ASSET_DIR = TMP_DIR / "pdf-assets"
-PDF_ASSET_DIR.mkdir(parents=True, exist_ok=True)
-
 MM = 72 / 25.4
 
 NAVY = HexColor("#122B4B")
@@ -39,14 +35,46 @@ FONT_PATHS = [
     Path("/System/Library/Fonts/PingFang.ttc"),
     Path("/System/Library/Fonts/Supplemental/Songti.ttc"),
 ]
+FONT_SANS = Path("/System/Library/Fonts/STHeiti Medium.ttc")
+FONT_SERIF = Path("/System/Library/Fonts/Supplemental/Songti.ttc")
+FONT_LATIN = Path("/System/Library/Fonts/Supplemental/Georgia.ttf")
+FONT_LATIN_BOLD = Path("/System/Library/Fonts/Supplemental/Georgia Bold.ttf")
 
 
 def register_fonts() -> None:
+    cjk_path: Path | None = None
     for path in FONT_PATHS:
         if path.exists():
             pdfmetrics.registerFont(TTFont("NadiaCJK", str(path), subfontIndex=0))
-            return
-    raise FileNotFoundError("No supported CJK font was found")
+            cjk_path = path
+            break
+    if cjk_path is None:
+        raise FileNotFoundError("No supported CJK font was found")
+
+    # The postcard HTML deliberately separates sans display labels from its
+    # Songti editorial copy. Register the same families for the print build.
+    if FONT_SANS.exists():
+        pdfmetrics.registerFont(
+            TTFont("NadiaSans", str(FONT_SANS), subfontIndex=1)
+        )
+    else:
+        pdfmetrics.registerFont(TTFont("NadiaSans", str(cjk_path), subfontIndex=0))
+    if FONT_SERIF.exists():
+        pdfmetrics.registerFont(
+            TTFont("NadiaSerif", str(FONT_SERIF), subfontIndex=6)
+        )
+        pdfmetrics.registerFont(
+            TTFont("NadiaSerifBold", str(FONT_SERIF), subfontIndex=1)
+        )
+    else:
+        pdfmetrics.registerFont(TTFont("NadiaSerif", str(cjk_path), subfontIndex=0))
+        pdfmetrics.registerFont(
+            TTFont("NadiaSerifBold", str(cjk_path), subfontIndex=0)
+        )
+    if FONT_LATIN.exists():
+        pdfmetrics.registerFont(TTFont("NadiaLatin", str(FONT_LATIN)))
+    if FONT_LATIN_BOLD.exists():
+        pdfmetrics.registerFont(TTFont("NadiaLatinBold", str(FONT_LATIN_BOLD)))
 
 
 def mm(value: float) -> float:
@@ -63,23 +91,8 @@ def image_size(path: Path) -> tuple[float, float]:
 
 @lru_cache(maxsize=None)
 def pdf_asset(path: Path) -> Path:
-    """Cache opaque PNG artwork as print-quality JPEG for compact PDF embedding."""
-    with Image.open(path) as source:
-        has_alpha = source.mode in {"RGBA", "LA"} or (
-            source.mode == "P" and "transparency" in source.info
-        )
-        if has_alpha:
-            return path
-        target = PDF_ASSET_DIR / f"{path.stem}.q90.jpg"
-        if not target.exists() or target.stat().st_mtime < path.stat().st_mtime:
-            source.convert("RGB").save(
-                target,
-                format="JPEG",
-                quality=90,
-                subsampling=0,
-                optimize=True,
-            )
-        return target
+    """Embed original artwork without a second lossy JPEG compression pass."""
+    return path
 
 
 def draw_image_cover(
