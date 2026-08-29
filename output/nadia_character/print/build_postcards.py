@@ -1,8 +1,12 @@
 from __future__ import annotations
 
+from functools import lru_cache
+
+from PIL import Image, ImageChops
 from pypdf import PdfReader, PdfWriter
 from pypdf.generic import RectangleObject
 from reportlab.lib.colors import HexColor, white
+from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
 
 from design_system import (
@@ -36,61 +40,70 @@ RAW = TMP_DIR / "nadia_postcards_raw.pdf"
 OUT = OUTPUT_DIR / "nadia_postcard_collection_48p.pdf"
 
 
+@lru_cache(maxsize=1)
+def front_overlay() -> ImageReader:
+    """Smooth HTML-style darkening for legible copy without hiding artwork."""
+    width, height = 1560, 1060
+    horizontal = Image.new("L", (width, 1))
+    horizontal.putdata(
+        [
+            int(10 + 188 * (1 - x / (width - 1)) ** 1.7)
+            for x in range(width)
+        ]
+    )
+    horizontal = horizontal.resize((width, height))
+    bottom = Image.new("L", (1, height))
+    bottom.putdata(
+        [int(132 * (y / (height - 1)) ** 1.65) for y in range(height)]
+    )
+    bottom = bottom.resize((width, height))
+    alpha = ImageChops.screen(horizontal, bottom)
+    overlay = Image.new("RGBA", (width, height), (7, 20, 38, 0))
+    overlay.putalpha(alpha)
+    return ImageReader(overlay)
+
+
 def draw_front(c: canvas.Canvas, card: dict[str, object]) -> None:
+    # Match the established postcards.html front: full-card artwork with a
+    # translucent readability gradient. Portrait/diagram cards use contain so
+    # their subjects stay complete; landscape scenes use cover at card ratio.
     c.setFillColor(NIGHT)
     c.rect(0, 0, PAGE_W, PAGE_H, stroke=0, fill=1)
     image = ASSETS / str(card["image"])
     if card["mode"] in {"contain", "right_contain"}:
         c.setFillColor(HexColor("#102B50"))
         c.rect(0, 0, PAGE_W, PAGE_H, stroke=0, fill=1)
-        c.setStrokeColor(HexColor("#3A6B96"))
-        c.setLineWidth(0.55)
-        for radius in (mm(18), mm(29), mm(40)):
-            c.circle(PAGE_W * 0.68, PAGE_H * 0.52, radius, stroke=1, fill=0)
-        if card["mode"] == "right_contain":
-            draw_image_contain(
-                c,
-                image,
-                mm(78),
-                mm(8),
-                PAGE_W - mm(82),
-                PAGE_H - mm(16),
-            )
-        else:
-            draw_image_contain(c, image, 0, 0, PAGE_W, PAGE_H, padding=mm(2.5))
+        draw_image_contain(c, image, 0, 0, PAGE_W, PAGE_H, padding=mm(2.5))
     else:
         draw_image_cover(c, image, 0, 0, PAGE_W, PAGE_H)
 
-    c.saveState()
-    if hasattr(c, "setFillAlpha"):
-        c.setFillAlpha(0.78)
-    c.setFillColor(NIGHT)
-    c.rect(0, 0, mm(77), PAGE_H, stroke=0, fill=1)
-    c.restoreState()
+    c.drawImage(
+        front_overlay(),
+        0,
+        0,
+        PAGE_W,
+        PAGE_H,
+        preserveAspectRatio=False,
+        mask="auto",
+    )
 
     x = SAFE
     c.setFillColor(ICE)
     c.setFont("NadiaCJK", 7.2)
-    c.drawString(x, PAGE_H - SAFE - mm(2), f"{int(card['num']):02d} / {card['kicker']}")
+    c.drawString(x, mm(31), f"{int(card['num']):02d} / {card['kicker']}")
     c.setFillColor(white)
     c.setFont("NadiaCJK", 22)
-    c.drawString(x, PAGE_H - SAFE - mm(14), str(card["title"]))
+    c.drawString(x, mm(20), str(card["title"]))
     draw_text(
         c,
         str(card["subtitle"]),
         x,
-        PAGE_H - SAFE - mm(25),
-        mm(57),
+        mm(12),
+        mm(90),
         size=8.4,
         leading=12.8,
         color=HexColor("#D7E8F6"),
     )
-    c.setFillColor(GOLD)
-    c.setFont("NadiaCJK", 6.8)
-    c.drawString(x, SAFE, "NADIA SADOVA / FIELD RECORD")
-    c.setFillColor(white)
-    c.setFont("NadiaCJK", 6.8)
-    c.drawRightString(PAGE_W - SAFE, SAFE, str(card["group"]))
     c.showPage()
 
 
