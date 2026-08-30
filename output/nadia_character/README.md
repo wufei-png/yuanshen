@@ -6,6 +6,7 @@
 
 - 双击 `index.html`：阅读完整角色档案、交互式衡标与 20 条中文普通话角色语音。
 - 双击 `gameplay.html`：单独阅读完整玩法数值、ICD、命座、构筑与队伍循环；这些内容不会写入明信片。
+- 双击 `skills.html`：阅读玩家版技能说明、纯 SVG 技能图标、静态逐镜动作板、UI/VFX 语言与战斗语音节点。
 - 双击 `postcards.html`：浏览 24 张收藏卡；点击卡片或按 Enter 翻到背面。
 - `pdf/nadia_character_dossier.pdf`：20 页 A5 正式角色档案。
 - `pdf/nadia_postcard_collection_48p.pdf`：24 张收藏卡的正面、背面逐页排布，共 48 页。
@@ -27,3 +28,5 @@
 ## 内容边界
 
 娜蒂娅是基于《原神》世界观语汇创作的原创同人角色，不代表官方资料。角色档案与明信片只介绍核心机制和角色体验；完整状态机与数值规划单独放在 `gameplay.html` 和项目内玩法设计文档中，未声称已经过真实游戏环境或服务器逻辑验证。
+
+技能表现设计规格与开发模拟器保留在项目仓库的 `docs/nadia_skill_presentation.md` 与 `tools/nadia_skill_simulator.html`，不进入公开分享包；展示层与调参层分离。

@@ -1,0 +1,721 @@
+<!doctype html>
+<html lang="zh-CN" data-contrast="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="娜蒂娅「两衡之间」技能表现设计包：玩家版技能说明、静态逐镜动作板与 UI/VFX 语言。">
+  <title>娜蒂娅｜技能表现设计</title>
+  <style>
+    :root {
+      --night: #061225;
+      --navy: #0d2342;
+      --navy-2: #173961;
+      --panel: rgba(12, 31, 58, .82);
+      --panel-solid: #102b4d;
+      --ink: #ecf8ff;
+      --muted: #a8bdd3;
+      --faint: #7190ad;
+      --line: rgba(169, 224, 248, .22);
+      --ice: #9be8ff;
+      --ice-deep: #4eb7df;
+      --gold: #e6c77c;
+      --light: #83e7ff;
+      --light-ink: #a8b3ff;
+      --heavy: #f1c978;
+      --heavy-ink: #6fa5ff;
+      --zero: #f1f5ff;
+      --zero-ink: #b9eaff;
+      --shadow: 0 28px 80px rgba(0, 3, 14, .38);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 84% 8%, rgba(78, 183, 223, .2), transparent 28rem),
+        radial-gradient(circle at 12% 42%, rgba(40, 92, 153, .24), transparent 34rem),
+        linear-gradient(145deg, #051123 0%, #102b50 50%, #071528 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.7;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .15;
+      background-image: linear-gradient(rgba(155, 232, 255, .08) 1px, transparent 1px), linear-gradient(90deg, rgba(155, 232, 255, .08) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(to bottom, #000, transparent 76%);
+    }
+    ::selection { background: rgba(155, 232, 255, .35); color: #fff; }
+    a { color: inherit; }
+    button { font: inherit; }
+    img { display: block; max-width: 100%; }
+    .s-shell { width: min(1180px, calc(100% - 42px)); margin: 0 auto; }
+    .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid rgba(155, 232, 255, .2);
+      background: rgba(5, 17, 34, .86);
+      backdrop-filter: blur(18px);
+    }
+    .topbar-inner { min-height: 68px; display: flex; align-items: center; justify-content: space-between; gap: 22px; }
+    .brand { color: var(--ice); font-family: Georgia, "Times New Roman", serif; font-size: 12px; letter-spacing: .16em; text-decoration: none; white-space: nowrap; }
+    nav { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 16px; color: #c2d5e8; font-size: 12px; }
+    nav a { text-decoration: none; }
+    nav a:hover, nav a:focus-visible { color: var(--ice); }
+    .tool-button, .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 36px;
+      padding: 7px 13px;
+      border: 1px solid rgba(155, 232, 255, .42);
+      border-radius: 999px;
+      background: rgba(7, 24, 47, .76);
+      color: #e8f8ff;
+      font-size: 12px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .tool-button:hover, .tool-button:focus-visible, .button:hover, .button:focus-visible { border-color: var(--ice); color: var(--ice); }
+    .button.primary { border-color: var(--ice-deep); background: var(--ice-deep); color: #061626; font-weight: 700; }
+    .button.primary:hover, .button.primary:focus-visible { border-color: var(--ice); background: var(--ice); color: #061626; }
+    .icon { width: 28px; height: 28px; flex: none; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
+    .icon--small { width: 18px; height: 18px; }
+    .icon--large { width: 42px; height: 42px; }
+
+    .eyebrow { color: var(--ice); font-size: 11px; font-weight: 700; letter-spacing: .24em; text-transform: uppercase; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1, h2, h3 { font-family: Georgia, "Songti SC", "STSong", serif; font-weight: 500; line-height: 1.16; }
+    h1 { margin-bottom: 22px; font-size: clamp(50px, 8vw, 104px); letter-spacing: .05em; }
+    h1 em { color: var(--ice); font-style: normal; }
+    h2 { margin-bottom: 10px; font-size: clamp(32px, 5vw, 60px); }
+    h3 { margin-bottom: 10px; font-size: 23px; }
+    .lede { max-width: 680px; color: #c8daeb; font-size: 16px; }
+    .micro { color: var(--muted); font-size: 12px; }
+    .section { padding: 104px 0; position: relative; }
+    .section--tint { background: linear-gradient(180deg, rgba(7, 19, 39, .28), rgba(11, 34, 61, .48)); border-block: 1px solid rgba(155, 232, 255, .08); }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 36px; margin-bottom: 38px; }
+    .section-head > p { max-width: 440px; margin: 0; color: var(--muted); font-size: 13px; }
+    .section-head .eyebrow { margin-bottom: 12px; }
+    .section-kicker { margin-bottom: 28px; color: var(--gold); font-size: 13px; letter-spacing: .08em; }
+
+    .hero { min-height: 780px; display: grid; grid-template-columns: .76fr 1.24fr; align-items: center; gap: 40px; padding: 92px 0 110px; }
+    .hero-copy { position: relative; z-index: 1; padding-left: 4vw; }
+    .hero-copy h1 { margin-top: 18px; }
+    .hero-copy .lede { margin-bottom: 28px; }
+    .hero-quote { max-width: 540px; margin: 24px 0; padding: 14px 0 14px 18px; border-left: 2px solid var(--ice-deep); color: #dceaf5; font-family: Georgia, "Songti SC", serif; font-size: 17px; }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0; }
+    .chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border: 1px solid rgba(155, 232, 255, .34); border-radius: 999px; background: rgba(13, 37, 68, .7); color: #d5f3ff; font-size: 11px; }
+    .chip--gold { border-color: rgba(230, 199, 124, .55); color: var(--gold); }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+    .hero-art { position: relative; min-height: 600px; display: grid; align-items: center; }
+    .hero-art::before { content: ""; position: absolute; width: 83%; aspect-ratio: 1; border: 1px solid rgba(155, 232, 255, .35); border-radius: 50%; box-shadow: 0 0 0 22px rgba(155, 232, 255, .08), 0 0 0 52px rgba(155, 232, 255, .035); }
+    .duality-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; transform: rotate(-2deg); }
+    .visual-card { overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: rgba(6, 20, 39, .8); box-shadow: var(--shadow); }
+    .visual-card img { width: 100%; aspect-ratio: 1.48; object-fit: cover; }
+    .visual-card--anime { transform: translateY(24px); }
+    .visual-card--anime img { filter: saturate(1.1) contrast(1.02); }
+    .visual-card--ingame img { filter: saturate(.84) contrast(1.08); }
+    .visual-label { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px; }
+    .visual-label strong { font-size: 13px; }
+    .visual-label span { color: var(--faint); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; }
+    .hero-stamp { position: absolute; right: 4%; bottom: 0; width: 112px; height: 112px; display: grid; place-items: center; border: 1px solid rgba(230, 199, 124, .65); border-radius: 50%; color: var(--gold); font-size: 11px; letter-spacing: .12em; text-align: center; transform: rotate(12deg); }
+    .hero-stamp::before { content: ""; position: absolute; inset: 9px; border: 1px dashed rgba(230, 199, 124, .55); border-radius: 50%; }
+    .hero-stamp span { position: relative; z-index: 1; }
+
+    .core-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 26px; align-items: stretch; }
+    .panel { border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); box-shadow: 0 16px 42px rgba(0, 5, 16, .18); }
+    .panel--padded { padding: 26px; }
+    .panel-label { margin-bottom: 10px; color: var(--ice); font-size: 10px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
+    .state-panel { padding: 28px; }
+    .state-panel h3 { margin-bottom: 8px; }
+    .state-rail { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 28px 0 20px; }
+    .state-node { position: relative; min-height: 112px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; border: 1px solid var(--line); border-radius: 14px; background: rgba(5, 19, 38, .62); text-align: center; }
+    .state-node::after { content: ""; position: absolute; top: 50%; right: -12px; width: 16px; border-top: 1px solid rgba(155, 232, 255, .34); }
+    .state-node:last-child::after { display: none; }
+    .state-node strong { font-family: Georgia, serif; font-size: 24px; font-weight: 500; }
+    .state-node span { color: var(--muted); font-size: 11px; }
+    .state-node--light { color: var(--light); box-shadow: inset 0 -3px 0 var(--light-ink); }
+    .state-node--heavy { color: var(--heavy); box-shadow: inset 0 -3px 0 var(--heavy-ink); }
+    .state-node--zero { color: var(--zero); box-shadow: inset 0 -3px 0 var(--zero-ink); background: rgba(155, 232, 255, .12); }
+    .state-node--zero .icon { color: var(--zero-ink); }
+    .state-explain { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
+    .state-note { padding: 14px; border: 1px solid rgba(155, 232, 255, .15); border-radius: 12px; background: rgba(6, 21, 42, .46); }
+    .state-note strong { display: block; margin-bottom: 4px; color: var(--ink); font-size: 13px; }
+    .state-note p { margin: 0; color: var(--muted); font-size: 12px; }
+    .core-side { display: grid; gap: 16px; }
+    .core-side .panel { padding: 24px; }
+    .core-side ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 13px; }
+    .core-side li + li { margin-top: 8px; }
+    .rule-callout { border-left: 2px solid var(--gold); }
+    .rule-callout p { margin: 0; color: #d5e3ed; font-family: Georgia, "Songti SC", serif; font-size: 17px; }
+
+    .ability-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .ability-card { position: relative; min-height: 300px; padding: 24px; overflow: hidden; }
+    .ability-card::after { content: ""; position: absolute; right: -42px; bottom: -54px; width: 130px; height: 130px; border: 1px solid rgba(155, 232, 255, .15); border-radius: 50%; box-shadow: 0 0 0 16px rgba(155, 232, 255, .025); }
+    .ability-icon { width: 56px; height: 56px; display: grid; place-items: center; margin-bottom: 22px; border: 1px solid currentColor; border-radius: 16px; background: rgba(5, 18, 37, .52); }
+    .ability-card--na { color: var(--zero); }
+    .ability-card--e { color: var(--ice); }
+    .ability-card--q { color: var(--light-ink); }
+    .ability-card--a { color: var(--gold); }
+    .ability-card h3 { color: var(--ink); }
+    .ability-card p { color: var(--muted); font-size: 13px; }
+    .copy-rule { margin: 20px 0 0; padding-top: 16px; border-top: 1px solid rgba(155, 232, 255, .12); color: #d9eef8; font-size: 12px; }
+    .details-link { display: inline-flex; align-items: center; gap: 5px; margin-top: 16px; color: var(--ice); font-size: 12px; text-decoration: none; }
+    .details-link:hover { text-decoration: underline; }
+    .state-card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px; }
+    .state-card { padding: 22px; border-radius: var(--radius); border: 1px solid var(--line); background: rgba(7, 24, 46, .65); }
+    .state-card--light { border-color: rgba(131, 231, 255, .42); }
+    .state-card--heavy { border-color: rgba(241, 201, 120, .42); }
+    .state-card--zero { border-color: rgba(241, 245, 255, .45); }
+    .state-card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
+    .state-card-head .icon { width: 32px; height: 32px; }
+    .state-card--light .icon { color: var(--light); }
+    .state-card--heavy .icon { color: var(--heavy); }
+    .state-card--zero .icon { color: var(--zero); }
+    .state-card h3 { margin: 0; font-size: 20px; }
+    .state-card p { margin: 0; color: var(--muted); font-size: 12px; }
+    .state-card .semantic { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+    .semantic span { padding: 4px 7px; border-radius: 6px; background: rgba(155, 232, 255, .08); color: #d8edf8; font-size: 10px; }
+
+    .board-intro { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 18px; margin-bottom: 24px; padding: 18px 20px; border: 1px solid rgba(230, 199, 124, .28); border-radius: var(--radius); background: rgba(36, 42, 55, .34); }
+    .board-intro p { margin: 0; color: #d5dfeb; font-size: 13px; }
+    .board-intro strong { display: block; margin-bottom: 3px; color: var(--gold); font-size: 12px; letter-spacing: .08em; }
+    .board-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+    .shot-sequence { overflow: hidden; }
+    .shot-media { position: relative; border-bottom: 1px solid var(--line); background: #081a33; }
+    .shot-media img { width: 100%; aspect-ratio: 1.74; object-fit: cover; opacity: .88; }
+    .shot-media::after { content: "GAMEPLAY LAYER"; position: absolute; left: 14px; bottom: 11px; padding: 4px 7px; border: 1px solid rgba(255, 255, 255, .3); border-radius: 4px; background: rgba(5, 17, 34, .66); color: #e9f8ff; font-size: 9px; letter-spacing: .16em; }
+    .shot-body { padding: 22px; }
+    .shot-head { display: flex; align-items: start; justify-content: space-between; gap: 14px; margin-bottom: 16px; }
+    .shot-head h3 { margin-bottom: 4px; }
+    .shot-number { color: var(--faint); font-size: 10px; letter-spacing: .16em; white-space: nowrap; }
+    .shot-meta { color: var(--gold); font-size: 11px; }
+    .shot-summary { margin-bottom: 18px; color: var(--muted); font-size: 12px; }
+    .timeline { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; counter-reset: board-step; }
+    .timeline li { position: relative; display: grid; grid-template-columns: 64px 1fr; gap: 12px; padding: 10px 0 10px 31px; border-top: 1px solid rgba(155, 232, 255, .12); color: var(--muted); font-size: 12px; counter-increment: board-step; }
+    .timeline li::before { content: counter(board-step, decimal-leading-zero); position: absolute; left: 0; top: 11px; color: var(--ice); font-size: 10px; font-weight: 700; letter-spacing: .08em; }
+    .timeline strong { color: #e5f3fa; font-size: 11px; font-weight: 600; }
+    .timeline span { color: var(--muted); }
+    .timeline .hit { color: var(--gold); }
+    .board-footnote { margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(155, 232, 255, .12); color: var(--faint); font-size: 11px; }
+
+    .vfx-layout { display: grid; grid-template-columns: .85fr 1.15fr; gap: 26px; align-items: stretch; }
+    .vfx-reference { overflow: hidden; }
+    .vfx-reference img { width: 100%; height: 100%; min-height: 420px; object-fit: cover; }
+    .vfx-reference figcaption { padding: 13px 16px; color: var(--muted); font-size: 11px; }
+    .vfx-copy { display: grid; gap: 14px; }
+    .language-row { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: start; padding: 18px 20px; border: 1px solid var(--line); border-radius: var(--radius); background: rgba(7, 25, 48, .66); }
+    .language-row--light { border-color: rgba(131, 231, 255, .38); }
+    .language-row--heavy { border-color: rgba(241, 201, 120, .38); }
+    .language-row--zero { border-color: rgba(241, 245, 255, .4); }
+    .language-symbol { display: grid; place-items: center; width: 54px; height: 54px; border: 1px solid currentColor; border-radius: 16px; }
+    .language-row--light .language-symbol { color: var(--light); }
+    .language-row--heavy .language-symbol { color: var(--heavy); }
+    .language-row--zero .language-symbol { color: var(--zero); }
+    .language-row h3 { margin-bottom: 5px; color: var(--ink); font-size: 20px; }
+    .language-row p { margin: 0; color: var(--muted); font-size: 12px; }
+    .check-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 24px; }
+    .check-item { padding: 14px; border-top: 2px solid var(--ice-deep); background: rgba(7, 24, 46, .5); }
+    .check-item strong { display: block; margin-bottom: 4px; font-size: 12px; }
+    .check-item span { color: var(--muted); font-size: 11px; }
+
+    .voice-head { display: flex; justify-content: space-between; align-items: end; gap: 18px; margin-bottom: 20px; }
+    .voice-head p { margin: 0; color: var(--muted); font-size: 12px; }
+    .voice-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .voice-card { padding: 20px; }
+    .voice-card-head { display: flex; align-items: start; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+    .voice-card h3 { margin: 0; font-size: 19px; }
+    .voice-index { margin-bottom: 3px; color: var(--ice); font-size: 10px; letter-spacing: .12em; }
+    .voice-scene { padding: 3px 7px; border: 1px solid rgba(230, 199, 124, .4); border-radius: 5px; color: var(--gold); font-size: 10px; white-space: nowrap; }
+    .voice-text { min-height: 54px; margin-bottom: 16px; color: #d5e4ed; font-size: 12px; }
+    audio { width: 100%; height: 34px; }
+    .audio-missing { color: var(--gold); font-size: 11px; }
+
+    .handoff-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 18px; }
+    .handoff-card { padding: 26px; }
+    .handoff-card p, .handoff-card li { color: var(--muted); font-size: 13px; }
+    .handoff-card ul { margin: 0; padding-left: 19px; }
+    .handoff-card li + li { margin-top: 7px; }
+    .link-stack { display: grid; gap: 9px; }
+    .file-link { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 14px; border: 1px solid rgba(155, 232, 255, .2); border-radius: 10px; background: rgba(6, 20, 40, .52); color: #d8eff9; font-size: 12px; text-decoration: none; }
+    .file-link:hover { border-color: var(--ice); color: var(--ice); }
+    .file-link small { color: var(--faint); font-size: 10px; }
+    footer { padding: 34px 0 54px; border-top: 1px solid rgba(155, 232, 255, .12); color: var(--faint); font-size: 11px; }
+    footer p { margin: 0; }
+
+    [data-contrast="high"] { --line: rgba(236, 248, 255, .48); --muted: #d0e0ed; --faint: #b7cddd; --panel: rgba(7, 23, 45, .96); }
+    [data-contrast="high"] .state-node, [data-contrast="high"] .language-row, [data-contrast="high"] .ability-card { border-width: 2px; }
+    [data-contrast="high"] .shot-media img, [data-contrast="high"] .visual-card img { opacity: 1; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+    @media (max-width: 980px) {
+      .hero { grid-template-columns: 1fr; min-height: 0; padding-top: 68px; }
+      .hero-copy { padding-left: 0; }
+      .hero-art { min-height: 500px; }
+      .core-grid, .vfx-layout, .handoff-grid { grid-template-columns: 1fr; }
+      .ability-grid { grid-template-columns: repeat(2, 1fr); }
+      .voice-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 720px) {
+      .s-shell { width: min(100% - 28px, 620px); }
+      .topbar-inner { align-items: flex-start; flex-direction: column; padding: 13px 0; gap: 10px; }
+      .brand { display: block; max-width: calc(100% - 122px); overflow: hidden; text-overflow: ellipsis; }
+      nav { justify-content: flex-start; gap: 10px 13px; }
+      .tool-button { position: absolute; top: 13px; right: 0; }
+      .hero { padding: 52px 0 74px; }
+      .hero-art { min-height: 390px; }
+      .duality-grid { gap: 9px; }
+      .hero-stamp { right: -2%; width: 86px; height: 86px; font-size: 9px; }
+      .section { padding: 76px 0; }
+      .section-head, .voice-head, .board-intro { align-items: start; flex-direction: column; display: flex; }
+      .state-rail { gap: 4px; }
+      .state-node { min-height: 90px; }
+      .state-node::after { right: -8px; width: 9px; }
+      .state-node strong { font-size: 19px; }
+      .state-node span { font-size: 9px; }
+      .state-explain, .ability-grid, .state-card-grid, .board-grid, .voice-grid, .check-strip { grid-template-columns: 1fr; }
+      .ability-card { min-height: 0; }
+      .timeline li { grid-template-columns: 58px 1fr; padding-left: 28px; }
+      .shot-body, .state-panel, .panel--padded, .handoff-card { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <svg class="visually-hidden" aria-hidden="true" focusable="false">
+    <symbol id="icon-na" viewBox="0 0 48 48">
+      <path d="M10 12.5 24 8l14 4.5v25L24 42l-14-4.5z" />
+      <path d="M24 8v34M10 12.5 24 17l14-4.5M16 25h16M16 31h10" />
+      <path d="m33 20 2.6 2.6L33 25.2l-2.6-2.6z" />
+    </symbol>
+    <symbol id="icon-e" viewBox="0 0 48 48">
+      <circle cx="24" cy="24" r="5" />
+      <path d="M19 24H7m0 0 5-5m-5 5 5 5M29 24h12m0 0-5-5m5 5-5 5" />
+      <path d="M24 7v6M24 35v6M14 14l4 4M30 30l4 4M34 14l-4 4M18 30l-4 4" />
+    </symbol>
+    <symbol id="icon-q" viewBox="0 0 48 48">
+      <circle cx="24" cy="24" r="15" />
+      <path d="M24 9v7M11 31l6-3.5M37 31l-6-3.5" />
+      <path d="M24 19v10M19 24h10" />
+      <circle cx="24" cy="24" r="2" />
+    </symbol>
+    <symbol id="icon-a" viewBox="0 0 48 48">
+      <path d="M6 24s7-12 18-12 18 12 18 12-7 12-18 12S6 24 6 24Z" />
+      <circle cx="24" cy="24" r="5" />
+      <path d="M10 14 6 10M38 14l4-4M10 34l-4 4M38 34l4 4" />
+    </symbol>
+    <symbol id="icon-light" viewBox="0 0 48 48">
+      <path d="M24 39V9m0 0-7 7m7-7 7 7" />
+      <path d="M11 34c7-3 14-3 22 0M14 27c6-2 12-2 20 0" />
+      <path d="m7 18 5-5 5 5M31 18l5-5 5 5" />
+    </symbol>
+    <symbol id="icon-heavy" viewBox="0 0 48 48">
+      <path d="M24 9v30m0 0-7-7m7 7 7-7" />
+      <path d="M11 17h26M14 24h20M17 31h14" />
+      <path d="m24 13 4 4-4 4-4-4z" />
+    </symbol>
+    <symbol id="icon-zero" viewBox="0 0 48 48">
+      <circle cx="24" cy="24" r="15" />
+      <path d="M24 13v22M13 24h22" />
+      <rect x="20" y="20" width="8" height="8" rx="1" />
+    </symbol>
+  </svg>
+
+  <header class="topbar">
+    <div class="s-shell topbar-inner">
+      <a class="brand" href="index.html">NADIA SADOVA / SKILL PRESENTATION</a>
+      <nav aria-label="技能表现页面导航">
+        <a href="#core">衡标</a>
+        <a href="#abilities">技能</a>
+        <a href="#boards">动作板</a>
+        <a href="#vfx">UI / VFX</a>
+        <a href="#voice">声画</a>
+        <a href="gameplay.html">完整玩法</a>
+      </nav>
+      <button class="tool-button" id="contrast-toggle" type="button" aria-pressed="false">图形编码：开</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="s-shell hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <div class="eyebrow">Skill Presentation / H-01</div>
+        <h1 id="hero-title">把失衡<br><em>写成一种方法</em></h1>
+        <p class="hero-quote">反应负责向外选路，战技再次施放与爆发负责主动回中；两只猫的轨迹，最后都要回到她的记录里。</p>
+        <p class="lede">娜蒂娅的技能表现设计包。这里先让玩家看懂动作与选择，再让数值退到完整玩法规格中。</p>
+        <div class="hero-meta" aria-label="页面范围">
+          <span class="chip chip--gold">独立原创同人</span>
+          <span class="chip">静态逐镜动作板</span>
+          <span class="chip">纯 SVG 图标</span>
+          <span class="chip">可离线查看</span>
+        </div>
+        <div class="hero-actions">
+          <a class="button primary" href="#boards">查看动作板</a>
+          <a class="button" href="#abilities">先看技能说明</a>
+        </div>
+      </div>
+      <div class="hero-art" aria-label="设定层与游戏内层对照">
+        <div class="duality-grid">
+          <figure class="visual-card visual-card--anime">
+            <img src="assets/nadia_action_v2_anime.png" alt="设定层：娜蒂娅在雪原中展开记录册，两只猫处于不同轨道" fetchpriority="high">
+            <figcaption class="visual-label"><strong>设定层</strong><span>Emotion / Character</span></figcaption>
+          </figure>
+          <figure class="visual-card visual-card--ingame">
+            <img src="assets/nadia_action_v2_ingame.png" alt="游戏内层：娜蒂娅与两只猫在测量环中形成清晰战斗构图" fetchpriority="high">
+            <figcaption class="visual-label"><strong>游戏内层</strong><span>Action / Readability</span></figcaption>
+          </figure>
+        </div>
+        <div class="hero-stamp"><span>THREE<br>ANCHORS<br>ONE RECORD</span></div>
+      </div>
+    </section>
+
+    <section class="section section--tint" id="core" aria-labelledby="core-title">
+      <div class="s-shell">
+        <div class="section-head">
+          <div><div class="eyebrow">01 / Core Read</div><h2 id="core-title">先看懂衡标，再看见冰</h2></div>
+          <p>颜色不是唯一编码。方向、符号、轮廓和纹理一起告诉玩家：现在是在向外，还是正在回中。</p>
+        </div>
+        <div class="core-grid">
+          <article class="panel state-panel">
+            <div class="panel-label">H / 状态轨道</div>
+            <h3>五格状态，一次明确选择</h3>
+            <p class="micro">普莎 / 轻端 ← 归衡 → 伊嘉 / 重端</p>
+            <div class="state-rail" role="img" aria-label="衡标从轻端负二经过负一、零、正一到重端正二">
+              <div class="state-node state-node--light"><svg class="icon icon--small"><use href="#icon-light"></use></svg><strong>−2</strong><span>轻端观测</span></div>
+              <div class="state-node state-node--light"><strong>−1</strong><span>向轻端</span></div>
+              <div class="state-node state-node--zero"><svg class="icon icon--small"><use href="#icon-zero"></use></svg><strong>0</strong><span>归衡</span></div>
+              <div class="state-node state-node--heavy"><strong>+1</strong><span>向重端</span></div>
+              <div class="state-node state-node--heavy"><svg class="icon icon--small"><use href="#icon-heavy"></use></svg><strong>+2</strong><span>重端观测</span></div>
+            </div>
+            <div class="state-explain">
+              <div class="state-note"><strong>向外：反应选路</strong><p>Stellar Swirl 让 H 向轻端移动，普莎先上浮；Stellar-Conduct 让 H 向重端移动，伊嘉先落点。</p></div>
+              <div class="state-note"><strong>回中：玩家决定</strong><p>战技再次施放或元素爆发可把非零 H 带回 0；相反路线也能逐格回中。</p></div>
+            </div>
+          </article>
+          <div class="core-side">
+            <article class="panel rule-callout panel--padded">
+              <div class="panel-label">Design Rule</div>
+              <p>“普通玩家不必一直盯着五格 UI；熟悉机制的玩家，可以把一次失衡变成一次完整归衡。”</p>
+            </article>
+            <article class="panel panel--padded">
+              <div class="panel-label">What the player reads</div>
+              <ul>
+                <li>上行弧线 = 轻端 / 普莎 / 牵引。</li>
+                <li>下沉楔形 = 重端 / 伊嘉 / 压制。</li>
+                <li>闭合圆环 = 归衡 / 零点 / 共同校准。</li>
+                <li>符号 `− / 0 / +` 永远和颜色同时出现。</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="abilities" aria-labelledby="abilities-title">
+      <div class="s-shell">
+        <div class="section-head">
+          <div><div class="eyebrow">02 / Player Edition</div><h2 id="abilities-title">技能不是更多按钮</h2></div>
+          <p>每个技能只承担一个清晰动作职责：记录、巡衡、归零，或让玩家读出有限的状态收益。</p>
+        </div>
+        <div class="ability-grid">
+          <article class="panel ability-card ability-card--na">
+            <div class="ability-icon"><svg class="icon icon--large"><use href="#icon-na"></use></svg></div>
+            <div class="panel-label">NA / 普通攻击</div>
+            <h3>霜度测录</h3>
+            <p>操纵记录册与悬浮测量环，进行最多四段冰元素攻击。</p>
+            <div class="copy-rule">基础动作，不额外改变衡标；四段差异来自书页、环的轴向与镜头节拍。</div>
+          </article>
+          <article class="panel ability-card ability-card--e">
+            <div class="ability-icon"><svg class="icon icon--large"><use href="#icon-e"></use></svg></div>
+            <div class="panel-label">E / 元素战技</div>
+            <h3>双相巡衡</h3>
+            <p>打开记录册，让普莎与伊嘉进入巡衡；反应选择路线，归衡校读负责主动回中。</p>
+            <div class="copy-rule">巡衡提供后台冰协同；反应只改变 H 的方向，不是维持基本功能的门槛。</div>
+          </article>
+          <article class="panel ability-card ability-card--q">
+            <div class="ability-icon"><svg class="icon icon--large"><use href="#icon-q"></use></svg></div>
+            <div class="panel-label">Q / 元素爆发</div>
+            <h3>三体归零·雪原校准</h3>
+            <p>先将非零衡标归零，再建立零点测区，让两只猫互相补足响应。</p>
+            <div class="copy-rule">伴随响应只显示规则允许的伤害/控制反馈，不额外移动 H 或制造元素附着。</div>
+          </article>
+          <article class="panel ability-card ability-card--a">
+            <div class="ability-icon"><svg class="icon icon--large"><use href="#icon-a"></use></svg></div>
+            <div class="panel-label">Passive / 固有天赋</div>
+            <h3>误差本身也是记录</h3>
+            <p>从端点完成完整归衡后，轻与重会在短时间内共同稳定战场。</p>
+            <div class="copy-rule">天赋奖励“失衡再回中”，不增加另一条需要持续盯住的资源条。</div>
+          </article>
+        </div>
+        <div class="state-card-grid" aria-label="两相与归衡的玩家版说明">
+          <article class="state-card state-card--light">
+            <div class="state-card-head"><svg class="icon"><use href="#icon-light"></use></svg><h3>轻相 / 普莎</h3></div>
+            <p>普莎缓缓离地，雪粒反常地向上飘动。它负责牵引与多目标控制；大型敌人主要收到移动限制。</p>
+            <div class="semantic"><span>上行弧</span><span>稀疏粒子</span><span>−</span></div>
+          </article>
+          <article class="state-card state-card--heavy">
+            <div class="state-card-head"><svg class="icon"><use href="#icon-heavy"></use></svg><h3>重相 / 伊嘉</h3></div>
+            <p>伊嘉像普通猫一样跃起，却在落地时留下冰裂与压制。无法位移的敌人仍可承受弱化标记。</p>
+            <div class="semantic"><span>下沉楔</span><span>平行裂纹</span><span>+</span></div>
+          </article>
+          <article class="state-card state-card--zero">
+            <div class="state-card-head"><svg class="icon"><use href="#icon-zero"></use></svg><h3>归衡 / 零点</h3></div>
+            <p>普莎从上方下降，伊嘉从下方跃起；两条轨迹在中心交汇，完整归衡同时显示两种半环。</p>
+            <div class="semantic"><span>闭合圆环</span><span>中心方标</span><span>0</span></div>
+          </article>
+        </div>
+        <a class="details-link" href="gameplay.html">查看完整倍率、ICD、命座与边界规则 <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+
+    <section class="section section--tint" id="boards" aria-labelledby="boards-title">
+      <div class="s-shell">
+        <div class="section-head">
+          <div><div class="eyebrow">03 / Static Storyboards</div><h2 id="boards-title">每个动作都要有落点</h2></div>
+          <p>这是第一批的静态制作板：不替代动画，但把姿态、镜头、猫、命中帧、可取消点、位移和总时长先锁成可讨论的语言。</p>
+        </div>
+        <div class="board-intro">
+          <div><strong>阅读方式 / FRAME → FEEDBACK → HANDOFF</strong><p>时间是表现目标，不改写玩法规格；命中帧是玩家看到反馈的节点，可取消点是交后台或进入下一拍的节点。</p></div>
+          <span class="chip chip--gold">6 sequences · no animation</span>
+        </div>
+        <div class="board-grid">
+          <article class="panel shot-sequence">
+            <figure class="shot-media"><img src="assets/nadia_action_v2_ingame.png" alt="普攻动作参考：娜蒂娅展开记录册与测量环" loading="lazy"></figure>
+            <div class="shot-body">
+              <div class="shot-head"><div><div class="shot-number">BOARD 01 / NA</div><h3>霜度测录 · 四段普攻</h3><div class="shot-meta">总时长目标 1.82 s</div></div><svg class="icon icon--small"><use href="#icon-na"></use></svg></div>
+              <p class="shot-summary">用书页与环的轴向变化做四段区分，不让普通攻击误读成 H 输入。</p>
+              <ol class="timeline">
+                <li><strong>0.00–0.38</strong><span>一段：拇指压住书脊，环向前翻出；<span class="hit">0.21 命中</span>，0.29 可取消。</span></li>
+                <li><strong>0.38–0.78</strong><span>二段：记录册竖起，环从肩侧落下；普莎尾巴只带起识别弧线。</span></li>
+                <li><strong>0.78–1.23</strong><span>三段：两层环交叉，伊嘉抬头但不响应；<span class="hit">1.04 命中</span>。</span></li>
+                <li><strong>1.23–1.82</strong><span>四段：半册合上再展开，两猫同时看向中心；<span class="hit">1.56 命中</span>，1.69 可接重击。</span></li>
+              </ol>
+              <div class="board-footnote">镜头位移预算：四段分别约 0.10 m / 0.12 m / 0.06 m / 0.18 m；不是新增战斗位移规则。</div>
+            </div>
+          </article>
+
+          <article class="panel shot-sequence">
+            <figure class="shot-media"><img src="assets/nadia_balance_v1_ingame.png" alt="元素战技参考：两只猫分别位于测量盘两侧" loading="lazy"></figure>
+            <div class="shot-body">
+              <div class="shot-head"><div><div class="shot-number">BOARD 02 / E-OPEN</div><h3>双相巡衡 · 首次施放</h3><div class="shot-meta">总时长目标 0.90 s</div></div><svg class="icon icon--small"><use href="#icon-e"></use></svg></div>
+              <p class="shot-summary">先写入中心 `0`，再让两只猫进入左右轨道；UI 从“战技”切换为“归衡校读”。</p>
+              <ol class="timeline">
+                <li><strong>0.00–0.18</strong><span>近景推到记录册扣锁，读数从空白亮起；语音 06 在约 0.16 进入。</span></li>
+                <li><strong>0.18–0.46</strong><span>镜头拉至正面中景，两猫分别触盘；<span class="hit">0.44 初次命中</span>。</span></li>
+                <li><strong>0.46–0.68</strong><span>镜头固定让玩家读清 H = 0；巡衡状态亮起，0.68 后可交后台。</span></li>
+                <li><strong>0.68–0.90</strong><span>回常规战斗视角，猫留在左右边缘；首个巡衡刻度等待场上命中。</span></li>
+              </ol>
+              <div class="board-footnote">不在读数写入前让玩家看到端点特效；巡衡持续时间、附着与倍率以完整玩法规格为准。</div>
+            </div>
+          </article>
+
+          <article class="panel shot-sequence">
+            <figure class="shot-media"><img src="assets/nadia_pusha_v1_ingame.png" alt="普莎轻相参考：奶油色圆猫在测量盘上浮起" loading="lazy"></figure>
+            <div class="shot-body">
+              <div class="shot-head"><div><div class="shot-number">BOARD 03 / LIGHT</div><h3>普莎 · 轻端响应</h3><div class="shot-meta">响应时长目标 0.62 s</div></div><svg class="icon icon--small"><use href="#icon-light"></use></svg></div>
+              <p class="shot-summary">先上浮，再牵引；上行方向比亮度更重要，控制范围和敌人分类不在动作板中重新定义。</p>
+              <ol class="timeline">
+                <li><strong>0.00–0.14</strong><span>耳朵先动，身体离盘；稀疏上浮粒子出现，轻端 `−` 先亮。</span></li>
+                <li><strong>0.14–0.28</strong><span>普莎在目标群上方停住，开口弧线收紧；牵引预告圈出现。</span></li>
+                <li><strong>0.28–0.62</strong><span><span class="hit">0.28 主响应命中</span>，尾巴形成二次上弧；H 向轻端移动一格。</span></li>
+              </ol>
+              <div class="board-footnote">到达轻端时增加两条上升刻线与更宽开口弧，不用单纯“更亮”表示强化。</div>
+            </div>
+          </article>
+
+          <article class="panel shot-sequence">
+            <figure class="shot-media"><img src="assets/nadia_igla_v1_ingame.png" alt="伊嘉重相参考：象牙色修长猫站在冰裂测量盘上" loading="lazy"></figure>
+            <div class="shot-body">
+              <div class="shot-head"><div><div class="shot-number">BOARD 04 / HEAVY</div><h3>伊嘉 · 重端响应</h3><div class="shot-meta">响应时长目标 0.66 s</div></div><svg class="icon icon--small"><use href="#icon-heavy"></use></svg></div>
+              <p class="shot-summary">重点是“落点确认”，不是击飞；Boss 保持原地，但压制与弱化标记必须清楚。</p>
+              <ol class="timeline">
+                <li><strong>0.00–0.16</strong><span>伊嘉收身跃起，竖直预加载线向下；目标脚下出现不闭合裂纹。</span></li>
+                <li><strong>0.16–0.36</strong><span>伊嘉落地，镜头只下压 8°；<span class="hit">0.36 高削韧反馈</span>，不使用击飞式大冲击。</span></li>
+                <li><strong>0.36–0.66</strong><span>落点楔形收束为重心点；H 向重端移动一格，移动目标显示深蓝边框。</span></li>
+              </ol>
+              <div class="board-footnote">到达重端时裂纹变成三条平行垂线；“输出降低”用标记表达，不靠小数字。</div>
+            </div>
+          </article>
+
+          <article class="panel shot-sequence">
+            <figure class="shot-media"><img src="assets/nadia_h_zero_v1_ingame.png" alt="归衡参考：两只猫在中心测量环两侧回到零点" loading="lazy"></figure>
+            <div class="shot-body">
+              <div class="shot-head"><div><div class="shot-number">BOARD 05 / RETURN</div><h3>归衡校读 · 再次施放</h3><div class="shot-meta">表现时长目标 0.86 s</div></div><svg class="icon icon--small"><use href="#icon-zero"></use></svg></div>
+              <p class="shot-summary">两条轨迹在中央交汇；普通归衡与完整归衡用不同的环形反馈区分。</p>
+              <ol class="timeline">
+                <li><strong>0.00–0.18</strong><span>记录册合页，镜头从当前端点向中心平移；当前刻线开始收拢。</span></li>
+                <li><strong>0.18–0.44</strong><span>普莎下降、伊嘉上跃；<span class="hit">0.44 H 写入 0</span>，归衡环向外扩张。</span></li>
+                <li><strong>0.44–0.86</strong><span>普通归衡显示柔和闭环；完整归衡叠合轻、重半环；0.60 可交后台。</span></li>
+              </ol>
+              <div class="board-footnote">H 为 0 时再次施放只补发基础巡衡刻度：动作板不出现归衡爆闪、微粒或校准窗口。</div>
+            </div>
+          </article>
+
+          <article class="panel shot-sequence">
+            <figure class="shot-media"><img src="assets/nadia_action_v3_ingame.png" alt="元素爆发参考：娜蒂娅与两只猫被三层冰蓝测量环包围" loading="lazy"></figure>
+            <div class="shot-body">
+              <div class="shot-head"><div><div class="shot-number">BOARD 06 / Q</div><h3>三体归零 · 雪原校准</h3><div class="shot-meta">起手 1.34 s + 场地循环 + 结束 0.70 s</div></div><svg class="icon icon--small"><use href="#icon-q"></use></svg></div>
+              <p class="shot-summary">爆发不是把猫收进法器，而是把娜蒂娅写成第三个锚点，再让场地保持可读。</p>
+              <ol class="timeline">
+                <li><strong>0.00–0.54</strong><span>眼镜反光切到书页；两猫分别落盘；若 H 非零，先把刻线回到中心。</span></li>
+                <li><strong>0.54–0.96</strong><span><span class="hit">0.54 初始命中</span>；三层环从偏心回正，镜头从半身拉到俯视。</span></li>
+                <li><strong>0.96–1.34</strong><span>三个锚点锁定零点测区；UI 不增加第二条资源条。</span></li>
+                <li><strong>12 s loop</strong><span>外圈、中心方标和猫轨道持续可见；主响应与伴随响应使用相反方向短线区分。</span></li>
+              </ol>
+              <div class="board-footnote">爆发结束时外圈向内收两圈，保留中心方标；语音 11 放在最后一圈收束之后。</div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="vfx" aria-labelledby="vfx-title">
+      <div class="s-shell">
+        <div class="section-head">
+          <div><div class="eyebrow">04 / UI + VFX Language</div><h2 id="vfx-title">三种状态，三种方向</h2></div>
+          <p>轻端、重端、归衡不依赖色相差异才能成立；缩小、换背景或色弱阅读时，符号与运动方向仍然保留。</p>
+        </div>
+        <div class="vfx-layout">
+          <figure class="panel vfx-reference">
+            <img src="assets/nadia_measurement_ring_v2_ingame.png" alt="游戏内测量环与冰蓝读数的视觉参考" loading="lazy">
+            <figcaption>游戏内层参考：测量环是功能性视觉锚点，光效围绕读数服务。</figcaption>
+          </figure>
+          <div class="vfx-copy">
+            <article class="language-row language-row--light">
+              <div class="language-symbol"><svg class="icon icon--large"><use href="#icon-light"></use></svg></div>
+              <div><h3>轻端 / 普莎</h3><p>主色为冰青，辅色偏淡紫；开口上弧、向上箭头、稀疏上浮粒子。读数带 `−`，牵引预告圈向中心收紧。</p></div>
+            </article>
+            <article class="language-row language-row--heavy">
+              <div class="language-symbol"><svg class="icon icon--large"><use href="#icon-heavy"></use></svg></div>
+              <div><h3>重端 / 伊嘉</h3><p>主色为暖金，辅色为深冰蓝；向下楔形、竖直落线、密集下沉裂纹。读数带 `+`，弱化标记使用平行垂线。</p></div>
+            </article>
+            <article class="language-row language-row--zero">
+              <div class="language-symbol"><svg class="icon icon--large"><use href="#icon-zero"></use></svg></div>
+              <div><h3>归衡 / 零点</h3><p>主色为银白，辅色为冰蓝；闭合圆环包住中心方标，左右两侧同时收拢。读数带 `0`，完整归衡才叠合两种半环。</p></div>
+            </article>
+          </div>
+        </div>
+        <div class="check-strip" aria-label="可读性检查维度">
+          <div class="check-item"><strong>缩小</strong><span>24 px 图标仍有外轮廓、方向与符号。</span></div>
+          <div class="check-item"><strong>换背景</strong><span>深色与浅色底都保留边框和中心标记。</span></div>
+          <div class="check-item"><strong>色弱</strong><span>去除颜色后仍可由 − / 0 / + 与纹理判断。</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--tint" id="voice" aria-labelledby="voice-title">
+      <div class="s-shell">
+        <div class="voice-head">
+          <div><div class="eyebrow">05 / Sound Picture</div><h2 id="voice-title">让声音确认，而不是解释全部</h2></div>
+          <p>已有角色语音 · 手动播放 · 不自动加载</p>
+        </div>
+        <div class="voice-grid">
+          <article class="panel voice-card">
+            <div class="voice-card-head"><div><div class="voice-index">06 / 元素战技</div><h3>开始记录</h3></div><span class="voice-scene">E</span></div>
+            <p class="voice-text">“普莎，伊嘉——开始记录。”</p>
+            <audio controls preload="none" src="assets/audio/nadia_voice_06_skill.mp3"><span class="audio-missing">语音文件不可用，文字仍保留。</span></audio>
+          </article>
+          <article class="panel voice-card">
+            <div class="voice-card-head"><div><div class="voice-index">07 / 轻端响应</div><h3>轻端响应</h3></div><span class="voice-scene">LIGHT</span></div>
+            <p class="voice-text">“轻端响应。普莎，慢一点。”</p>
+            <audio controls preload="none" src="assets/audio/nadia_voice_07_light_phase.mp3"><span class="audio-missing">语音文件不可用，文字仍保留。</span></audio>
+          </article>
+          <article class="panel voice-card">
+            <div class="voice-card-head"><div><div class="voice-index">08 / 重端响应</div><h3>重端响应</h3></div><span class="voice-scene">HEAVY</span></div>
+            <p class="voice-text">“重端响应。伊嘉，落点确认。”</p>
+            <audio controls preload="none" src="assets/audio/nadia_voice_08_heavy_phase.mp3"><span class="audio-missing">语音文件不可用，文字仍保留。</span></audio>
+          </article>
+          <article class="panel voice-card">
+            <div class="voice-card-head"><div><div class="voice-index">09 / 归衡响应</div><h3>归衡</h3></div><span class="voice-scene">RETURN</span></div>
+            <p class="voice-text">“从一端回到中央。很好，归衡。”</p>
+            <audio controls preload="none" src="assets/audio/nadia_voice_09_return_zero.mp3"><span class="audio-missing">语音文件不可用，文字仍保留。</span></audio>
+          </article>
+          <article class="panel voice-card">
+            <div class="voice-card-head"><div><div class="voice-index">10 / 元素爆发</div><h3>重新归零</h3></div><span class="voice-scene">Q START</span></div>
+            <p class="voice-text">“重新归零。误差确认——开始校准。”</p>
+            <audio controls preload="none" src="assets/audio/nadia_voice_10_burst_start.mp3"><span class="audio-missing">语音文件不可用，文字仍保留。</span></audio>
+          </article>
+          <article class="panel voice-card">
+            <div class="voice-card-head"><div><div class="voice-index">11 / 元素爆发结束</div><h3>测量完成</h3></div><span class="voice-scene">Q END</span></div>
+            <p class="voice-text">“轻与重，都记录好了。”</p>
+            <audio controls preload="none" src="assets/audio/nadia_voice_11_burst_end.mp3"><span class="audio-missing">语音文件不可用，文字仍保留。</span></audio>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="handoff" aria-labelledby="handoff-title">
+      <div class="s-shell">
+        <div class="section-head">
+          <div><div class="eyebrow">06 / Handoff</div><h2 id="handoff-title">展示层与调参层分开</h2></div>
+          <p>玩家页保持轻量、可读、可离线；开发模拟器单独记录事件、共享间隔与 20 秒循环，不把估算伪装成正式游戏证明。</p>
+        </div>
+        <div class="handoff-grid">
+          <article class="panel handoff-card">
+            <div class="panel-label">This package includes</div>
+            <h3>这一页负责让人看懂</h3>
+            <p>这里的数字只服务于动作节拍和阅读顺序。完整倍率、元素附着、ICD、命座、构筑与边界规则仍以玩法规格页面为准。</p>
+            <ul>
+              <li>静态逐镜动作板：普攻、E 首次、轻相、重相、归衡、Q。</li>
+              <li>纯 SVG 图标：NA、E、Q、天赋与轻/重/零三态。</li>
+              <li>现有战斗语音：手动播放，不自动播放，不因缺音频阻塞页面。</li>
+            </ul>
+          </article>
+          <article class="panel handoff-card">
+            <div class="panel-label">Project-only references</div>
+            <h3>继续制作时从这里进入</h3>
+            <div class="link-stack">
+              <a class="file-link" href="gameplay.html"><span>完整玩法规格页</span><small>PLAYER / NUMBERS →</small></a>
+              <a class="file-link" href="index.html"><span>角色档案首页</span><small>ARCHIVE →</small></a>
+              <a class="file-link" href="postcards.html"><span>收藏明信片</span><small>COLLECTION →</small></a>
+            </div>
+            <p class="micro" style="margin:16px 0 0;">开发用状态机模拟器位于项目仓库 `tools/nadia_skill_simulator.html`，不在公开分享包内。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="s-shell">
+      <p>娜蒂娅「两衡之间」是基于《原神》世界观语汇创作的独立原创同人角色。本页是技能表现设计稿，不代表官方角色、真实游戏客户端或服务器逻辑。</p>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const toggle = document.querySelector('#contrast-toggle');
+      toggle.addEventListener('click', () => {
+        const high = root.dataset.contrast !== 'high';
+        root.dataset.contrast = high ? 'high' : 'normal';
+        toggle.setAttribute('aria-pressed', String(high));
+        toggle.textContent = high ? '图形编码：高对比' : '图形编码：开';
+      });
+
+      document.querySelectorAll('audio').forEach((audio) => {
+        audio.addEventListener('error', () => {
+          const card = audio.closest('.voice-card');
+          if (!card || card.querySelector('.audio-missing-live')) return;
+          const note = document.createElement('div');
+          note.className = 'audio-missing audio-missing-live';
+          note.textContent = '语音文件不可用，文字仍保留。';
+          card.append(note);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

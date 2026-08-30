@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="娜蒂娅衡标状态机与 20 秒循环的开发用透明推演器。">
+  <title>娜蒂娅｜技能表现开发模拟器</title>
+  <style>
+    :root {
+      --bg: #071426;
+      --bg-2: #0d2342;
+      --panel: rgba(13, 35, 66, .9);
+      --panel-2: rgba(7, 23, 45, .8);
+      --line: rgba(164, 222, 247, .24);
+      --ink: #eff9ff;
+      --muted: #a6bdd3;
+      --faint: #7796b2;
+      --ice: #9be8ff;
+      --light: #83e7ff;
+      --heavy: #f1c978;
+      --zero: #f1f5ff;
+      --danger: #ffb69e;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 80% 0%, rgba(78, 183, 223, .2), transparent 29rem),
+        linear-gradient(145deg, var(--bg) 0%, var(--bg-2) 58%, #071527 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+    }
+    .wrap { width: min(1180px, calc(100% - 36px)); margin: 0 auto; }
+    header { padding: 34px 0 24px; border-bottom: 1px solid var(--line); }
+    .header-line { display: flex; align-items: start; justify-content: space-between; gap: 20px; }
+    .eyebrow { color: var(--ice); font-size: 10px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; }
+    h1, h2, h3 { margin: 0; font-family: Georgia, "Songti SC", "STSong", serif; font-weight: 500; line-height: 1.2; }
+    h1 { margin-top: 9px; font-size: clamp(30px, 5vw, 55px); }
+    h2 { font-size: 28px; }
+    h3 { font-size: 19px; }
+    p { margin: 0; }
+    .header-note { max-width: 410px; color: var(--muted); font-size: 12px; text-align: right; }
+    .badge { display: inline-flex; margin-top: 12px; padding: 4px 9px; border: 1px solid rgba(241, 201, 120, .5); border-radius: 999px; color: var(--heavy); font-size: 10px; letter-spacing: .08em; }
+    main { padding: 30px 0 70px; }
+    .notice { margin-bottom: 22px; padding: 15px 18px; border-left: 2px solid var(--heavy); background: rgba(40, 39, 34, .45); color: #d8e4ed; font-size: 12px; }
+    .notice strong { color: var(--heavy); }
+    .workbench { display: grid; grid-template-columns: 330px 1fr; gap: 18px; align-items: start; }
+    .panel { border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); box-shadow: 0 18px 50px rgba(0, 4, 16, .22); }
+    .controls { padding: 22px; position: sticky; top: 18px; }
+    .panel-label { margin-bottom: 10px; color: var(--ice); font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
+    .controls h2 { margin-bottom: 7px; }
+    .controls > p { margin-bottom: 20px; color: var(--muted); font-size: 12px; }
+    .field { display: grid; gap: 6px; margin-top: 15px; }
+    .field label { color: #d9edf7; font-size: 12px; }
+    .field small { color: var(--faint); font-size: 10px; }
+    input[type="number"] { width: 100%; padding: 9px 10px; border: 1px solid var(--line); border-radius: 8px; background: rgba(4, 16, 33, .8); color: var(--ink); font: inherit; font-size: 12px; }
+    .checkbox-line { display: flex; align-items: center; gap: 9px; margin-top: 17px; color: #d9edf7; font-size: 12px; }
+    input[type="checkbox"] { accent-color: var(--ice); }
+    .button-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 21px; }
+    button { min-height: 38px; padding: 7px 9px; border: 1px solid rgba(155, 232, 255, .34); border-radius: 8px; background: rgba(5, 22, 43, .86); color: #e9f8ff; font: inherit; font-size: 11px; cursor: pointer; }
+    button:hover, button:focus-visible { border-color: var(--ice); color: var(--ice); }
+    button.primary { border-color: var(--ice); background: rgba(78, 183, 223, .2); }
+    button.reset { border-color: rgba(255, 182, 158, .45); color: var(--danger); }
+    .preset-title { margin: 26px 0 9px; color: var(--gold, #e6c77c); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+    .preset-grid { display: grid; gap: 8px; }
+    .preset-grid button { text-align: left; }
+    .state-panel { min-width: 0; padding: 24px; }
+    .state-top { display: flex; align-items: start; justify-content: space-between; gap: 20px; }
+    .state-top p { color: var(--muted); font-size: 12px; }
+    .clock { color: var(--gold, #e6c77c); font-family: Georgia, serif; font-size: 31px; white-space: nowrap; }
+    .clock small { display: block; color: var(--faint); font-family: inherit; font-size: 10px; letter-spacing: .12em; text-align: right; text-transform: uppercase; }
+    .h-wrap { margin: 28px 0 20px; padding: 20px; border: 1px solid rgba(155, 232, 255, .16); border-radius: 13px; background: rgba(4, 17, 35, .62); }
+    .h-labels { display: flex; justify-content: space-between; color: var(--faint); font-size: 10px; }
+    .h-rail { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 12px 0 10px; }
+    .h-cell { min-height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; border: 1px solid var(--line); border-radius: 11px; background: rgba(7, 25, 48, .66); color: var(--faint); transition: .18s ease; }
+    .h-cell strong { font-family: Georgia, serif; font-size: 24px; font-weight: 500; }
+    .h-cell span { font-size: 10px; }
+    .h-cell.active { border-color: var(--ice); background: rgba(155, 232, 255, .13); color: var(--zero); box-shadow: 0 0 0 2px rgba(155, 232, 255, .13), inset 0 -3px 0 var(--ice); }
+    .h-cell[data-h="-2"], .h-cell[data-h="-1"] { --cell-color: var(--light); }
+    .h-cell[data-h="1"], .h-cell[data-h="2"] { --cell-color: var(--heavy); }
+    .h-cell.active[data-h="-2"], .h-cell.active[data-h="-1"] { border-color: var(--light); color: var(--light); box-shadow: 0 0 0 2px rgba(131, 231, 255, .12), inset 0 -3px 0 var(--light); }
+    .h-cell.active[data-h="1"], .h-cell.active[data-h="2"] { border-color: var(--heavy); color: var(--heavy); box-shadow: 0 0 0 2px rgba(241, 201, 120, .12), inset 0 -3px 0 var(--heavy); }
+    .status-line { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; color: #d9edf7; font-size: 12px; }
+    .status-line strong { color: var(--ice); }
+    .status-line span { color: var(--muted); }
+    .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 18px; }
+    .metric { min-height: 88px; padding: 13px; border: 1px solid rgba(155, 232, 255, .15); border-radius: 11px; background: rgba(7, 24, 46, .52); }
+    .metric-label { color: var(--faint); font-size: 10px; }
+    .metric-value { display: block; margin-top: 7px; color: var(--ink); font-family: Georgia, serif; font-size: 23px; }
+    .metric-value small { color: var(--muted); font-family: inherit; font-size: 11px; }
+    .metric-note { margin-top: 3px; color: var(--faint); font-size: 9px; }
+    .log-panel { margin-top: 18px; padding: 20px; }
+    .log-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 12px; }
+    .log-head p { color: var(--muted); font-size: 11px; }
+    .event-log { max-height: 360px; margin: 0; padding: 0; overflow: auto; list-style: none; }
+    .event-log li { display: grid; grid-template-columns: 70px 1fr; gap: 12px; padding: 9px 0; border-top: 1px solid rgba(155, 232, 255, .1); color: var(--muted); font-size: 11px; }
+    .event-log time { color: var(--ice); font-variant-numeric: tabular-nums; }
+    .event-log li[data-kind="reject"] { color: var(--danger); }
+    .event-log li[data-kind="state"] { color: #e2eef5; }
+    .contract { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
+    .contract .panel { padding: 22px; }
+    .contract h2 { margin-bottom: 10px; font-size: 24px; }
+    .contract p, .contract li { color: var(--muted); font-size: 12px; }
+    .contract ul { margin: 0; padding-left: 18px; }
+    .contract li + li { margin-top: 6px; }
+    code { padding: 1px 4px; border-radius: 4px; background: rgba(155, 232, 255, .1); color: var(--ice); font-size: .95em; }
+    footer { padding: 0 0 34px; color: var(--faint); font-size: 11px; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: .01ms !important; } }
+    @media (max-width: 920px) { .workbench { grid-template-columns: 1fr; } .controls { position: static; } .contract { grid-template-columns: 1fr; } }
+    @media (max-width: 600px) { .wrap { width: min(100% - 24px, 560px); } .header-line, .state-top { flex-direction: column; } .header-note { text-align: left; } .clock small { text-align: left; } .metric-grid { grid-template-columns: repeat(2, 1fr); } .h-rail { gap: 4px; } .h-cell { min-height: 70px; } .h-cell strong { font-size: 20px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap header-line">
+      <div>
+        <div class="eyebrow">Nadia / H-01 / Development Tool</div>
+        <h1>衡标状态机推演器</h1>
+        <span class="badge">开发用 · 不进入公开分享包</span>
+      </div>
+      <p class="header-note">用于检查 H 的移动、端点记录、主动归衡、零点测区与 20 秒循环。它不是实际游戏客户端、服务器逻辑、敌人抗性或现场性能证明。</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="notice"><strong>证据边界：</strong>状态机和技能常数来自 `docs/nadia_gameplay_system.md`；粒子换算、目标充能和原始倍率只用于透明的开发推演，任何可调假设都单独标注，不写回玩家版页面。</div>
+    <div class="workbench">
+      <aside class="panel controls" aria-label="模拟控制">
+        <div class="panel-label">Controls / 输入</div>
+        <h2>手动推进</h2>
+        <p>按动作顺序输入事件；共享间隔拒绝的事件会保留在日志中。</p>
+        <div class="field">
+          <label for="step-size">单次推进时间（秒）</label>
+          <input id="step-size" type="number" min="0.1" max="10" step="0.1" value="0.5">
+        </div>
+        <div class="field">
+          <label for="er-target">目标元素充能效率（%）</label>
+          <input id="er-target" type="number" min="0" max="500" step="5" value="180">
+        </div>
+        <div class="field">
+          <label for="particle-energy">每颗粒有效能量（开发假设）</label>
+          <input id="particle-energy" type="number" min="0" max="10" step="0.1" value="1.8">
+          <small>不是正式游戏常数；只用于显示透明的估算值。</small>
+        </div>
+        <label class="checkbox-line"><input id="c6-toggle" type="checkbox"> 使用 C6：归衡校读间隔 3 秒、伴随响应 100%</label>
+        <div class="button-grid">
+          <button class="primary" data-action="skill">首次 E / 再次 E</button>
+          <button data-action="light">Stellar Swirl</button>
+          <button data-action="heavy">Stellar-Conduct</button>
+          <button data-action="recast">归衡校读</button>
+          <button data-action="burst">Q / 雪原校准</button>
+          <button data-action="tick">巡衡刻度</button>
+          <button id="advance-step">+自定义步长</button>
+          <button data-advance="1">+1 s</button>
+          <button data-advance="2.5">+2.5 s</button>
+          <button data-advance="5">+5 s</button>
+          <button class="reset" data-action="reset">重置</button>
+        </div>
+        <div class="preset-title">20 秒预设</div>
+        <div class="preset-grid">
+          <button data-preset="light">运行轻端：两次到 −2，Q 回中，再次完整归衡</button>
+          <button data-preset="heavy">运行重端：两次到 +2，Q 回中，再次完整归衡</button>
+          <button data-preset="dual">运行双路线：反向逐格回中，不强制单端</button>
+          <button data-preset="none">运行无反应：保留巡衡与爆发，不获得端点收益</button>
+        </div>
+      </aside>
+
+      <section aria-label="模拟结果">
+        <div class="panel state-panel">
+          <div class="state-top">
+            <div><div class="panel-label">State / 当前状态</div><h2 id="state-title">等待首次巡衡</h2><p id="state-detail">H = 0 · 尚未开启双相巡衡</p></div>
+            <div class="clock"><span id="clock">00.00</span><small>simulation time</small></div>
+          </div>
+          <div class="h-wrap">
+            <div class="h-labels"><span>轻端 / 普莎</span><span>重端 / 伊嘉</span></div>
+            <div class="h-rail" id="h-rail" role="img" aria-label="当前衡标位置">
+              <div class="h-cell" data-h="-2"><strong>−2</strong><span>轻端</span></div>
+              <div class="h-cell" data-h="-1"><strong>−1</strong><span>向轻</span></div>
+              <div class="h-cell active" data-h="0"><strong>0</strong><span>归衡</span></div>
+              <div class="h-cell" data-h="1"><strong>+1</strong><span>向重</span></div>
+              <div class="h-cell" data-h="2"><strong>+2</strong><span>重端</span></div>
+            </div>
+            <div class="status-line"><strong id="state-badge">归衡 · 0</strong><span id="timers">巡衡未开启 · 零点测区未开启</span></div>
+          </div>
+          <div class="metric-grid" aria-label="模拟指标">
+            <div class="metric"><span class="metric-label">端点记录</span><strong class="metric-value" id="metric-endpoint">无</strong><span class="metric-note" id="metric-stable">稳定读数 0 / 2</span></div>
+            <div class="metric"><span class="metric-label">路线响应</span><strong class="metric-value" id="metric-responses">0</strong><span class="metric-note" id="metric-companion">伴随响应 0</span></div>
+            <div class="metric"><span class="metric-label">归衡</span><strong class="metric-value" id="metric-returns">0</strong><span class="metric-note" id="metric-return-detail">普通 0 · 完整 0</span></div>
+            <div class="metric"><span class="metric-label">原始倍率预算</span><strong class="metric-value" id="metric-raw">0<small>%</small></strong><span class="metric-note">10 级表的表现预算</span></div>
+            <div class="metric"><span class="metric-label">巡衡粒子</span><strong class="metric-value" id="metric-particles">0</strong><span class="metric-note">首次 E 3 + 首次响应 1</span></div>
+            <div class="metric"><span class="metric-label">估算有效能量</span><strong class="metric-value" id="metric-energy">0<small> pt</small></strong><span class="metric-note">可调假设 × 充能效率</span></div>
+            <div class="metric"><span class="metric-label">轻 / 重范围</span><strong class="metric-value" id="metric-range">0 / 0</strong><span class="metric-note">H 的最低 / 最高位置</span></div>
+            <div class="metric"><span class="metric-label">巡衡覆盖</span><strong class="metric-value" id="metric-coverage">0<small> s</small></strong><span class="metric-note">本次时间轴的重叠时长</span></div>
+          </div>
+        </div>
+
+        <div class="panel log-panel">
+          <div class="log-head"><div><div class="panel-label">Event Log / 事件日志</div><h3>每个输入都留下痕迹</h3></div><p id="log-count">0 events</p></div>
+          <ol class="event-log" id="event-log" aria-live="polite"></ol>
+        </div>
+      </section>
+    </div>
+
+    <section class="contract" aria-label="模拟器契约与说明">
+      <article class="panel">
+        <div class="panel-label">Rules / 规格输入</div>
+        <h2>这里检查什么</h2>
+        <ul>
+          <li>H 只在 −2 至 +2 之间移动；同端溢出被夹紧。</li>
+          <li>两只猫共享主响应间隔；端点记录在回到 0 时清除。</li>
+          <li>H 为 0 的再次施放不伪造归衡收益；Q 先处理非零 H。</li>
+          <li>零点测区的伴随响应不移动 H、不附着元素、不生成微粒。</li>
+        </ul>
+      </article>
+      <article class="panel">
+        <div class="panel-label">Boundary / 证据边界</div>
+        <h2>不要把估算当证明</h2>
+        <p>“原始倍率预算”只按玩法规格中的 10 级表现系数加总，不计算暴击、抗性、增伤、敌人数量或实际帧率。“估算有效能量”也只是为了暴露充能假设；真正的游戏内能量、反应结算和设备表现仍需独立测试。</p>
+      </article>
+    </section>
+  </main>
+
+  <footer class="wrap">娜蒂娅「两衡之间」独立原创同人角色 · 开发工具，不代表真实游戏客户端或服务器逻辑。</footer>
+
+  <script>
+    (() => {
+      const C = Object.freeze({
+        patrol: 18,
+        zero: 12,
+        routeCooldown: 2.5,
+        returnCooldown: 4,
+        recastCooldown: 6,
+        c6RecastCooldown: 3,
+        skillCooldown: 18,
+        burstCooldown: 15,
+        initialSkill: 101,
+        patrolTick: 68,
+        lightResponse: 105,
+        heavyResponse: 130,
+        normalReturn: 166,
+        fullReturn: 240,
+        burstInitial: 309
+      });
+
+      const $ = (selector) => document.querySelector(selector);
+      const state = {
+        time: 0,
+        h: 0,
+        endpoint: null,
+        stable: 0,
+        patrol: false,
+        patrolStart: null,
+        patrolUntil: 0,
+        zeroField: false,
+        zeroStart: null,
+        zeroUntil: 0,
+        lastSkill: -Infinity,
+        lastRoute: -Infinity,
+        lastReturn: -Infinity,
+        lastRecast: -Infinity,
+        lastBurst: -Infinity,
+        particles: 0,
+        firstResponseParticle: false,
+        c6BoostNextRoute: false,
+        raw: 0,
+        minH: 0,
+        maxH: 0,
+        patrolSeconds: 0,
+        zeroSeconds: 0,
+        events: [],
+        metrics: { light: 0, heavy: 0, companion: 0, normal: 0, full: 0, base: 0, burst: 0, skill: 0, rejected: 0 }
+      };
+
+      const isC6 = () => $('#c6-toggle').checked;
+      const recastCooldown = () => isC6() ? C.c6RecastCooldown : C.recastCooldown;
+      const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+      const formatTime = (value) => value.toFixed(2).padStart(5, '0');
+      const formatSeconds = (value) => `${Math.max(0, value).toFixed(1)} s`;
+
+      function overlap(start, end, intervalStart, intervalEnd) {
+        if (intervalStart === null) return 0;
+        return Math.max(0, Math.min(end, intervalEnd) - Math.max(start, intervalStart));
+      }
+
+      function log(text, kind = 'state') {
+        state.events.push({ time: state.time, text, kind });
+        if (state.events.length > 120) state.events.shift();
+      }
+
+      function integrate(start, end) {
+        state.patrolSeconds += overlap(start, end, state.patrolStart, state.patrolUntil);
+        state.zeroSeconds += overlap(start, end, state.zeroStart, state.zeroUntil);
+      }
+
+      function updateExpirations(writeLog = true) {
+        if (state.patrol && state.time >= state.patrolUntil) {
+          state.patrol = false;
+          state.h = 0;
+          state.endpoint = null;
+          state.stable = 0;
+          state.c6BoostNextRoute = false;
+          if (writeLog) log('巡衡结束：H、端点记录与稳定读数清除。', 'state');
+        }
+        if (state.zeroField && state.time >= state.zeroUntil) {
+          state.zeroField = false;
+          state.c6BoostNextRoute = false;
+          if (writeLog) log('零点测区结束：回到常规巡衡节拍。', 'state');
+        }
+      }
+
+      function advance(seconds, writeLog = true) {
+        const amount = Number(seconds);
+        if (!Number.isFinite(amount) || amount < 0) return;
+        const start = state.time;
+        const end = start + amount;
+        integrate(start, end);
+        state.time = end;
+        updateExpirations(writeLog);
+        render();
+      }
+
+      function setH(next) {
+        state.h = clamp(next, -2, 2);
+        state.minH = Math.min(state.minH, state.h);
+        state.maxH = Math.max(state.maxH, state.h);
+      }
+
+      function canUse(last, cooldown, label) {
+        const remaining = cooldown - (state.time - last);
+        if (remaining > 0.0001) {
+          state.metrics.rejected += 1;
+          log(`${label} 被共享间隔拒绝，还需 ${remaining.toFixed(2)} s。`, 'reject');
+          render();
+          return false;
+        }
+        return true;
+      }
+
+      function castSkill() {
+        if (state.patrol) {
+          recastSkill();
+          return;
+        }
+        if (!canUse(state.lastSkill, C.skillCooldown, '元素战技')) return;
+        state.lastSkill = state.time;
+        state.patrol = true;
+        state.patrolStart = state.time;
+        state.patrolUntil = state.time + C.patrol;
+        state.h = 0;
+        state.endpoint = null;
+        state.stable = 0;
+        state.particles = 3;
+        state.firstResponseParticle = false;
+        state.raw += C.initialSkill;
+        state.metrics.skill += 1;
+        log(`首次施放 E：巡衡开启至 ${formatTime(state.patrolUntil)} s，H 写入 0，获得 3 个冰元素微粒。`);
+        render();
+      }
+
+      function route(kind) {
+        if (!state.patrol) {
+          state.metrics.rejected += 1;
+          log('路线响应无效：当前没有开启双相巡衡。', 'reject');
+          render();
+          return;
+        }
+        if (!canUse(state.lastRoute, C.routeCooldown, '猫主响应')) return;
+        state.lastRoute = state.time;
+        if (!state.firstResponseParticle) {
+          state.particles = Math.min(4, state.particles + 1);
+          state.firstResponseParticle = true;
+        }
+        const before = state.h;
+        const isLight = kind === 'light';
+        let next = isLight ? Math.max(-2, before - 1) : Math.min(2, before + 1);
+        let c6Boost = false;
+        if (state.c6BoostNextRoute && isC6() && state.zeroField) {
+          next = isLight ? Math.max(-2, next - 1) : Math.min(2, next + 1);
+          state.c6BoostNextRoute = false;
+          c6Boost = true;
+        }
+        setH(next);
+        const endpointName = isLight ? 'light' : 'heavy';
+        if (next === (isLight ? -2 : 2)) {
+          if (state.endpoint === endpointName) state.stable = Math.min(2, state.stable + 1);
+          state.endpoint = endpointName;
+        }
+        const main = isLight ? C.lightResponse : C.heavyResponse;
+        const label = isLight ? '普莎轻端响应' : '伊嘉重端响应';
+        state.raw += main;
+        state.metrics[endpointName] += 1;
+        let companion = 0;
+        if (state.zeroField) {
+          const ratio = isC6() ? 1 : 0.55;
+          companion = main * ratio;
+          state.raw += companion;
+          state.metrics.companion += 1;
+        }
+        const companionText = companion ? `，零点伴随 +${companion.toFixed(1)}%` : '';
+        const boostText = c6Boost ? '，C6 首次路线变化额外移动一格' : '';
+        log(`${label}：H ${before > 0 ? '+' : ''}${before} → ${next > 0 ? '+' : ''}${next}${next === (isLight ? -2 : 2) ? '，端点记录' : ''}${boostText}${companionText}。`);
+        render();
+      }
+
+      function returnToCenter(source) {
+        if (state.h === 0) {
+          log(`${source}：H 已为 0，只补发基础巡衡刻度，不产生归衡收益。`);
+          return false;
+        }
+        const full = Boolean(state.endpoint);
+        const before = state.h;
+        setH(0);
+        state.endpoint = null;
+        state.stable = 0;
+        state.c6BoostNextRoute = false;
+        if (!canUse(state.lastReturn, C.returnCooldown, '归衡响应')) {
+          log(`${source}：H ${before > 0 ? '+' : ''}${before} → 0；归衡伤害与校准窗口受 4 s 间隔限制。`, 'reject');
+          render();
+          return true;
+        }
+        state.lastReturn = state.time;
+        if (full) {
+          state.raw += C.fullReturn;
+          state.metrics.full += 1;
+          if (isC6() && state.zeroField) state.c6BoostNextRoute = true;
+        } else {
+          state.raw += C.normalReturn;
+          state.metrics.normal += 1;
+        }
+        log(`${source}：H ${before > 0 ? '+' : ''}${before} → 0，触发${full ? '完整' : '普通'}归衡。`);
+        return true;
+      }
+
+      function recastSkill() {
+        if (!state.patrol) {
+          log('归衡校读无效：当前没有开启双相巡衡。', 'reject');
+          state.metrics.rejected += 1;
+          render();
+          return;
+        }
+        if (!canUse(state.lastRecast, recastCooldown(), '归衡校读')) return;
+        state.lastRecast = state.time;
+        if (state.h === 0) {
+          state.raw += C.patrolTick;
+          state.metrics.base += 1;
+          log(`归衡校读：H 已为 0，补发一次基础巡衡刻度 +${C.patrolTick}%。`);
+          render();
+          return;
+        }
+        returnToCenter('归衡校读');
+        render();
+      }
+
+      function patrolTick() {
+        if (!state.patrol) {
+          state.metrics.rejected += 1;
+          log('巡衡刻度无效：当前没有开启双相巡衡。', 'reject');
+          render();
+          return;
+        }
+        state.raw += C.patrolTick;
+        state.metrics.base += 1;
+        const fieldText = state.zeroField ? '（零点测区节拍）' : '';
+        log(`巡衡刻度结算 +${C.patrolTick}%${fieldText}。`);
+        render();
+      }
+
+      function burst() {
+        if (!canUse(state.lastBurst, C.burstCooldown, '元素爆发')) return;
+        if (state.h !== 0) returnToCenter('Q 强制归零');
+        state.lastBurst = state.time;
+        state.raw += C.burstInitial;
+        state.metrics.burst += 1;
+        state.zeroField = true;
+        state.zeroStart = state.time;
+        state.zeroUntil = state.time + C.zero;
+        log(`施放 Q：初始伤害 +${C.burstInitial}%，零点测区开启至 ${formatTime(state.zeroUntil)} s。`);
+        render();
+      }
+
+      function reset(writeLog = true) {
+        const c6 = isC6();
+        Object.assign(state, {
+          time: 0, h: 0, endpoint: null, stable: 0, patrol: false, patrolStart: null, patrolUntil: 0,
+          zeroField: false, zeroStart: null, zeroUntil: 0, lastSkill: -Infinity, lastRoute: -Infinity,
+          lastReturn: -Infinity, lastRecast: -Infinity, lastBurst: -Infinity, particles: 0,
+          firstResponseParticle: false, c6BoostNextRoute: false, raw: 0, minH: 0, maxH: 0, patrolSeconds: 0, zeroSeconds: 0,
+          events: [], metrics: { light: 0, heavy: 0, companion: 0, normal: 0, full: 0, base: 0, burst: 0, skill: 0, rejected: 0 }
+        });
+        $('#c6-toggle').checked = c6;
+        if (writeLog) log('模拟器重置：H = 0，等待首次巡衡。');
+        render();
+      }
+
+      function runAt(target, action) {
+        if (target < state.time) return;
+        advance(target - state.time, false);
+        action();
+      }
+
+      function runPreset(name) {
+        reset(false);
+        const schedules = {
+          light: [[0, castSkill], [2.5, () => route('light')], [5, () => route('light')], [7, burst], [10, () => route('light')], [12.5, () => route('light')], [15, castSkill]],
+          heavy: [[0, castSkill], [2.5, () => route('heavy')], [5, () => route('heavy')], [7, burst], [10, () => route('heavy')], [12.5, () => route('heavy')], [15, castSkill]],
+          dual: [[0, castSkill], [2.5, () => route('light')], [5, () => route('heavy')], [7.5, () => route('heavy')], [10, () => route('light')], [12, burst], [14.5, () => route('light')], [17, () => route('heavy')]],
+          none: [[0, castSkill], [2, patrolTick], [4, patrolTick], [6, recastSkill], [10, burst], [12, patrolTick]]
+        };
+        schedules[name].forEach(([time, action]) => runAt(time, action));
+        advance(Math.max(0, 20 - state.time), true);
+        log(`20 秒预设完成：${name === 'light' ? '轻端' : name === 'heavy' ? '重端' : name === 'dual' ? '双路线' : '无反应'}。`);
+        render();
+      }
+
+      function render() {
+        updateExpirations(false);
+        const signedH = state.h > 0 ? `+${state.h}` : String(state.h);
+        const endpointText = state.endpoint === 'light' ? '轻端 / 普莎' : state.endpoint === 'heavy' ? '重端 / 伊嘉' : '无';
+        const routeTotal = state.metrics.light + state.metrics.heavy;
+        const er = Number($('#er-target').value) || 0;
+        const particleEnergy = Number($('#particle-energy').value) || 0;
+        const estimatedEnergy = state.particles * particleEnergy * er / 100;
+        const patrolRemaining = state.patrol ? formatSeconds(state.patrolUntil - state.time) : '未开启';
+        const zeroRemaining = state.zeroField ? formatSeconds(state.zeroUntil - state.time) : '未开启';
+        const stateTitle = !state.patrol ? '等待首次巡衡' : state.zeroField ? '零点测区运行中' : state.h === 0 ? '归衡位置' : state.endpoint ? `${state.endpoint === 'light' ? '轻端' : '重端'}观测` : '路线移动中';
+        const stateDetail = !state.patrol ? `H = ${signedH} · 尚未开启双相巡衡` : `H = ${signedH} · 端点记录：${endpointText}`;
+        $('#state-title').textContent = stateTitle;
+        $('#state-detail').textContent = stateDetail;
+        $('#clock').textContent = formatTime(state.time);
+        $('#state-badge').textContent = state.h < 0 ? `轻端 · ${signedH}` : state.h > 0 ? `重端 · ${signedH}` : '归衡 · 0';
+        $('#timers').textContent = `巡衡 ${patrolRemaining} · 零点测区 ${zeroRemaining}`;
+        document.querySelectorAll('.h-cell').forEach((cell) => cell.classList.toggle('active', Number(cell.dataset.h) === state.h));
+        $('#metric-endpoint').textContent = endpointText;
+        $('#metric-stable').textContent = `稳定读数 ${state.stable} / 2`;
+        $('#metric-responses').textContent = String(routeTotal);
+        $('#metric-companion').textContent = `轻 ${state.metrics.light} · 重 ${state.metrics.heavy} · 伴随 ${state.metrics.companion}`;
+        $('#metric-returns').textContent = String(state.metrics.normal + state.metrics.full);
+        $('#metric-return-detail').textContent = `普通 ${state.metrics.normal} · 完整 ${state.metrics.full}`;
+        $('#metric-raw').innerHTML = `${state.raw.toFixed(1)}<small>%</small>`;
+        $('#metric-particles').textContent = String(state.particles);
+        $('#metric-energy').innerHTML = `${estimatedEnergy.toFixed(1)}<small> pt</small>`;
+        $('#metric-range').textContent = `${state.minH} / ${state.maxH > 0 ? '+' : ''}${state.maxH}`;
+        $('#metric-coverage').innerHTML = `${state.patrolSeconds.toFixed(1)}<small> s</small>`;
+        $('#log-count').textContent = `${state.events.length} events · 拒绝 ${state.metrics.rejected}`;
+        const logNode = $('#event-log');
+        logNode.innerHTML = '';
+        state.events.slice().reverse().forEach((event) => {
+          const item = document.createElement('li');
+          item.dataset.kind = event.kind;
+          const time = document.createElement('time');
+          time.textContent = `${formatTime(event.time)} s`;
+          const text = document.createElement('span');
+          text.textContent = event.text;
+          item.append(time, text);
+          logNode.append(item);
+        });
+      }
+
+      document.querySelectorAll('[data-action]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const action = button.dataset.action;
+          if (action === 'skill') castSkill();
+          if (action === 'light') route('light');
+          if (action === 'heavy') route('heavy');
+          if (action === 'recast') recastSkill();
+          if (action === 'burst') burst();
+          if (action === 'tick') patrolTick();
+          if (action === 'reset') reset();
+        });
+      });
+      document.querySelectorAll('[data-advance]').forEach((button) => button.addEventListener('click', () => advance(Number(button.dataset.advance))));
+      document.querySelectorAll('[data-preset]').forEach((button) => button.addEventListener('click', () => runPreset(button.dataset.preset)));
+      $('#c6-toggle').addEventListener('change', render);
+      $('#er-target').addEventListener('input', render);
+      $('#particle-energy').addEventListener('input', render);
+      document.querySelector('#step-size').addEventListener('change', (event) => {
+        const value = clamp(Number(event.target.value) || .5, .1, 10);
+        event.target.value = value;
+      });
+      document.querySelector('#advance-step').addEventListener('click', () => advance(Number($('#step-size').value) || .5));
+      reset();
+    })();
+  </script>
+</body>
+</html>
