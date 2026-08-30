@@ -15,6 +15,7 @@
         <a href="#profile">角色档案</a>
         <a href="#companions">同行者</a>
         <a href="#combat">战斗方式</a>
+        <a href="gameplay.html">玩法规格</a>
         <a href="#story">故事</a>
         <a href="#voice">日常语音</a>
         <a href="postcards.html">明信片</a>
@@ -38,6 +39,7 @@
         </div>
         <div class="hero-actions">
           <a class="button primary" href="#combat">查看衡标</a>
+          <a class="button" href="gameplay.html">完整玩法规格</a>
           <a class="button" href="postcards.html">浏览明信片套组</a>
         </div>
       </div>
@@ -131,7 +133,7 @@
       <div class="shell">
         <div class="section-head">
           <div><div class="eyebrow">03 / Combat</div><h2>让失衡成为一种方法</h2></div>
-          <p>衡标把她的判断写在战场中央；每一次偏移，都替她选择一条更合适的路。试着拨动它，看两只猫如何回应。</p>
+          <p>反应把衡标推向轻端或重端；再次施放战技与爆发负责主动回中。试着完成一次端点到归衡的循环。</p>
         </div>
         <div class="combat-layout">
           <div class="panel combat-art">
@@ -140,7 +142,7 @@
           <div class="panel combat-copy">
             <div class="panel-label">衡标 / H</div>
             <h3>衡标</h3>
-            <p class="copy">元素战技启动后，衡标从归衡位置开始。Stellar Swirl 将它推向轻端，Stellar-Conduct 将它推向重端；从任一端返回中央时，触发归衡响应。</p>
+            <p class="copy">双相巡衡从归衡位置开始。Stellar Swirl 将 H 推向轻端，Stellar-Conduct 将 H 推向重端；再次施放战技或施放爆发，可以主动把非零 H 带回中央。</p>
             <div class="meter-wrap" aria-label="衡标状态">
               <div class="meter-label">轻端 / 普莎</div>
               <div class="meter" id="meter" role="meter" aria-valuemin="-2" aria-valuemax="2" aria-valuenow="0" aria-label="衡标">
@@ -148,11 +150,12 @@
               </div>
               <div class="meter-label">伊嘉 / 重端</div>
             </div>
-            <p class="state-line" id="state-line" aria-live="polite"><strong>归衡</strong>：两只猫都在巡衡范围内。</p>
+            <p class="state-line" id="state-line" aria-live="polite"><strong>归衡</strong>：H = 0，等待选择路线。</p>
             <div class="controls">
-              <button class="control-button primary" data-delta="-1">触发 Stellar Swirl</button>
-              <button class="control-button" data-delta="1">触发 Stellar-Conduct</button>
-              <button class="control-button" data-delta="0">归衡 / 重置</button>
+              <button class="control-button primary" data-action="light">触发 Stellar Swirl</button>
+              <button class="control-button" data-action="heavy">触发 Stellar-Conduct</button>
+              <button class="control-button" data-action="return">E 再施放 / 归衡校读</button>
+              <button class="control-button" data-action="burst">Q / 雪原校准</button>
             </div>
           </div>
         </div>
@@ -160,17 +163,17 @@
           <article class="panel ability-card">
             <div class="panel-label">E / 元素战技</div>
             <h3>双相巡衡</h3>
-            <p>打开记录册，两只猫进入巡衡。普莎带来牵引与浮动，伊嘉带来压制与承重；冰元素的巡衡从她翻开第一页时便已开始。</p>
+            <p>打开记录册，两只猫进入巡衡。技能本身提供后台冰元素协同；普莎负责牵引，伊嘉负责压制，反应只负责选择路线。</p>
           </article>
           <article class="panel ability-card">
             <div class="panel-label">Q / 元素爆发</div>
             <h3>三体归零·雪原校准</h3>
-            <p>三点锁成冰蓝色测量结构，建立零点测区。轻中有重，重中有轻，战场在短时间内回到可控状态。</p>
+            <p>先把非零 H 归零，再建立零点测区。主响应发生时，另一只猫提供较弱的伴随响应，让轻中有重、重中有轻。</p>
           </article>
           <article class="panel ability-card">
             <div class="panel-label">固有天赋</div>
             <h3>误差本身也是记录</h3>
-            <p>失衡并非终点。从轻端或重端返回中央时，归衡响应得到强化；她相信，误差也会把人带回正确的位置。</p>
+            <p>从端点完成完整归衡后，轻与重会在短时间内共同稳定战场；她把“失衡再回中”转化为队伍收益。</p>
           </article>
         </div>
       </div>
@@ -374,7 +377,7 @@
             <p class="micro">记录仍在继续。</p>
           </article>
         </div>
-        <p class="notice">娜蒂娅是借用《原神》世界观语汇创作的个人同人角色；这里的战斗机制与故事，都是写给她的想象记录，并非实际游戏数值。</p>
+        <p class="notice">娜蒂娅是借用《原神》世界观语汇创作的个人同人角色；本页只介绍核心体验，详细数值规划集中在独立玩法规格页，并非实际游戏数值。</p>
       </div>
     </section>
   </main>
@@ -392,6 +395,8 @@
       const meter = document.querySelector('#meter');
       const stateLine = document.querySelector('#state-line');
       let h = 0;
+      let endpoint = null;
+      let eventText = 'H = 0，等待选择路线。';
       const render = () => {
         cells.forEach((cell, index) => {
           const value = index - 2;
@@ -400,16 +405,40 @@
         });
         meter.setAttribute('aria-valuenow', String(h));
         const state = h === 0
-          ? ['归衡', '两只猫都在巡衡范围内。']
+          ? ['归衡', eventText]
           : h < 0
-            ? ['轻端观测', '普莎的牵引与浮动响应更明显。']
-            : ['重端观测', '伊嘉的压制与单目标稳定响应更明显。'];
+            ? [h === -2 ? '轻端观测' : '向轻端偏移', eventText]
+            : [h === 2 ? '重端观测' : '向重端偏移', eventText];
         stateLine.innerHTML = `<strong>${state[0]}</strong>：${state[1]}`;
       };
-      document.querySelectorAll('[data-delta]').forEach((button) => {
+      const route = (delta, name) => {
+        h = Math.max(-2, Math.min(2, h + delta));
+        if (Math.abs(h) === 2) endpoint = h < 0 ? 'light' : 'heavy';
+        if (h === 0) {
+          eventText = endpoint ? '反向路线完成完整归衡，轻与重开始共同稳定战场。' : '反向路线完成普通归衡。';
+          endpoint = null;
+        } else {
+          eventText = `${name} 使 H ${delta < 0 ? '向左' : '向右'}移动到 ${h > 0 ? '+' : ''}${h}。`;
+        }
+      };
+      const returnToZero = (source) => {
+        if (h === 0) {
+          eventText = source === 'burst' ? 'H 已为 0，直接建立零点测区。' : 'H 已为 0，继续维持基础巡衡。';
+          return;
+        }
+        eventText = endpoint
+          ? `${source === 'burst' ? '元素爆发' : '归衡校读'}完成完整归衡，轻与重开始共同稳定战场。`
+          : `${source === 'burst' ? '元素爆发' : '归衡校读'}完成普通归衡。`;
+        h = 0;
+        endpoint = null;
+      };
+      document.querySelectorAll('[data-action]').forEach((button) => {
         button.addEventListener('click', () => {
-          const delta = Number(button.dataset.delta);
-          h = delta === 0 ? 0 : Math.max(-2, Math.min(2, h + delta));
+          const action = button.dataset.action;
+          if (action === 'light') route(-1, 'Stellar Swirl');
+          if (action === 'heavy') route(1, 'Stellar-Conduct');
+          if (action === 'return') returnToZero('skill');
+          if (action === 'burst') returnToZero('burst');
           render();
         });
       });
