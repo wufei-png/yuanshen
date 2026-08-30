@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-This is a static, asset-heavy Nadia character package. Keep canonical design, narrative, gameplay, voice, and production notes in `docs/`. The public delivery lives in `output/nadia_character/`: `index.html`, `gameplay.html`, `skills.html`, `postcards.html`, `theme.css`, and local `assets/` (PNG and MP3 files, including `acrylic/` and `portraits/`). PDF generators are in `output/nadia_character/print/`; their generated files belong in `output/pdf/`. `tools/nadia_skill_simulator.html` is development-only and must not be added to the public share package. `tmp/` is ignored scratch space. Never commit the ignored private photos `/girl.jpg` or `/xiting/*.jpg`.
+This is a static, asset-heavy Nadia character package. Keep canonical design, narrative, gameplay, voice, and production notes in `docs/`. The public delivery lives in `output/nadia_character/`: `index.html`, `gameplay.html`, `skills.html`, `postcards.html`, `theme.css`, and local `assets/` (PNG and MP3 files, including `acrylic/` and `portraits/`). PDF generators are in `output/nadia_character/print/`; their generated files belong in `output/pdf/`. `tools/nadia_skill_simulator.html` is development-only and must not be added to the public share package. `tmp/` is ignored scratch space. Never commit private source photos in `/xiting/*.jpg`.
 
 ## Build, Test, and Development Commands
 

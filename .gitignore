@@ -6,7 +6,6 @@ tmp/pdfs/
 tmp/references/
 
 # Private real-person source photos; generated assets are tracked instead
-/girl.jpg
 /xiting/*.jpg
 
 # Superseded visual drafts kept locally for history, not for the current package
