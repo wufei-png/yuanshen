@@ -448,7 +448,7 @@
             <div class="ability-icon"><svg class="icon icon--large"><use href="#icon-q"></use></svg></div>
             <div class="panel-label">Q / 元素爆发</div>
             <h3>三体归零·雪原校准</h3>
-            <p>先将非零衡标归零，再建立零点测区，让两只猫互相补足响应。</p>
+            <p>先将非零衡标归零；巡衡仍在时建立至多 12 秒的零点测区，让两只猫互相补足响应。</p>
             <div class="copy-rule">伴随响应只显示规则允许的伤害/控制反馈，不额外移动 H 或制造元素附着。</div>
           </article>
           <article class="panel ability-card ability-card--a">
@@ -467,7 +467,7 @@
           </article>
           <article class="state-card state-card--heavy">
             <div class="state-card-head"><svg class="icon"><use href="#icon-heavy"></use></svg><h3>重相 / 伊嘉</h3></div>
-            <p>伊嘉像普通猫一样跃起，却在落地时留下冰裂与压制。无法位移的敌人仍可承受弱化标记。</p>
+            <p>伊嘉像普通猫一样跃起，却在落地时留下冰裂与压制。到达重端时，当前场上角色获得短暂的重端护持；首领战同样有效。</p>
             <div class="semantic"><span>下沉楔</span><span>平行裂纹</span><span>+</span></div>
           </article>
           <article class="state-card state-card--zero">
@@ -515,7 +515,7 @@
                 <li><strong>0.00–0.18</strong><span>近景推到记录册扣锁，读数从空白亮起；语音 06 在约 0.16 进入。</span></li>
                 <li><strong>0.18–0.46</strong><span>镜头拉至正面中景，两猫分别触盘；<span class="hit">0.44 初次命中</span>。</span></li>
                 <li><strong>0.46–0.68</strong><span>镜头固定让玩家读清 H = 0；巡衡状态亮起，0.68 后可交后台。</span></li>
-                <li><strong>0.68–0.90</strong><span>回常规战斗视角，猫留在左右边缘；首个巡衡刻度等待场上命中。</span></li>
+                <li><strong>0.68–0.90</strong><span>回常规战斗视角，猫留在左右边缘；首个巡衡刻度按自动时间轴等待，最近命中只用于优先锁定。</span></li>
               </ol>
               <div class="board-footnote">不在读数写入前让玩家看到端点特效；巡衡持续时间、附着与倍率以完整玩法规格为准。</div>
             </div>
@@ -539,13 +539,13 @@
             <figure class="shot-media"><img src="assets/nadia_igla_v1_ingame.png" alt="伊嘉重相参考：象牙色修长猫站在冰裂测量盘上" loading="lazy"></figure>
             <div class="shot-body">
               <div class="shot-head"><div><div class="shot-number">BOARD 04 / HEAVY</div><h3>伊嘉 · 重端响应</h3><div class="shot-meta">响应时长目标 0.66 s</div></div><svg class="icon icon--small"><use href="#icon-heavy"></use></svg></div>
-              <p class="shot-summary">重点是“落点确认”，不是击飞；Boss 保持原地，但压制与弱化标记必须清楚。</p>
+              <p class="shot-summary">重点是“落点确认”，不是击飞；Boss 保持原地，但压制与当前场上角色的重端护持必须清楚。</p>
               <ol class="timeline">
                 <li><strong>0.00–0.16</strong><span>伊嘉收身跃起，竖直预加载线向下；目标脚下出现不闭合裂纹。</span></li>
                 <li><strong>0.16–0.36</strong><span>伊嘉落地，镜头只下压 8°；<span class="hit">0.36 高削韧反馈</span>，不使用击飞式大冲击。</span></li>
-                <li><strong>0.36–0.66</strong><span>落点楔形收束为重心点；H 向重端移动一格，移动目标显示深蓝边框。</span></li>
+                <li><strong>0.36–0.66</strong><span>落点楔形收束为重心点；H 向重端移动一格，到达端点时当前场上角色显示护持边框。</span></li>
               </ol>
-              <div class="board-footnote">到达重端时裂纹变成三条平行垂线；“输出降低”用标记表达，不靠小数字。</div>
+              <div class="board-footnote">到达重端时裂纹变成三条平行垂线；当前场上角色显示“重端护持”与短计时，不使用敌方“输出降低”标记。</div>
             </div>
           </article>
 
@@ -559,20 +559,20 @@
                 <li><strong>0.18–0.44</strong><span>普莎下降、伊嘉上跃；<span class="hit">0.44 H 写入 0</span>，归衡环向外扩张。</span></li>
                 <li><strong>0.44–0.86</strong><span>普通归衡显示柔和闭环；完整归衡叠合轻、重半环；0.60 可交后台。</span></li>
               </ol>
-              <div class="board-footnote">H 为 0 时再次施放只补发基础巡衡刻度：动作板不出现归衡爆闪、微粒或校准窗口。</div>
+              <div class="board-footnote">H 为 0 时再次施放只补发基础巡衡刻度且不重置自动时钟：动作板不出现归衡爆闪、微粒或校准窗口。</div>
             </div>
           </article>
 
           <article class="panel shot-sequence">
             <figure class="shot-media"><img src="assets/nadia_action_v3_ingame.png" alt="元素爆发参考：娜蒂娅与两只猫被三层冰蓝测量环包围" loading="lazy"></figure>
             <div class="shot-body">
-              <div class="shot-head"><div><div class="shot-number">BOARD 06 / Q</div><h3>三体归零 · 雪原校准</h3><div class="shot-meta">起手 1.34 s + 场地循环 + 结束 0.70 s</div></div><svg class="icon icon--small"><use href="#icon-q"></use></svg></div>
+              <div class="shot-head"><div><div class="shot-number">BOARD 06 / Q</div><h3>三体归零 · 雪原校准</h3><div class="shot-meta">起手 1.34 s + 至多 12 s 场地循环 + 结束 0.70 s</div></div><svg class="icon icon--small"><use href="#icon-q"></use></svg></div>
               <p class="shot-summary">爆发不是把猫收进法器，而是把娜蒂娅写成第三个锚点，再让场地保持可读。</p>
               <ol class="timeline">
                 <li><strong>0.00–0.54</strong><span>眼镜反光切到书页；两猫分别落盘；若 H 非零，先把刻线回到中心。</span></li>
                 <li><strong>0.54–0.96</strong><span><span class="hit">0.54 初始命中</span>；三层环从偏心回正，镜头从半身拉到俯视。</span></li>
-                <li><strong>0.96–1.34</strong><span>三个锚点锁定零点测区；UI 不增加第二条资源条。</span></li>
-                <li><strong>12 s loop</strong><span>外圈、中心方标和猫轨道持续可见；主响应与伴随响应使用相反方向短线区分。</span></li>
+                <li><strong>0.96–1.34</strong><span>巡衡仍在时，三个锚点锁定零点测区；UI 不增加第二条资源条，并显示实际剩余时间。</span></li>
+                <li><strong>up to 12 s loop</strong><span>外圈、中心方标和猫轨道持续可见，随巡衡结束；主响应与伴随响应使用相反方向短线区分。</span></li>
               </ol>
               <div class="board-footnote">爆发结束时外圈向内收两圈，保留中心方标；语音 11 放在最后一圈收束之后。</div>
             </div>
@@ -599,7 +599,7 @@
             </article>
             <article class="language-row language-row--heavy">
               <div class="language-symbol"><svg class="icon icon--large"><use href="#icon-heavy"></use></svg></div>
-              <div><h3>重端 / 伊嘉</h3><p>主色为暖金，辅色为深冰蓝；向下楔形、竖直落线、密集下沉裂纹。读数带 `+`，弱化标记使用平行垂线。</p></div>
+              <div><h3>重端 / 伊嘉</h3><p>主色为暖金，辅色为深冰蓝；向下楔形、竖直落线、密集下沉裂纹。读数带 `+`；到达端点时，当前场上角色以平行垂线护框显示重端护持。</p></div>
             </article>
             <article class="language-row language-row--zero">
               <div class="language-symbol"><svg class="icon icon--large"><use href="#icon-zero"></use></svg></div>

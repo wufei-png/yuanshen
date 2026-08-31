@@ -180,7 +180,7 @@
           <div class="panel combat-copy">
             <div class="panel-label">衡标 / H</div>
             <h3>衡标</h3>
-            <p class="copy">双相巡衡从归衡位置开始。Stellar Swirl 将 H 推向轻端，Stellar-Conduct 将 H 推向重端；再次施放战技或施放爆发，可以主动把非零 H 带回中央。</p>
+            <p class="copy">双相巡衡从归衡位置开始。Stellar Swirl 将 H 推向轻端，Stellar-Conduct 将 H 推向重端；再次施放战技或施放爆发，可以主动把非零 H 带回中央。零点测区只会在巡衡仍存在时建立。</p>
             <div class="meter-wrap" aria-label="衡标状态">
               <div class="meter-label">轻端 / 普莎</div>
               <div class="meter" id="meter" role="meter" aria-valuemin="-2" aria-valuemax="2" aria-valuenow="0" aria-label="衡标">
@@ -201,12 +201,12 @@
           <article class="panel ability-card">
             <div class="panel-label">E / 元素战技</div>
             <h3>双相巡衡</h3>
-            <p>打开记录册，两只猫进入巡衡。技能本身提供后台冰元素协同；普莎负责牵引，伊嘉负责压制，反应只负责选择路线。</p>
+            <p>打开记录册，两只猫进入巡衡。技能本身提供后台冰元素协同；普莎负责牵引，伊嘉负责压制与重端护持，反应只负责选择路线。</p>
           </article>
           <article class="panel ability-card">
             <div class="panel-label">Q / 元素爆发</div>
             <h3>三体归零·雪原校准</h3>
-            <p>先把非零 H 归零，再建立零点测区。主响应发生时，另一只猫提供较弱的伴随响应，让轻中有重、重中有轻。</p>
+            <p>先把非零 H 归零；巡衡仍在时建立至多 12 秒的零点测区。主响应发生时，另一只猫提供较弱的伴随响应，让轻中有重、重中有轻。</p>
           </article>
           <article class="panel ability-card">
             <div class="panel-label">固有天赋</div>
@@ -251,14 +251,14 @@
           <article class="panel profile-card copy">
             <div class="panel-label">C1 - C3</div>
             <p><strong>第一条：不要相信眼睛</strong><br>更快进入轻端或重端观测。</p>
-            <p><strong>第二条：重新称量</strong><br>强化轻相牵引与重相压制。</p>
+            <p><strong>第二条：重新称量</strong><br>强化轻相牵引与重端护持。</p>
             <p><strong>第三条：记录直到一致</strong><br>元素战技等级提高。</p>
           </article>
           <article class="panel profile-card copy">
             <div class="panel-label">C4 - C6</div>
-            <p><strong>第四条：误差从不是零</strong><br>归衡后打开短暂的 Stellar 反应强化窗口。</p>
+            <p><strong>第四条：误差从不是零</strong><br>校准窗口延长，并以每 6 秒一次的回能改善循环。</p>
             <p><strong>第五条：零点只是起点</strong><br>元素爆发等级提高。</p>
-            <p><strong>最后一条：我们三个都在这里</strong><br>零点测区期间，两只猫都以完整协同效果响应。</p>
+            <p><strong>最后一条：我们三个都在这里</strong><br>零点测区内伴随响应提高至主响应的 70%，并加快主动回中的节奏。</p>
           </article>
         </div>
       </div>
@@ -461,7 +461,7 @@
       };
       const returnToZero = (source) => {
         if (h === 0) {
-          eventText = source === 'burst' ? 'H 已为 0，直接建立零点测区。' : 'H 已为 0，继续维持基础巡衡。';
+          eventText = source === 'burst' ? 'H 已为 0；巡衡仍在时建立零点测区。' : 'H 已为 0，继续维持基础巡衡。';
           return;
         }
         eventText = endpoint
