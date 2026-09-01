@@ -4,6 +4,8 @@
 # Local QA renders and external visual references
 tmp/pdfs/
 tmp/references/
+tmp/video_stills/
+tmp/video_trials/
 
 # Private real-person source photos; generated assets are tracked instead
 /xiting/*.jpg
