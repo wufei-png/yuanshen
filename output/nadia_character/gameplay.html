@@ -24,7 +24,10 @@
     .spec-table td:not(:first-child), .spec-table th:not(:first-child) { text-align: right; }
     .spec-table tr:last-child td { border-bottom: 0; }
     .state-lineup { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 18px 0; }
-    .state-node { padding: 14px 8px; border: 1px solid var(--line); text-align: center; background: rgba(15, 44, 80, .72); }
+    .state-node { padding: 14px 8px; border: 1px solid var(--line); text-align: center; background: rgba(15, 44, 80, .72); transition: transform .3s ease, border-color .3s ease; }
+    .state-node:hover { transform: translateY(-4px); border-color: rgba(155, 232, 255, .55); }
+    .state-node.center { animation: node-breathe 3.8s ease-in-out infinite; }
+    @keyframes node-breathe { 0%, 100% { box-shadow: 0 0 0 rgba(230, 199, 124, 0); } 50% { box-shadow: 0 0 16px 3px rgba(230, 199, 124, .38); } }
     .state-node strong { display: block; color: var(--ice); font-size: 18px; }
     .state-node.center strong { color: var(--gold); }
     .boundary { padding: 22px 24px; border-left: 3px solid var(--gold); background: rgba(230, 199, 124, .08); color: #dceafa; }
@@ -40,6 +43,11 @@
   </style>
 </head>
 <body>
+  <div class="ambient" aria-hidden="true">
+    <div class="ambient-glow ambient-glow--one"></div>
+    <div class="ambient-glow ambient-glow--two"></div>
+    <div class="ambient-snow-drift"><div class="ambient-snow"></div></div>
+  </div>
   <header class="topbar">
     <div class="shell topbar-inner">
       <div class="brand">NADIA SADOVA / GAMEPLAY SPEC</div>

@@ -175,6 +175,11 @@ def build_notes_page(markdown: str) -> str:
   <link rel="stylesheet" href="theme.css">
 </head>
 <body>
+  <div class="ambient" aria-hidden="true">
+    <div class="ambient-glow ambient-glow--one"></div>
+    <div class="ambient-glow ambient-glow--two"></div>
+    <div class="ambient-snow-drift"><div class="ambient-snow"></div></div>
+  </div>
   <header class="topbar">
     <div class="shell topbar-inner">
       <div class="brand">NADIA SADOVA / TEXT ARCHIVE</div>
