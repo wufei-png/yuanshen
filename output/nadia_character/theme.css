@@ -239,6 +239,25 @@ footer { padding: 45px 0 70px; color: #8da5c1; font-size: 11px; }
 .optional .pc-front { background: linear-gradient(135deg, #142d50, #0b1d36); }
 .optional .pc-front::after { background: repeating-linear-gradient(135deg, transparent 0 12px, rgba(155, 232, 255, .06) 12px 13px); }
 
+.notes-section { padding: 64px 0 84px; }
+.notes-shell { max-width: 860px; }
+.notes-shell h1 { margin-bottom: 8px; font-size: 36px; letter-spacing: .08em; }
+.notes-shell h2 { margin-top: 46px; font-size: 27px; }
+.notes-shell h3 { margin-top: 32px; font-size: 20px; }
+.notes-shell p { margin: 14px 0 0; color: #c9d9ec; font-size: 15px; }
+.notes-shell hr { margin: 34px 0; border: 0; border-top: 1px solid rgba(155, 232, 255, .18); }
+.notes-shell blockquote { margin: 16px 0 0; padding: 14px 20px; border-left: 3px solid var(--ice-2); background: rgba(5, 17, 34, .4); color: #dceafa; font-family: Georgia, "Songti SC", "STSong", serif; }
+.notes-shell blockquote p { margin: 0; color: #dceafa; }
+.notes-shell blockquote p + p { margin-top: 8px; }
+.notes-shell ul, .notes-shell ol { margin: 14px 0 0; padding-left: 22px; color: #c9d9ec; font-size: 15px; }
+.notes-shell li { margin-top: 6px; }
+.notes-shell pre { margin: 16px 0 0; padding: 16px 18px; overflow-x: auto; border: 1px solid rgba(155, 232, 255, .18); border-radius: 10px; background: rgba(4, 14, 29, .6); color: #bcd7f0; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 13px; line-height: 1.7; white-space: pre; }
+.notes-shell a { color: var(--ice); }
+.notes-table-wrap { margin-top: 16px; overflow-x: auto; }
+.notes-table-wrap table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.notes-table-wrap th, .notes-table-wrap td { padding: 10px 14px; border: 1px solid rgba(155, 232, 255, .22); text-align: left; color: #c9d9ec; }
+.notes-table-wrap th { background: rgba(5, 17, 34, .5); color: var(--ice); font-weight: 600; }
+
 @media (max-width: 880px) {
   .topbar-inner { align-items: flex-start; flex-direction: column; padding: 14px 0; gap: 8px; }
   nav { justify-content: flex-start; gap: 12px; }
