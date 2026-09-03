@@ -78,13 +78,12 @@ h3 { font-size: 23px; }
 .hero-art::before { content: ""; position: absolute; width: 78%; aspect-ratio: 1; border: 1px solid rgba(155, 232, 255, .42); border-radius: 50%; box-shadow: 0 0 0 24px rgba(155, 232, 255, .08), 0 0 0 54px rgba(155, 232, 255, .04); }
 .hero-art::after { content: "✦"; position: absolute; top: 10%; right: 10%; color: var(--ice); font-size: 46px; text-shadow: 0 0 22px var(--ice); }
 .hero-art img { position: relative; z-index: 1; width: min(100%, 650px); max-height: 720px; object-fit: contain; filter: drop-shadow(0 30px 34px rgba(0, 0, 0, .42)); }
-.hero-video-card { position: relative; z-index: 1; width: min(100%, 650px); margin: 0; }
-.hero-video { display: block; width: 100%; aspect-ratio: 16 / 9; border: 1px solid rgba(155, 232, 255, .35); background: linear-gradient(145deg, #173d72, #08172d); object-fit: cover; filter: drop-shadow(0 30px 34px rgba(0, 0, 0, .42)); }
-.hero-video-card img { width: 100%; height: 100%; object-fit: cover; }
-.hero-video-card figcaption { margin-top: 9px; color: #9fb4ce; font-size: 11px; text-align: right; }
-.hero-static-reference { display: flex; align-items: center; gap: 10px; width: min(100%, 650px); margin: 12px 0 0; padding: 8px 10px; border: 1px solid rgba(146, 197, 255, .22); background: rgba(6, 20, 42, .56); }
-.hero-static-reference img { position: static; z-index: auto; flex: 0 0 54px; width: 54px; height: 81px; max-height: none; object-fit: cover; object-position: center top; border: 1px solid rgba(197, 225, 255, .28); filter: none; }
-.hero-static-reference figcaption { color: var(--faint); font-size: 11px; line-height: 1.5; }
+.hero-static-art { position: relative; z-index: 1; width: 100%; margin: 0; text-align: center; }
+.hero-static-art img { display: block; margin: 0 auto; }
+.intro-motion { border-top: 1px solid rgba(155, 232, 255, .08); border-bottom: 1px solid rgba(155, 232, 255, .08); background: linear-gradient(180deg, rgba(5, 17, 34, .2), rgba(4, 15, 31, .54)); }
+.intro-motion-card { width: min(100%, 900px); margin: 0 auto; }
+.intro-motion-video { display: block; width: 100%; aspect-ratio: 16 / 9; border: 1px solid rgba(155, 232, 255, .35); background: linear-gradient(145deg, #173d72, #08172d); object-fit: cover; filter: drop-shadow(0 30px 34px rgba(0, 0, 0, .42)); }
+.intro-motion-card figcaption { margin-top: 9px; color: #9fb4ce; font-size: 11px; text-align: right; }
 
 .section { position: relative; padding: 92px 0; }
 .section.alt { background: linear-gradient(180deg, rgba(5, 17, 34, .2), rgba(4, 15, 31, .54)); border-top: 1px solid rgba(155, 232, 255, .08); border-bottom: 1px solid rgba(155, 232, 255, .08); }
