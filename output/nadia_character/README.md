@@ -10,8 +10,9 @@
 - 双击 `postcards.html`：浏览 24 张收藏卡；点击卡片或按 Enter 翻到背面。
 - `pdf/nadia_character_dossier.pdf`：20 页 A5 正式角色档案。
 - `pdf/nadia_postcard_collection_48p.pdf`：24 张收藏卡的正面、背面逐页排布，共 48 页。
+- `docs/nadia_character_player_edition.md`：纯文字版角色档案与设定，可用任意文本编辑器或 Markdown 阅读器查看。
 
-所有网页、图片、样式与音频均为本地资源，解压后无需联网即可查看。请保留目录结构，不要单独移动 HTML 文件。
+所有网页、图片、样式、音频与视频均为本地资源，解压后无需联网即可查看。请保留目录结构，不要单独移动 HTML 文件。
 
 ## 收藏卡印刷说明
 

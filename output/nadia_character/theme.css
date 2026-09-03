@@ -239,6 +239,11 @@ footer { padding: 45px 0 70px; color: #8da5c1; font-size: 11px; }
 .optional .pc-front { background: linear-gradient(135deg, #142d50, #0b1d36); }
 .optional .pc-front::after { background: repeating-linear-gradient(135deg, transparent 0 12px, rgba(155, 232, 255, .06) 12px 13px); }
 
+.margin-notes { padding: 0 0 76px; }
+.margin-notes-card { max-width: 640px; margin: 36px auto 0; padding: 22px 26px 24px; border: 1px solid rgba(155, 232, 255, .16); border-radius: 14px; background: rgba(5, 17, 34, .3); }
+.margin-notes-card .panel-label { color: var(--muted); }
+.margin-note { margin: 12px 0 0; color: #9fb6d2; font-family: Georgia, "Songti SC", "STSong", serif; font-size: 14px; letter-spacing: .06em; line-height: 1.9; }
+
 @media (max-width: 880px) {
   .topbar-inner { align-items: flex-start; flex-direction: column; padding: 14px 0; gap: 8px; }
   nav { justify-content: flex-start; gap: 12px; }
