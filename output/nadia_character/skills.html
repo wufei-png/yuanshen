@@ -195,6 +195,7 @@
     .shot-sequence { overflow: hidden; }
     .shot-media { position: relative; border-bottom: 1px solid var(--line); background: #081a33; }
     .shot-media img { width: 100%; aspect-ratio: 1.74; object-fit: cover; opacity: .88; }
+    .shot-media video { display: block; width: 100%; aspect-ratio: 1.74; object-fit: cover; background: #081a33; }
     .shot-media::after { content: "GAMEPLAY LAYER"; position: absolute; left: 14px; bottom: 11px; padding: 4px 7px; border: 1px solid rgba(255, 255, 255, .3); border-radius: 4px; background: rgba(5, 17, 34, .66); color: #e9f8ff; font-size: 9px; letter-spacing: .16em; }
     .shot-body { padding: 22px; }
     .shot-head { display: flex; align-items: start; justify-content: space-between; gap: 14px; margin-bottom: 16px; }
@@ -202,6 +203,9 @@
     .shot-number { color: var(--faint); font-size: 10px; letter-spacing: .16em; white-space: nowrap; }
     .shot-meta { color: var(--gold); font-size: 11px; }
     .shot-summary { margin-bottom: 18px; color: var(--muted); font-size: 12px; }
+    .shot-static-reference { display: flex; align-items: center; gap: 10px; margin: 0 0 18px; padding: 8px; border-top: 1px solid rgba(155, 232, 255, .12); border-bottom: 1px solid rgba(155, 232, 255, .12); background: rgba(5, 17, 34, .26); }
+    .shot-static-reference img { flex: 0 0 100px; width: 100px; height: 66px; object-fit: contain; background: #081a33; opacity: .8; }
+    .shot-static-reference figcaption { color: var(--faint); font-size: 10px; line-height: 1.45; }
     .timeline { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; counter-reset: board-step; }
     .timeline li { position: relative; display: grid; grid-template-columns: 64px 1fr; gap: 12px; padding: 10px 0 10px 31px; border-top: 1px solid rgba(155, 232, 255, .12); color: var(--muted); font-size: 12px; counter-increment: board-step; }
     .timeline li::before { content: counter(board-step, decimal-leading-zero); position: absolute; left: 0; top: 11px; color: var(--ice); font-size: 10px; font-weight: 700; letter-spacing: .08em; }
@@ -483,12 +487,12 @@
     <section class="section section--tint" id="boards" aria-labelledby="boards-title">
       <div class="s-shell">
         <div class="section-head">
-          <div><div class="eyebrow">03 / Static Storyboards</div><h2 id="boards-title">每个动作都要有落点</h2></div>
+          <div><div class="eyebrow">03 / Storyboards + Motion</div><h2 id="boards-title">每个动作都要有落点</h2></div>
           <p>这是第一批的静态制作板：不替代动画，但把姿态、镜头、猫、命中帧、可取消点、位移和总时长先锁成可讨论的语言。</p>
         </div>
         <div class="board-intro">
-          <div><strong>阅读方式 / FRAME → FEEDBACK → HANDOFF</strong><p>时间是表现目标，不改写玩法规格；命中帧是玩家看到反馈的节点，可取消点是交后台或进入下一拍的节点。</p></div>
-          <span class="chip chip--gold">6 sequences · no animation</span>
+          <div><strong>阅读方式 / FRAME → FEEDBACK → HANDOFF</strong><p>时间是表现目标，不改写玩法规格；命中帧是玩家看到反馈的节点，可取消点是交后台或进入下一拍的节点。BOARD 02–04 已附 720p 动作试片，对应关键帧作海报，原静态参考图在卡片内保留。</p></div>
+          <span class="chip chip--gold">6 sequences · 3 motion clips</span>
         </div>
         <div class="board-grid">
           <article class="panel shot-sequence">
@@ -507,10 +511,19 @@
           </article>
 
           <article class="panel shot-sequence">
-            <figure class="shot-media"><img src="assets/nadia_balance_v1_ingame.png" alt="元素战技参考：两只猫分别位于测量盘两侧" loading="lazy"></figure>
+            <figure class="shot-media">
+              <video controls playsinline preload="none" poster="assets/video/stills/nadia_video_k04_v03_skill_start_v3_1920x1080.png" aria-label="双相巡衡元素战技视频">
+                <source src="assets/video/nadia_video_v03_skill_720p_a01.mp4" type="video/mp4">
+                您的浏览器不支持 HTML 视频。
+              </video>
+            </figure>
             <div class="shot-body">
               <div class="shot-head"><div><div class="shot-number">BOARD 02 / E-OPEN</div><h3>双相巡衡 · 首次施放</h3><div class="shot-meta">总时长目标 0.90 s</div></div><svg class="icon icon--small"><use href="#icon-e"></use></svg></div>
               <p class="shot-summary">先写入中心 `0`，再让两只猫进入左右轨道；UI 从“战技”切换为“归衡校读”。</p>
+              <figure class="shot-static-reference">
+                <img src="assets/nadia_balance_v1_ingame.png" alt="BOARD 02 原静态参考图" loading="lazy">
+                <figcaption>原静态参考图 · 视频作为动作层补充</figcaption>
+              </figure>
               <ol class="timeline">
                 <li><strong>0.00–0.18</strong><span>近景推到记录册扣锁，读数从空白亮起；语音 06 在约 0.16 进入。</span></li>
                 <li><strong>0.18–0.46</strong><span>镜头拉至正面中景，两猫分别触盘；<span class="hit">0.44 初次命中</span>。</span></li>
@@ -522,10 +535,19 @@
           </article>
 
           <article class="panel shot-sequence">
-            <figure class="shot-media"><img src="assets/nadia_pusha_v1_ingame.png" alt="普莎轻相参考：奶油色圆猫在测量盘上浮起" loading="lazy"></figure>
+            <figure class="shot-media">
+              <video controls playsinline preload="none" poster="assets/video/stills/nadia_video_k06_v04_light_start_1920x1080.png" aria-label="普莎轻相响应视频">
+                <source src="assets/video/nadia_video_v04_light_720p_a01.mp4" type="video/mp4">
+                您的浏览器不支持 HTML 视频。
+              </video>
+            </figure>
             <div class="shot-body">
               <div class="shot-head"><div><div class="shot-number">BOARD 03 / LIGHT</div><h3>普莎 · 轻端响应</h3><div class="shot-meta">响应时长目标 0.62 s</div></div><svg class="icon icon--small"><use href="#icon-light"></use></svg></div>
               <p class="shot-summary">先上浮，再牵引；上行方向比亮度更重要，控制范围和敌人分类不在动作板中重新定义。</p>
+              <figure class="shot-static-reference">
+                <img src="assets/nadia_pusha_v1_ingame.png" alt="BOARD 03 原静态参考图" loading="lazy">
+                <figcaption>原静态参考图 · 视频作为动作层补充</figcaption>
+              </figure>
               <ol class="timeline">
                 <li><strong>0.00–0.14</strong><span>耳朵先动，身体离盘；稀疏上浮粒子出现，轻端 `−` 先亮。</span></li>
                 <li><strong>0.14–0.28</strong><span>普莎在目标群上方停住，开口弧线收紧；牵引预告圈出现。</span></li>
@@ -536,10 +558,19 @@
           </article>
 
           <article class="panel shot-sequence">
-            <figure class="shot-media"><img src="assets/nadia_igla_v1_ingame.png" alt="伊嘉重相参考：象牙色修长猫站在冰裂测量盘上" loading="lazy"></figure>
+            <figure class="shot-media">
+              <video controls playsinline preload="none" poster="assets/video/stills/nadia_video_k08_v05_heavy_start_v3_1920x1080.png" aria-label="伊嘉重相响应视频">
+                <source src="assets/video/nadia_video_v05_heavy_720p_a01.mp4" type="video/mp4">
+                您的浏览器不支持 HTML 视频。
+              </video>
+            </figure>
             <div class="shot-body">
               <div class="shot-head"><div><div class="shot-number">BOARD 04 / HEAVY</div><h3>伊嘉 · 重端响应</h3><div class="shot-meta">响应时长目标 0.66 s</div></div><svg class="icon icon--small"><use href="#icon-heavy"></use></svg></div>
               <p class="shot-summary">重点是“落点确认”，不是击飞；Boss 保持原地，但压制与当前场上角色的重端护持必须清楚。</p>
+              <figure class="shot-static-reference">
+                <img src="assets/nadia_igla_v1_ingame.png" alt="BOARD 04 原静态参考图" loading="lazy">
+                <figcaption>原静态参考图 · 视频作为动作层补充</figcaption>
+              </figure>
               <ol class="timeline">
                 <li><strong>0.00–0.16</strong><span>伊嘉收身跃起，竖直预加载线向下；目标脚下出现不闭合裂纹。</span></li>
                 <li><strong>0.16–0.36</strong><span>伊嘉落地，镜头只下压 8°；<span class="hit">0.36 高削韧反馈</span>，不使用击飞式大冲击。</span></li>
@@ -668,7 +699,7 @@
             <h3>这一页负责让人看懂</h3>
             <p>这里的数字只服务于动作节拍和阅读顺序。完整倍率、元素附着、ICD、命座、构筑与边界规则仍以玩法规格页面为准。</p>
             <ul>
-              <li>静态逐镜动作板：普攻、E 首次、轻相、重相、归衡、Q。</li>
+              <li>静态逐镜动作板：普攻、E 首次、轻相、重相、归衡、Q；BOARD 02–04 同步附 720p 试片。</li>
               <li>纯 SVG 图标：NA、E、Q、天赋与轻/重/零三态。</li>
               <li>现有战斗语音：手动播放，不自动播放，不因缺音频阻塞页面。</li>
             </ul>
