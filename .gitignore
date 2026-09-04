@@ -1,6 +1,9 @@
 # macOS metadata
 .DS_Store
 
+# Python bytecode from print generators
+__pycache__/
+
 # Local QA renders and external visual references
 tmp/pdfs/
 tmp/references/
