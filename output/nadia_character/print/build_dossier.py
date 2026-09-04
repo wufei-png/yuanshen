@@ -109,7 +109,7 @@ def page_profile(c: canvas.Canvas) -> None:
     c.setFillColor(INK)
     c.setFont("NadiaCJK", 14)
     c.drawString(MARGIN + 15, y - 52, "角色档案")
-    rows = [("姓名", "娜蒂娅·萨多娃"), ("地区", "至冬"), ("元素", "冰 / Stellar Linchpin"), ("武器", "法器"), ("身份", "民间异常记录员"), ("命之座", "双衡仪座")]
+    rows = [("姓名", "娜蒂娅·萨多娃"), ("性别", "女性"), ("身高", "162 cm"), ("年龄", "27 岁"), ("地区", "至冬"), ("元素", "冰 / Stellar Linchpin"), ("武器", "法器"), ("身份", "民间异常记录员"), ("命之座", "双衡仪座")]
     ry = y - 80
     for key, value in rows:
         c.setFont("NadiaCJK", 7.2)
@@ -117,7 +117,7 @@ def page_profile(c: canvas.Canvas) -> None:
         c.drawString(MARGIN + 15, ry, key)
         c.setFillColor(INK)
         c.drawRightString(MARGIN + col_w - 15, ry, value)
-        ry -= 23
+        ry -= 18
     label(c, "FIRST IMPRESSION", MARGIN + col_w + gap + 15, y - 28)
     c.setFillColor(INK)
     c.setFont("NadiaCJK", 14)
