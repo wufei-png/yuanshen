@@ -8,6 +8,7 @@
 - 双击 `gameplay.html`：单独阅读完整玩法数值、ICD、命座、构筑与队伍循环；这些内容不会写入明信片。
 - 双击 `skills.html`：阅读玩家版技能说明、纯 SVG 技能图标、静态逐镜动作板、UI/VFX 语言与战斗语音节点。
 - 双击 `postcards.html`：浏览 24 张收藏卡；点击卡片或按 Enter 翻到背面。
+- `index.html`「介绍影像」区：6 秒登场动作视频，以及一条 42 秒叙事短片（PV，含对白混音）。
 - `pdf/nadia_character_dossier.pdf`：20 页 A5 正式角色档案。
 - `pdf/nadia_postcard_collection_48p.pdf`：24 张收藏卡的正面、背面逐页排布，共 48 页。
 - `docs/nadia_character_player_edition.md`：同内容的 Markdown 原文，可用任意文本编辑器查看。
