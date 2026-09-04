@@ -144,8 +144,8 @@
           <input id="particle-energy" type="number" min="0" max="10" step="0.1" value="1.8">
           <small>不是正式游戏常数；只用于显示透明的估算值。</small>
         </div>
-        <label class="checkbox-line"><input id="c4-toggle" type="checkbox"> 使用 C4+：校准 8 秒；完整归衡每 6 秒恢复 4 能量</label>
-        <label class="checkbox-line"><input id="c6-toggle" type="checkbox"> 使用 C6（含 C4）：归衡校读 3 秒、伴随 70% / 控制 50%、额外位移每 6 秒一次</label>
+        <label class="checkbox-line"><input id="c4-toggle" type="checkbox"> 使用 C4+：校准 8 秒；完整归衡每 6 秒恢复 8 能量</label>
+        <label class="checkbox-line"><input id="c6-toggle" type="checkbox"> 使用 C6（含 C4）：归衡校读 3 秒、伴随 75% / 控制 50%、测区完整归衡 +50%、额外位移每 6 秒一次</label>
         <div class="button-grid">
           <button class="primary" data-action="skill">首次 E / 再次 E</button>
           <button data-action="light">Stellar Swirl</button>
@@ -189,7 +189,7 @@
             <div class="metric"><span class="metric-label">路线响应</span><strong class="metric-value" id="metric-responses">0</strong><span class="metric-note" id="metric-companion">伴随响应 0</span></div>
             <div class="metric"><span class="metric-label">归衡</span><strong class="metric-value" id="metric-returns">0</strong><span class="metric-note" id="metric-return-detail">普通 0 · 完整 0</span></div>
             <div class="metric"><span class="metric-label">原始倍率预算</span><strong class="metric-value" id="metric-raw">0<small>%</small></strong><span class="metric-note">10 级表的表现预算</span></div>
-            <div class="metric"><span class="metric-label">巡衡粒子</span><strong class="metric-value" id="metric-particles">0</strong><span class="metric-note">每轮 E 3 + 首次响应 1；显示累计</span></div>
+            <div class="metric"><span class="metric-label">巡衡粒子</span><strong class="metric-value" id="metric-particles">0</strong><span class="metric-note">每轮 E 4 + 首次响应 1；显示累计</span></div>
             <div class="metric"><span class="metric-label">估算有效能量</span><strong class="metric-value" id="metric-energy">0<small> pt</small></strong><span class="metric-note">可调粒子假设 × 充能，加上 C4 直回能</span></div>
             <div class="metric"><span class="metric-label">轻 / 重范围</span><strong class="metric-value" id="metric-range">0 / 0</strong><span class="metric-note">H 的最低 / 最高位置</span></div>
             <div class="metric"><span class="metric-label">巡衡 / 测区覆盖</span><strong class="metric-value" id="metric-coverage">0<small> s</small></strong><span class="metric-note">本次时间轴的累计有效时长</span></div>
@@ -245,13 +245,13 @@
         c6StrideCooldown: 6,
         calibration: 6,
         c4Calibration: 8,
-        c4Energy: 4,
-        heavyProtection: 15,
+        c4Energy: 8,
+        heavyProtection: 25,
         heavyProtectionDuration: 5,
-        returnProtection: 10,
+        returnProtection: 15,
         returnProtectionDuration: 4,
         companion: .55,
-        c6Companion: .7,
+        c6Companion: .75,
         companionControl: .35,
         c6CompanionControl: .5,
         skillCooldown: 18,
@@ -262,7 +262,7 @@
         heavyResponse: 110,
         normalReturn: 150,
         fullReturn: 190,
-        burstInitial: 309
+        burstInitial: 360
       });
 
       const $ = (selector) => document.querySelector(selector);
@@ -470,12 +470,12 @@
         state.h = 0;
         state.endpoint = null;
         state.stable = 0;
-        state.particles += 3;
+        state.particles += 4;
         state.firstResponseParticle = false;
         state.raw += C.initialSkill;
         state.metrics.skill += 1;
         const aura = applyNoIcd('首次 E', 1);
-        log(`首次施放 E：巡衡开启至 ${formatTime(state.patrolUntil)} s，H 写入 0；首个自动刻度为 ${formatTime(state.nextTick)} s，获得 3 个冰元素微粒，${aura}。`);
+        log(`首次施放 E：巡衡开启至 ${formatTime(state.patrolUntil)} s，H 写入 0；首个自动刻度为 ${formatTime(state.nextTick)} s，获得 4 个冰元素微粒，${aura}。`);
         render();
       }
 
@@ -497,7 +497,9 @@
           return true;
         }
 
-        state.raw += C.fullReturn;
+        const c6FullBoost = isC6() && state.zeroField ? 1.5 : 1;
+        const fullDamage = C.fullReturn * c6FullBoost;
+        state.raw += fullDamage;
         state.metrics.full += 1;
         state.returnProtectionUntil = state.time + C.returnProtectionDuration;
         state.calibrationUntil = state.time + calibrationDuration();
@@ -524,7 +526,7 @@
             c6Text = `；C6 额外位移还需 ${strideWait.toFixed(1)} s`;
           }
         }
-        log(`${source}：H ${signedH(before)} → 0，触发完整归衡 +${C.fullReturn}%；当前场上角色获得 ${C.returnProtection}% 减伤 ${C.returnProtectionDuration} s、校准抗打断 ${calibrationDuration()} s；${aura}${c4Text}${c6Text}。`);
+        log(`${source}：H ${signedH(before)} → 0，触发完整归衡 +${fullDamage.toFixed(0)}%；当前场上角色获得 ${C.returnProtection}% 减伤 ${C.returnProtectionDuration} s、校准抗打断 ${calibrationDuration()} s；${aura}${c4Text}${c6Text}${c6FullBoost > 1 ? '；C6 测区内完整归衡 +50%' : ''}。`);
         return true;
       }
 
