@@ -182,9 +182,17 @@ def build_notes_page(markdown: str) -> str:
   </div>
   <header class="topbar">
     <div class="shell topbar-inner">
-      <div class="brand">NADIA SADOVA / TEXT ARCHIVE</div>
+      <a class="brand" href="index.html" title="回到主页">
+        <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="5.6" fill="none" stroke="currentColor" stroke-width="1.1"/><circle cx="12" cy="12" r="1.7" fill="currentColor"/></svg>
+        <span class="brand-text">NADIA SADOVA / TEXT ARCHIVE</span>
+      </a>
       <nav aria-label="页面导航">
-        <a href="index.html">返回档案</a>
+        <a href="index.html">角色档案</a>
+        <a href="gameplay.html">玩法规格</a>
+        <a href="skills.html">技能表现</a>
+        <a href="postcards.html">收藏卡</a>
+        <a href="character-notes.html" aria-current="page">文字档案</a>
+        <span class="nav-sep" aria-hidden="true"></span>
         <a href="docs/nadia_character_player_edition.md">原文 Markdown</a>
       </nav>
     </div>

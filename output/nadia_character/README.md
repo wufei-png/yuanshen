@@ -12,7 +12,7 @@
 - `pdf/nadia_character_dossier.pdf`：20 页 A5 正式角色档案。
 - `pdf/nadia_postcard_collection_48p.pdf`：24 张收藏卡的正面、背面逐页排布，共 48 页。
 - `docs/nadia_character_player_edition.md`：同内容的 Markdown 原文，可用任意文本编辑器查看。
-- 双击 `character-notes.html`：纯文字版角色档案阅读页，离线渲染，与 Markdown 原文同源。
+- 双击 `character-notes.html`：视觉标准与完整故事的纯文字阅读页，离线渲染，与 Markdown 原文同源；角色档案、双猫、战斗、命座、语音与明信片在页首导航对应页面。
 
 所有网页、图片、样式、音频与视频均为本地资源，解压后无需联网即可查看。请保留目录结构，不要单独移动 HTML 文件。
 
