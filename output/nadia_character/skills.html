@@ -174,6 +174,8 @@
     .ability-card--a { color: var(--gold); }
     .ability-card h3 { color: var(--ink); }
     .ability-card p { color: var(--muted); font-size: 13px; }
+    .passive-item { margin: 12px 0 0; }
+    .passive-item strong { color: #eaf3fb; }
     .copy-rule { margin: 20px 0 0; padding-top: 16px; border-top: 1px solid rgba(155, 232, 255, .12); color: #d9eef8; font-size: 12px; }
     .details-link { display: inline-flex; align-items: center; gap: 5px; margin-top: 16px; color: var(--ice); font-size: 12px; text-decoration: none; }
     .details-link:hover { text-decoration: underline; }
@@ -497,9 +499,11 @@
           <article class="panel ability-card ability-card--a">
             <div class="ability-icon"><svg class="icon icon--large"><use href="#icon-a"></use></svg></div>
             <div class="panel-label">Passive / 固有天赋</div>
-            <h3>误差本身也是记录</h3>
-            <p>从端点完成完整归衡后，轻与重会在短时间内共同稳定战场。</p>
-            <div class="copy-rule">天赋奖励“失衡再回中”，不增加另一条需要持续盯住的资源条。</div>
+            <h3>把稳定写成被动</h3>
+            <p class="passive-item"><strong>外观不可作为量值</strong> — H 停留在同一端点时积累稳定读数，离开端点时清除；不研究归衡也能稳定发挥。</p>
+            <p class="passive-item"><strong>误差本身也是记录</strong> — 完整归衡打开短暂校准窗口，提高当前场上角色的抗打断，不提供直接反应增伤。</p>
+            <p class="passive-item"><strong>雪原札记</strong> — 至冬显示区域特产位置，风雪与极寒中非战斗移动更省力；靠近普通猫时它们不会立刻逃跑。</p>
+            <div class="copy-rule">三项被动都不增加需要额外盯住的资源条；奖励来自你已经做出的路线选择。</div>
           </article>
         </div>
         <div class="state-card-grid" aria-label="两相与归衡的玩家版说明">

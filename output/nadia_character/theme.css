@@ -178,6 +178,8 @@ h3 { font-size: 23px; }
 .ability-card { padding: 24px; }
 .ability-card h3 { margin: 8px 0 10px; }
 .ability-card p { margin: 0; color: #bfd1e5; font-size: 13px; }
+.ability-card a { color: var(--gold); text-decoration: underline; }
+.ability-card a:hover { color: #f7dc9a; }
 
 .story-layout { display: grid; grid-template-columns: .92fr 1.08fr; gap: 18px; }
 .story-image { min-height: 420px; overflow: hidden; }
