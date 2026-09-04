@@ -4,13 +4,22 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="娜蒂娅「两衡之间」横版明信片套组">
+  <meta name="theme-color" content="#071426">
+  <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%23071426"/><circle cx="12" cy="12" r="9" fill="none" stroke="%239be8ff" stroke-width="1.6"/><circle cx="12" cy="12" r="5.6" fill="none" stroke="%239be8ff" stroke-width="1.2"/><circle cx="12" cy="12" r="1.7" fill="%23e6c77c"/></svg>'>
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="娜蒂娅｜两衡之间 · 明信片">
+  <meta property="og:description" content="二十四张横向记录，沿着她、两只猫与一枚衡标，读完一段从异常走向共生的故事。">
+  <meta property="og:image" content="assets/nadia_splash_v4_canonical_refined.png">
   <title>娜蒂娅｜两衡之间 · 明信片</title>
   <link rel="stylesheet" href="theme.css">
+  <script src="ui.js" defer></script>
 </head>
 <body>
   <div class="ambient" aria-hidden="true">
     <div class="ambient-glow ambient-glow--one"></div>
     <div class="ambient-glow ambient-glow--two"></div>
+    <div class="ambient-aurora"></div>
+    <div class="ambient-stars"></div>
     <div class="ambient-snow-drift"><div class="ambient-snow"></div></div>
   </div>
   <header class="topbar">
@@ -35,23 +44,23 @@
 
   <main>
     <section class="shell set-hero">
-      <div class="eyebrow">FIELD RECORD · POSTCARD SET</div>
-      <h1>两衡之间</h1>
-      <p class="lede">二十四张横向记录，沿着她、两只猫与一枚衡标，读完一段从异常走向共生的故事。点击卡片，查看背面的记录。</p>
-      <div class="set-meta">
+      <div class="eyebrow" data-reveal>FIELD RECORD · POSTCARD SET</div>
+      <h1 data-reveal style="transition-delay:90ms">两衡之间</h1>
+      <p class="lede" data-reveal style="transition-delay:180ms">二十四张横向记录，沿着她、两只猫与一枚衡标，读完一段从异常走向共生的故事。点击卡片，查看背面的记录。</p>
+      <div class="set-meta" data-reveal style="transition-delay:270ms">
         <span class="badge gold">24 张 / 记录</span>
         <span class="badge">横向记录</span>
         <span class="badge">正面见景 · 背面见闻</span>
         <span class="badge">两衡仪座</span>
         <span class="badge">原创同人角色</span>
       </div>
-      <div class="set-toolbar">
+      <div class="set-toolbar" data-reveal style="transition-delay:360ms">
         <span>每张卡片都藏着一段记录。点击卡片或按 Enter 翻面。</span>
         <button class="button primary" id="flip-all" type="button">全部翻面</button>
       </div>
     </section>
 
-    <section class="shell postcard-group" id="entry">
+    <section class="shell postcard-group" id="entry" data-reveal>
       <h2>01 / 角色登场</h2>
       <p>从名字与第一眼开始，认识这个总在测量的人。</p>
       <div class="postcard-grid">
@@ -82,7 +91,7 @@
       </div>
     </section>
 
-    <section class="shell postcard-group" id="companions">
+    <section class="shell postcard-group" id="companions" data-reveal>
       <h2>02 / 同行者</h2>
       <p>一只被风托起，一只让薄冰下沉；而她站在它们之间。</p>
       <div class="postcard-grid">
@@ -113,7 +122,7 @@
       </div>
     </section>
 
-    <section class="shell postcard-group" id="combat">
+    <section class="shell postcard-group" id="combat" data-reveal>
       <h2>03 / 战斗方式</h2>
       <p>衡标每偏移一格，雪原就会用另一种方式回应。</p>
       <div class="postcard-grid">
@@ -162,7 +171,7 @@
       </div>
     </section>
 
-    <section class="shell postcard-group" id="story">
+    <section class="shell postcard-group" id="story" data-reveal>
       <h2>04 / 故事与日常</h2>
       <p>从事故留下的裂痕，到她决定如何继续生活。</p>
       <div class="postcard-grid">

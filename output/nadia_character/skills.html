@@ -4,7 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="娜蒂娅「两衡之间」技能表现设计包：玩家版技能说明、静态逐镜动作板与 UI/VFX 语言。">
+  <meta name="theme-color" content="#061225">
+  <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%23071426"/><circle cx="12" cy="12" r="9" fill="none" stroke="%239be8ff" stroke-width="1.6"/><circle cx="12" cy="12" r="5.6" fill="none" stroke="%239be8ff" stroke-width="1.2"/><circle cx="12" cy="12" r="1.7" fill="%23e6c77c"/></svg>'>
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="娜蒂娅｜技能表现设计">
+  <meta property="og:description" content="娜蒂娅「两衡之间」技能表现设计包：玩家版技能说明、静态逐镜动作板与 UI/VFX 语言。">
+  <meta property="og:image" content="assets/nadia_action_v2_anime.png">
   <title>娜蒂娅｜技能表现设计</title>
+  <script src="ui.js" defer></script>
   <style>
     :root {
       --night: #061225;
@@ -267,6 +274,100 @@
     [data-contrast="high"] .state-node, [data-contrast="high"] .language-row, [data-contrast="high"] .ability-card { border-width: 2px; }
     [data-contrast="high"] .shot-media img, [data-contrast="high"] .visual-card img { opacity: 1; }
 
+    /* Shared polish: focus, anchor offset, topbar scroll state */
+    :focus-visible { outline: 2px solid var(--ice); outline-offset: 3px; }
+    [id] { scroll-margin-top: 92px; }
+    .topbar { transition: background .3s ease, box-shadow .3s ease; }
+    .topbar.is-scrolled { background: rgba(4, 15, 31, .96); box-shadow: 0 12px 34px rgba(0, 4, 14, .42); }
+
+    /* Scroll reveal（由 ui.js 在 html 上加 .js 门控） */
+    .js [data-reveal] { opacity: 0; transform: translateY(16px); }
+    .js [data-reveal].is-revealed {
+      opacity: 1;
+      transform: none;
+      transition-property: opacity, transform;
+      transition-duration: .55s, .55s;
+      transition-timing-function: ease, cubic-bezier(.2, .7, .25, 1);
+    }
+
+    /* 返回顶部（由 ui.js 注入） */
+    .to-top {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 40;
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(155, 232, 255, .45);
+      border-radius: 50%;
+      background: rgba(8, 25, 49, .85);
+      color: var(--ice);
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: opacity .25s ease, transform .25s ease, border-color .25s ease;
+    }
+    .to-top.is-visible { opacity: 1; transform: none; pointer-events: auto; }
+    .to-top:hover { border-color: var(--ice); color: #fff; }
+    .to-top svg { width: 20px; height: 20px; }
+
+    /* Aurora + stars（适配本页色板） */
+    .ambient-aurora {
+      position: absolute;
+      top: -24vmax;
+      left: 50%;
+      width: 172vmax;
+      height: 66vmax;
+      transform: translateX(-50%);
+      background:
+        radial-gradient(ellipse at 50% 30%, rgba(122, 198, 240, .16), transparent 52%),
+        radial-gradient(ellipse at 28% 46%, rgba(140, 168, 255, .11), transparent 48%),
+        radial-gradient(ellipse at 74% 40%, rgba(116, 226, 214, .11), transparent 50%);
+      filter: blur(34px);
+      opacity: .75;
+      animation: aurora-drift 34s ease-in-out infinite alternate;
+    }
+    @keyframes aurora-drift {
+      from { transform: translateX(calc(-50% - 4vmax)) rotate(-1deg); }
+      to { transform: translateX(calc(-50% + 4vmax)) rotate(1.2deg); }
+    }
+    .ambient-stars { position: absolute; inset: 0; animation: stars-twinkle 11s ease-in-out infinite alternate; }
+    .ambient-stars::before {
+      content: "";
+      position: absolute;
+      top: 4vh;
+      left: 0;
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      background: transparent;
+      box-shadow:
+        4vw 6vh 0 rgba(216, 240, 255, .9),
+        11vw 18vh 0 rgba(216, 240, 255, .55),
+        18vw 9vh 0 rgba(216, 240, 255, .7),
+        26vw 24vh 0 rgba(216, 240, 255, .45),
+        33vw 12vh 0 rgba(216, 240, 255, .8),
+        41vw 30vh 0 rgba(216, 240, 255, .5),
+        48vw 8vh 0 rgba(216, 240, 255, .65),
+        56vw 21vh 0 rgba(216, 240, 255, .75),
+        63vw 14vh 0 rgba(216, 240, 255, .4),
+        71vw 27vh 0 rgba(216, 240, 255, .6),
+        78vw 7vh 0 rgba(216, 240, 255, .7),
+        86vw 19vh 0 rgba(216, 240, 255, .5),
+        93vw 32vh 0 rgba(216, 240, 255, .65),
+        8vw 40vh 0 rgba(216, 240, 255, .4),
+        24vw 47vh 0 rgba(216, 240, 255, .55),
+        38vw 52vh 0 rgba(216, 240, 255, .35),
+        52vw 42vh 0 rgba(216, 240, 255, .5),
+        66vw 50vh 0 rgba(216, 240, 255, .4),
+        81vw 45vh 0 rgba(216, 240, 255, .55),
+        96vw 55vh 0 rgba(216, 240, 255, .4);
+    }
+    @keyframes stars-twinkle { from { opacity: .55; } to { opacity: 1; } }
+
     /* Ambient motion layer */
     .ambient { position: fixed; inset: 0; z-index: 30; overflow: hidden; pointer-events: none; }
     .ambient-glow { position: absolute; width: 48vmax; height: 48vmax; border-radius: 50%; filter: blur(52px); opacity: .17; will-change: transform; }
@@ -291,6 +392,7 @@
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       .ambient { display: none; }
+      .js [data-reveal] { opacity: 1; transform: none; }
       *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
     }
     @media (max-width: 980px) {
@@ -329,6 +431,8 @@
   <div class="ambient" aria-hidden="true">
     <div class="ambient-glow ambient-glow--one"></div>
     <div class="ambient-glow ambient-glow--two"></div>
+    <div class="ambient-aurora"></div>
+    <div class="ambient-stars"></div>
     <div class="ambient-snow-drift"><div class="ambient-snow"></div></div>
   </div>
   <svg class="visually-hidden" aria-hidden="true" focusable="false">
@@ -396,22 +500,22 @@
   <main>
     <section class="s-shell hero" aria-labelledby="hero-title">
       <div class="hero-copy">
-        <div class="eyebrow">Skill Presentation / H-01</div>
-        <h1 id="hero-title">把失衡<br><em>写成一种方法</em></h1>
-        <p class="hero-quote">反应负责向外选路，战技再次施放与爆发负责主动回中；两只猫的轨迹，最后都要回到她的记录里。</p>
-        <p class="lede">娜蒂娅的技能表现设计包。这里先让玩家看懂动作与选择，再让数值退到完整玩法规格中。</p>
-        <div class="hero-meta" aria-label="页面范围">
+        <div class="eyebrow" data-reveal>Skill Presentation / H-01</div>
+        <h1 id="hero-title" data-reveal style="transition-delay:90ms">把失衡<br><em>写成一种方法</em></h1>
+        <p class="hero-quote" data-reveal style="transition-delay:180ms">反应负责向外选路，战技再次施放与爆发负责主动回中；两只猫的轨迹，最后都要回到她的记录里。</p>
+        <p class="lede" data-reveal style="transition-delay:270ms">娜蒂娅的技能表现设计包。这里先让玩家看懂动作与选择，再让数值退到完整玩法规格中。</p>
+        <div class="hero-meta" data-reveal style="transition-delay:360ms" aria-label="页面范围">
           <span class="chip chip--gold">独立原创同人</span>
           <span class="chip">静态逐镜动作板</span>
           <span class="chip">纯 SVG 图标</span>
           <span class="chip">可离线查看</span>
         </div>
-        <div class="hero-actions">
+        <div class="hero-actions" data-reveal style="transition-delay:450ms">
           <a class="button primary" href="#boards">查看动作板</a>
           <a class="button" href="#abilities">先看技能说明</a>
         </div>
       </div>
-      <div class="hero-art" aria-label="设定层与游戏内层对照">
+      <div class="hero-art" data-reveal style="transition-delay:220ms" aria-label="设定层与游戏内层对照">
         <div class="duality-grid">
           <figure class="visual-card visual-card--anime">
             <img src="assets/nadia_action_v2_anime.png" alt="设定层：娜蒂娅在雪原中展开记录册，两只猫处于不同轨道" fetchpriority="high">
@@ -428,11 +532,11 @@
 
     <section class="section section--tint" id="core" aria-labelledby="core-title">
       <div class="s-shell">
-        <div class="section-head">
+        <div class="section-head" data-reveal>
           <div><div class="eyebrow">01 / Core Read</div><h2 id="core-title">先看懂衡标，再看见冰</h2></div>
           <p>颜色不是唯一编码。方向、符号、轮廓和纹理一起告诉玩家：现在是在向外，还是正在回中。</p>
         </div>
-        <div class="core-grid">
+        <div class="core-grid" data-reveal>
           <article class="panel state-panel">
             <div class="panel-label">H / 状态轨道</div>
             <h3>五格状态，一次明确选择</h3>
@@ -470,11 +574,11 @@
 
     <section class="section" id="abilities" aria-labelledby="abilities-title">
       <div class="s-shell">
-        <div class="section-head">
+        <div class="section-head" data-reveal>
           <div><div class="eyebrow">02 / Player Edition</div><h2 id="abilities-title">技能不是更多按钮</h2></div>
           <p>每个技能只承担一个清晰动作职责：记录、巡衡、归零，或让玩家读出有限的状态收益。</p>
         </div>
-        <div class="ability-grid">
+        <div class="ability-grid" data-reveal>
           <article class="panel ability-card ability-card--na">
             <div class="ability-icon"><svg class="icon icon--large"><use href="#icon-na"></use></svg></div>
             <div class="panel-label">NA / 普通攻击</div>
@@ -506,7 +610,7 @@
             <div class="copy-rule">三项被动都不增加需要额外盯住的资源条；奖励来自你已经做出的路线选择。</div>
           </article>
         </div>
-        <div class="state-card-grid" aria-label="两相与归衡的玩家版说明">
+        <div class="state-card-grid" data-reveal aria-label="两相与归衡的玩家版说明">
           <article class="state-card state-card--light">
             <div class="state-card-head"><svg class="icon"><use href="#icon-light"></use></svg><h3>轻相 / 普莎</h3></div>
             <p>普莎缓缓离地，雪粒反常地向上飘动。它负责牵引与多目标控制；大型敌人主要收到移动限制。</p>
@@ -529,15 +633,15 @@
 
     <section class="section section--tint" id="boards" aria-labelledby="boards-title">
       <div class="s-shell">
-        <div class="section-head">
+        <div class="section-head" data-reveal>
           <div><div class="eyebrow">03 / Storyboards + Motion</div><h2 id="boards-title">每个动作都要有落点</h2></div>
           <p>这是第一批的静态制作板：不替代动画，但把姿态、镜头、猫、命中帧、可取消点、位移和总时长先锁成可讨论的语言。</p>
         </div>
-        <div class="board-intro">
+        <div class="board-intro" data-reveal>
           <div><strong>阅读方式 / FRAME → FEEDBACK → HANDOFF</strong><p>时间是表现目标，不改写玩法规格；命中帧是玩家看到反馈的节点，可取消点是交后台或进入下一拍的节点。BOARD 02–04 同时呈现静态画面与动作试片。</p></div>
           <span class="chip chip--gold">6 sequences · 3 motion clips</span>
         </div>
-        <div class="board-grid">
+        <div class="board-grid" data-reveal>
           <article class="panel shot-sequence">
             <figure class="shot-media"><img src="assets/nadia_action_v2_ingame.png" alt="普攻动作参考：娜蒂娅展开记录册与测量环" loading="lazy"></figure>
             <div class="shot-body">
@@ -654,11 +758,11 @@
 
     <section class="section" id="vfx" aria-labelledby="vfx-title">
       <div class="s-shell">
-        <div class="section-head">
+        <div class="section-head" data-reveal>
           <div><div class="eyebrow">04 / UI + VFX Language</div><h2 id="vfx-title">三种状态，三种方向</h2></div>
           <p>轻端、重端、归衡不依赖色相差异才能成立；缩小、换背景或色弱阅读时，符号与运动方向仍然保留。</p>
         </div>
-        <div class="vfx-layout">
+        <div class="vfx-layout" data-reveal>
           <figure class="panel vfx-reference">
             <img src="assets/nadia_measurement_ring_v2_ingame.png" alt="游戏内测量环与冰蓝读数的视觉参考" loading="lazy">
             <figcaption>游戏内层参考：测量环是功能性视觉锚点，光效围绕读数服务。</figcaption>
@@ -678,7 +782,7 @@
             </article>
           </div>
         </div>
-        <div class="check-strip" aria-label="可读性检查维度">
+        <div class="check-strip" data-reveal aria-label="可读性检查维度">
           <div class="check-item"><strong>缩小</strong><span>24 px 图标仍有外轮廓、方向与符号。</span></div>
           <div class="check-item"><strong>换背景</strong><span>深色与浅色底都保留边框和中心标记。</span></div>
           <div class="check-item"><strong>色弱</strong><span>去除颜色后仍可由 − / 0 / + 与纹理判断。</span></div>
@@ -688,11 +792,11 @@
 
     <section class="section section--tint" id="voice" aria-labelledby="voice-title">
       <div class="s-shell">
-        <div class="voice-head">
+        <div class="voice-head" data-reveal>
           <div><div class="eyebrow">05 / Sound Picture</div><h2 id="voice-title">让声音确认，而不是解释全部</h2></div>
           <p>已有角色语音 · 手动播放 · 不自动加载</p>
         </div>
-        <div class="voice-grid">
+        <div class="voice-grid" data-reveal>
           <article class="panel voice-card">
             <div class="voice-card-head"><div><div class="voice-index">06 / 元素战技</div><h3>开始记录</h3></div><span class="voice-scene">E</span></div>
             <p class="voice-text">“普莎，伊嘉——开始记录。”</p>
@@ -729,11 +833,11 @@
 
     <section class="section" id="handoff" aria-labelledby="handoff-title">
       <div class="s-shell">
-        <div class="section-head">
+        <div class="section-head" data-reveal>
           <div><div class="eyebrow">06 / Handoff</div><h2 id="handoff-title">展示层与调参层分开</h2></div>
           <p>玩家页保持轻量、可读、可离线；开发模拟器单独记录事件、共享间隔与 20 秒循环，不把估算伪装成正式游戏证明。</p>
         </div>
-        <div class="handoff-grid">
+        <div class="handoff-grid" data-reveal>
           <article class="panel handoff-card">
             <div class="panel-label">This package includes</div>
             <h3>这一页负责让人看懂</h3>
