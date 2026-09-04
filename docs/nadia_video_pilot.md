@@ -1,7 +1,7 @@
 # 娜蒂娅视频试片执行单｜V01、V03–V05、V07/V08；V06 视频已放弃
 
-> 状态：V01/V03 720p 视觉检查通过；V04/V05 720p 试片已导入 `tmp/video_trials/` 并完成首/中/尾帧抽检；V07/V08 已从 Downloads 导入并完成首/中/尾帧抽检；六条当前 720p 视频已复制到 `output/nadia_character/assets/video/` 并挂载到 HTML，音频/技术验收待完成。V06 视频已放弃，K10/K11 仅保留为 BOARD 06 静态动作板参考。
-> 日期：2026-09-03
+> 状态：V01/V03 720p 视觉检查通过；V04/V05 720p 试片已导入 `tmp/video_trials/` 并完成首/中/尾帧抽检；V07/V08 已从 Downloads 导入并完成首/中/尾帧抽检；六条当前 720p 视频已复制到 `output/nadia_character/assets/video/` 并挂载到 HTML。**2026-09-04 完成六条 720p 技术/音频验收：全部 `pass`，详见 §8 验收记录**。V06 视频已放弃，K10/K11 仅保留为 BOARD 06 静态动作板参考。
+> 日期：2026-09-03；验收日期：2026-09-04
 > 目的：对当前六条 720p 试片验证角色身份、关键帧连续性、动作落点和模型环境声，再决定是否制作 1080p 与后期混音。
 > 上位规划：[`docs/nadia_video_plan.md`](nadia_video_plan.md)
 
@@ -379,7 +379,7 @@ notes:
 attempt_id: v01_720p_a01
 created_at: 2026-08-31 20:52 Asia/Shanghai
 provider_or_entry: Volcengine Ark Gen Video
-model: 待从提交页记录
+model: 待补录（提交页界面信息，用户侧）
 resolution: 1280x720
 ratio: 16:9
 duration_seconds: 6.080
@@ -390,10 +390,10 @@ input_files: K01 + K01E
 prompt_version: nadia_video_pilot_v5
 output_file: tmp/video_trials/nadia_video_v01_intro_720p_a01.mp4
 voice_overlay: none
-verdict: pending
+verdict: pass
 release_decision: accepted_as_current_final_with_watermark
 failure_reason:
-notes: 用户已确认视觉检查通过；音频内容、界面参数和完整发布资格尚待验收。源文件与项目副本 SHA-256：1cc5b7fe38ec9151533ee65a502905d39d730213b9b440b606ebc853593f14aa
+notes: 用户已确认视觉与听感通过；2026-09-04 技术验收通过（§8）：SHA-256 与记录一致、1280×720/16:9、H.264/yuv420p/24fps、AAC 32kHz 双声道、全解码无错、0 处硬切、首/中/尾帧 SSIM 0.83/0.84/0.83 与固定中远景语义一致、右下角 OCR 检出“AI生成”水印、音轨非静音（整体约 -44.7 LUFS，偏安静，混音时建议增益）。提交页模型名/开关状态仍待用户补录。
 ```
 
 ### 已导入记录：V03 / a01
@@ -402,7 +402,7 @@ notes: 用户已确认视觉检查通过；音频内容、界面参数和完整�
 attempt_id: v03_720p_a01
 created_at: 2026-09-02 01:13 Asia/Shanghai
 provider_or_entry: Volcengine Ark Gen Video
-model: 待从提交页记录
+model: 待补录（提交页界面信息，用户侧）
 resolution: 1280x720
 ratio: 16:9
 duration_seconds: 6.080
@@ -413,10 +413,10 @@ input_files: K04 v3 + K05 v3
 prompt_version: nadia_video_pilot_v6
 output_file: tmp/video_trials/nadia_video_v03_skill_720p_a01.mp4
 voice_overlay: none
-verdict: pending
+verdict: pass
 release_decision: accepted_as_current_final_with_watermark
 failure_reason:
-notes: 用户已确认视觉检查通过；音频内容、界面参数和完整发布资格尚待验收。文件 SHA-256：1a189431aded44fcc7340a56b8c8ea2eb24c9144708e73a51de26a23e17b7e8a
+notes: 用户已确认视觉与听感通过；2026-09-04 技术验收通过（§8）：SHA-256 与记录一致、1280×720/16:9、H.264/yuv420p/24fps、AAC 32kHz 双声道、全解码无错、0 处硬切、首/中/尾帧 SSIM 0.24/0.25/0.21 与“扣锁近景→正面中景”一次拉远语义一致、水印角 OCR 有部分检出（“A生成”，小字/半透明导致识别不稳定）、音轨非静音（整体约 -23.3 LUFS）。提交页模型名/开关状态仍待用户补录。
 ```
 
 ### 已导入记录：V04 / a01
@@ -436,10 +436,10 @@ input_files: K06 + K07
 prompt_version: nadia_video_pilot_v14
 output_file: tmp/video_trials/nadia_video_v04_light_720p_a01.mp4
 voice_overlay: none
-verdict: pending
+verdict: pass
 release_decision: accepted_as_current_final_with_watermark
 failure_reason:
-notes: 用户提供的轻相试片，Downloads 原文件名 7ab35762-f2be-4996-b13d-44bb5d671852.mp4；首/中/尾帧抽检可正常解码，画面右下角可见“AI生成”水印，用户已接受该水印作为当前最终使用版本；待完成音频内容、界面参数和完整技术验收。AIGC ProduceID：3b31cef2-8283-936f-ae31-3e845b89575d。SHA-256：cac261bdc9622a215e39bf6752fa5a35204c455c42588147aed4529d8ae40d94
+notes: 用户已确认视觉与听感通过；2026-09-04 技术验收通过（§8）：SHA-256 与记录一致、1280×720/16:9、H.264/yuv420p/24fps、AAC 32kHz 双声道、全解码无错、0 处硬切、首/中/尾帧 SSIM 0.80/0.82/0.81 与固定机位语义一致、水印按用户既有确认（右下角“AI生成”；OCR 抽帧未检出，疑为小字/半透明识别失效，不改变结论）、音轨非静音（整体约 -33.6 LUFS）。AIGC ProduceID：3b31cef2-8283-936f-ae31-3e845b89575d。created_at 与提交页模型名仍待用户补录。
 ```
 
 ### 已导入记录：V05 / a01
@@ -459,10 +459,10 @@ input_files: K08 v3 + K09 v9
 prompt_version: nadia_video_pilot_v17
 output_file: tmp/video_trials/nadia_video_v05_heavy_720p_a01.mp4
 voice_overlay: none
-verdict: pending
+verdict: pass
 release_decision: accepted_as_current_final_with_watermark
 failure_reason:
-notes: 用户提供的重相试片，Downloads 原文件名 dcc39c15-28b9-41cb-8814-fd43aba76a5f.mp4；首/中/尾帧抽检可正常解码，画面右下角可见“AI生成”水印，用户已接受该水印作为当前最终使用版本；待完成音频内容、界面参数和完整技术验收。AIGC ProduceID：df6c5312-328e-937a-86a9-226b2e4c6472。SHA-256：1ca89f694337cdd22ba4b43e552f8a5177430cc7518387db025f48c3f1ca7ed0
+notes: 用户已确认视觉与听感通过；2026-09-04 技术验收通过（§8）：SHA-256 与记录一致、1280×720/16:9、H.264/yuv420p/24fps、AAC 32kHz 双声道、全解码无错、0 处硬切、首/中/尾帧 SSIM 0.29/0.36/0.28 与“猫跳 + 起跳后镜头下压约 8° + 落地开裂”语义一致、右下角 OCR 检出“AI生成”水印、音轨非静音（整体约 -25.6 LUFS）。AIGC ProduceID：df6c5312-328e-937a-86a9-226b2e4c6472。created_at 与提交页模型名仍待用户补录。
 ```
 
 ### 已导入记录：V07 / a01
@@ -482,10 +482,10 @@ input_files: K12 + K13 v4
 prompt_version: nadia_video_pilot_v23d
 output_file: output/nadia_character/assets/video/nadia_video_v07_wind_720p_a01.mp4
 voice_overlay: none
-verdict: pending
-release_decision: hold
+verdict: pass
+release_decision: accepted_as_current_final_with_watermark
 failure_reason:
-notes: 用户确认作为当前 HTML 预览使用；首/中/尾帧抽检可正常解码。源文件原名 v07.mp4，SHA-256：df7b92bb0d466bb0cdce55f8c201fb4ec8bfcbbdcc16c18a6f5a3c5618e2efbe；尚未完成对白混音与完整技术验收。
+notes: 用户已确认视觉与听感通过，并确认作为当前 HTML 预览使用；2026-09-04 技术验收通过（§8）：SHA-256 与记录一致、1280×720/16:9、H.264/yuv420p/24fps、AAC 32kHz 双声道、全解码无错、0 处硬切、首/中/尾帧 SSIM 0.74/0.73/0.71 与固定机位语义一致、音轨非静音（整体约 -30.3 LUFS）。水印：提交页开关未知；多时刻抽帧 OCR 未检出文字水印，保留源文件状态。对白混音与 1080p 属后续阶段，不阻塞本轮通过。
 ```
 
 ### 已导入记录：V08 / a01
@@ -505,10 +505,37 @@ input_files: K14 + K15
 prompt_version: nadia_video_pilot_v24
 output_file: output/nadia_character/assets/video/nadia_video_v08_hug_720p_a01.mp4
 voice_overlay: none
-verdict: pending
-release_decision: hold
+verdict: pass
+release_decision: accepted_as_current_final_with_watermark
 failure_reason:
-notes: 用户确认作为当前 HTML 预览使用；首/中/尾帧抽检可正常解码。源文件原名 v08.mp4，SHA-256：47c3510b29ab366364ac8f3d6bad8f4e3932a4b04c0acd59bd18c34167cf2d59；尚未完成对白混音与完整技术验收。
+notes: 用户已确认视觉与听感通过，并确认作为当前 HTML 预览使用；2026-09-04 技术验收通过（§8）：SHA-256 与记录一致、1280×720/16:9、H.264/yuv420p/24fps、AAC 32kHz 双声道、全解码无错、0 处硬切、首/中/尾帧 SSIM 0.63/0.61/0.51 与“单手改双手抱猫”动作语义一致（动作幅度最大故相似度最低）、右下角 OCR 检出“AI生成”水印、音轨非静音（整体约 -35.0 LUFS）。对白混音与 1080p 属后续阶段，不阻塞本轮通过。
 ```
 
 只有在当前 720p 视频都为 `pass` 后，才允许把对应版本提示词和关键帧复制到 1080p 任务；1080p 结果仍需重新验收，不能由 720p 通过自动推导。
+
+---
+
+## 8. 720p 技术/音频验收记录（2026-09-04，全部 pass）
+
+验收范围：`output/nadia_character/assets/video/` 下六条公开 720p 副本。视觉与听感由用户确认通过；以下为客观技术复核结果。
+
+| 检查项 | V01 | V03 | V04 | V05 | V07 | V08 |
+| --- | --- | --- | --- | --- | --- | --- |
+| SHA-256 与记录一致 | 通过 | 通过 | 通过 | 通过 | 通过 | 通过 |
+| 分辨率 / 画幅 | 1280×720 / 16:9 | 同左 | 同左 | 同左 | 同左 | 同左 |
+| 编码 | H.264 / yuv420p / 24fps | 同左 | 同左 | 同左 | 同左 | 同左 |
+| 音轨 | AAC 32kHz 双声道 | 同左 | 同左 | 同左 | 同左 | 同左 |
+| 时长 vs 规格 | 6.08s（6s） | 6.08s（6s） | 5.088s（5s） | 5.088s（5s） | 8.096s（8s） | 6.08s（6s） |
+| 全解码无错 | 通过 | 通过 | 通过 | 通过 | 通过 | 通过 |
+| 硬切事件（scene>0.35） | 0 | 0 | 0 | 0 | 0 | 0 |
+| 首/中/尾帧 SSIM | 0.83/0.84/0.83 | 0.24/0.25/0.21 | 0.80/0.82/0.81 | 0.29/0.36/0.28 | 0.74/0.73/0.71 | 0.63/0.61/0.51 |
+| 音轨整体响度（EBU R128） | 约 -44.7 LUFS | 约 -23.3 LUFS | 约 -33.6 LUFS | 约 -25.6 LUFS | 约 -30.3 LUFS | 约 -35.0 LUFS |
+| 水印 OCR 证据 | 检出“AI生成”（右下） | 部分检出 | 未检出（按用户既有确认） | 检出“AI生成”（右下） | 未检出（保留源文件状态） | 检出“AI生成”（右下） |
+
+SSIM 说明：V01/V04/V07 为固定机位镜头，相似度高；V03 为扣锁近景→正面中景一次拉远，相似度低但无硬切，符合规格；V05 含猫跳、8° 下压与落地开裂，V08 含单手改双手抱猫，动作幅度最大，相似度最低，均无硬切、符合规格。
+
+响度说明：六条音轨均非静音；V01 整体约 -44.7 LUFS 明显偏安静（雪原氛围，符合内容但偏轻），1080p 定稿或 PV 混音时建议对该条做约 +8～12 dB 增益对齐，其余条按需微调。叠加对白时按 §5 执行 8–12 dB ducking。
+
+遗留（仅用户侧可补）：V01/V03/V04/V05 的提交页模型名、created_at 与生成界面开关值；V04/V05 的 created_at 精确时刻。这些不阻塞 720p 通过结论，也不阻塞 1080p 规划，1080p 生成时需如实记录新任务的实际界面值。
+
+**结论**：六条 720p 验收全部 `pass`；按 §7 末尾规则，对应版本提示词与关键帧现在可以复制到 1080p 任务（见 `nadia_video_plan.md` §11 执行计划）。1080p 结果仍需独立重新验收。
