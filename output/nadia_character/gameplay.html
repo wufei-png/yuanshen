@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="娜蒂娅「衡标 H」完整玩法规格与第一版数值规划">
+  <meta name="description" content="娜蒂娅「衡标 H」完整玩法规格与第二版数值规划">
   <title>娜蒂娅｜衡标 H · 玩法规格</title>
   <link rel="stylesheet" href="theme.css">
   <style>
@@ -86,7 +86,7 @@
         </div>
         <div class="spec-grid">
           <article class="panel spec-card"><div class="panel-label">INPUT / 状态输入</div><h3>向外与回中</h3><ul><li>Stellar Swirl：共享 GCD 就绪时 H -1，触发普莎主响应。</li><li>Stellar-Conduct：共享 GCD 就绪时 H +1，触发伊嘉主响应。</li><li>GCD 内反应照常结算，但不触发猫响应或移动 H。</li><li>E 再施放：非零 H 直接回到 0。</li><li>Q：先结算归衡；仅巡衡存在时建立零点测区。</li></ul></article>
-          <article class="panel spec-card"><div class="panel-label">RETURN / 归衡等级</div><h3>普通归衡与完整归衡</h3><p><strong>普通归衡：</strong>只到达 -1 或 +1 后回中，提供短暂聚拢与迟滞。</p><p><strong>完整归衡：</strong>曾到达 -2 或 +2 后回中，同时施加轻、重端部分控制，并使当前场上角色获得 10% 减伤，持续 4 秒。</p><p>完整归衡打开 6 秒校准窗口：当前场上角色受到的削韧降低 50%。校准不提供 Stellar 反应伤害增幅；它与重端 15% 减伤取较高值、不叠加。</p></article>
+          <article class="panel spec-card"><div class="panel-label">RETURN / 归衡等级</div><h3>普通归衡与完整归衡</h3><p><strong>普通归衡：</strong>只到达 -1 或 +1 后回中，提供短暂聚拢与迟滞。</p><p><strong>完整归衡：</strong>曾到达 -2 或 +2 后回中，同时施加轻、重端部分控制，并使当前场上角色获得 10% 减伤，持续 4 秒。</p><p>完整归衡打开 6 秒校准窗口：当前场上角色受到的削韧降低 50%。校准窗口不提供 Stellar 反应伤害增幅；完整归衡的 10% 减伤与重端护持的 15% 减伤取较高值、不叠加。</p></article>
         </div>
       </div>
     </section>
@@ -126,7 +126,7 @@
       <div class="shell">
         <div class="section-head"><div><div class="eyebrow">03 / APPLICATION & ICD</div><h2>元素附着与触发边界</h2></div><p>双猫协同共享规则，避免一帧内重复移动 H 或制造不可读的反应循环。</p></div>
         <div class="spec-table-wrap"><table class="spec-table"><thead><tr><th>来源</th><th>附着量</th><th>ICD / 限制</th></tr></thead><tbody>
-          <tr><td>战技初次施放</td><td>1U 冰</td><td>无 ICD</td></tr><tr><td>巡衡刻度</td><td>1U 冰</td><td>每个目标独立 2.5 秒时间 ICD；不使用 3 次命中判定</td></tr><tr><td>普莎 / 伊嘉主响应</td><td>1U 冰</td><td>每个目标独立 2.5 秒时间 ICD；H 另受共享 2.5 秒路线 GCD</td></tr><tr><td>普通 / 完整归衡</td><td>1U 冰</td><td>无 ICD；受 4 秒归衡间隔限制</td></tr><tr><td>爆发初始</td><td>2U 冰</td><td>无 ICD</td></tr><tr><td>爆发伴随响应</td><td>0U</td><td>不附着、不移动 H、不生成微粒</td></tr>
+          <tr><td>战技初次施放</td><td>1U 冰</td><td>无 ICD</td></tr><tr><td>巡衡刻度</td><td>1U 冰</td><td>每个目标独立 2.5 秒时间 ICD；不使用 3 次命中判定</td></tr><tr><td>普莎 / 伊嘉主响应</td><td>1U 冰</td><td>每个目标独立 2.5 秒时间 ICD；H 另受共享 2.5 秒路线 GCD</td></tr><tr><td>普通 / 完整归衡</td><td>1U 冰</td><td>无 ICD；受 4 秒归衡间隔限制</td></tr><tr><td>爆发初始</td><td>2U 冰</td><td>无 ICD</td></tr><tr><td>爆发伴随响应</td><td>不附着</td><td>不移动 H、不生成微粒</td></tr>
         </tbody></table></div>
       </div>
     </section>
@@ -160,6 +160,6 @@
     </section>
   </main>
 
-  <footer><div class="shell footer-line"><span>娜蒂娅「两衡之间」/ ORIGINAL FAN CHARACTER</span><span>玩法数值 v1 · 非官方数据</span></div></footer>
+  <footer><div class="shell footer-line"><span>娜蒂娅「两衡之间」/ ORIGINAL FAN CHARACTER</span><span>玩法数值 v2 · 非官方数据</span></div></footer>
 </body>
 </html>
