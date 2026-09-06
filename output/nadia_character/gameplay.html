@@ -83,7 +83,7 @@
         <div class="eyebrow" data-reveal>CRYO CATALYST · OFF-FIELD CONTROL</div>
         <h1 id="game-title" data-reveal style="transition-delay:90ms">衡标 H</h1>
         <p class="hero-subtitle" data-reveal style="transition-delay:180ms">失衡不是终点，而是一条可以主动返回的路线。</p>
-        <p class="hero-quote" data-reveal style="transition-delay:270ms">反应负责向外选路，战技再次施放与爆发负责主动回中；重端护持与完整归衡让危险局面重新稳定。</p>
+        <p class="hero-quote" data-reveal style="transition-delay:270ms">Stellar 原生反应先按自身规则结算，再向外选路；战技再次施放与爆发负责主动回中，重端护持与完整归衡让危险局面重新稳定。</p>
         <div class="badges" data-reveal style="transition-delay:360ms" aria-label="玩法标签">
           <span class="badge gold">★★★★★</span><span class="badge">后台冰协同</span><span class="badge">轻端聚拢</span><span class="badge">重端护持</span><span class="badge">主动归衡</span>
         </div>
@@ -94,13 +94,13 @@
 
     <section class="section alt" id="state">
       <div class="shell">
-        <div class="section-head" data-reveal><div><div class="eyebrow">01 / STATE MACHINE</div><h2>五格状态，一次明确选择</h2></div><p>基础协同不依赖反应；反应只改变路线，归衡由玩家主动决定。</p></div>
+        <div class="section-head" data-reveal><div><div class="eyebrow">01 / STATE MACHINE</div><h2>五格状态，一次明确选择</h2></div><p>基础协同不依赖反应；Stellar 原生反应照常结算，H 只记录路线，归衡由玩家主动决定。</p></div>
         <div class="state-lineup" data-reveal aria-label="衡标五格状态">
           <div class="state-node"><strong>-2</strong>轻端</div><div class="state-node"><strong>-1</strong>轻偏</div><div class="state-node center"><strong>0</strong>归衡</div><div class="state-node"><strong>+1</strong>重偏</div><div class="state-node"><strong>+2</strong>重端</div>
         </div>
         <div class="spec-grid" data-reveal>
-          <article class="panel spec-card"><div class="panel-label">INPUT / 状态输入</div><h3>向外与回中</h3><ul><li>Stellar Swirl：共享 GCD 就绪时 H -1，触发普莎主响应。</li><li>Stellar-Conduct：共享 GCD 就绪时 H +1，触发伊嘉主响应。</li><li>GCD 内反应照常结算，但不触发猫响应或移动 H。</li><li>E 再施放：非零 H 直接回到 0。</li><li>Q：先结算归衡；仅巡衡存在时建立零点测区。</li></ul></article>
-          <article class="panel spec-card"><div class="panel-label">RETURN / 归衡等级</div><h3>普通归衡与完整归衡</h3><p><strong>普通归衡：</strong>只到达 -1 或 +1 后回中，提供短暂聚拢与迟滞。</p><p><strong>完整归衡：</strong>曾到达 -2 或 +2 后回中，同时施加轻、重端部分控制，并使当前场上角色获得 15% 减伤，持续 4 秒。</p><p>完整归衡打开 6 秒校准窗口：当前场上角色受到的削韧降低 50%。校准窗口不提供 Stellar 反应伤害增幅；完整归衡的 15% 减伤与重端护持的 25% 减伤取较高值、不叠加。</p></article>
+          <article class="panel spec-card"><div class="panel-label">INPUT / 状态输入</div><h3>向外与回中</h3><ul><li>Stellar Swirl：先按原生规则结算，再在共享 GCD 就绪时使 H -1，触发普莎主响应。</li><li>Stellar-Conduct：先按原生规则结算，再在共享 GCD 就绪时使 H +1，触发伊嘉主响应。</li><li>GCD 内原生反应照常结算，但不触发猫响应或移动 H；同一反应多目标也最多移动一格。</li><li>E 再施放：非零 H 直接回到 0。</li><li>Q：先结算归衡；仅巡衡存在时建立零点测区。</li></ul></article>
+          <article class="panel spec-card"><div class="panel-label">RETURN / 归衡等级</div><h3>普通归衡与完整归衡</h3><p><strong>普通归衡：</strong>只到达 -1 或 +1 后回中，提供短暂聚拢与迟滞。</p><p><strong>完整归衡：</strong>曾到达 -2 或 +2 后回中，同时施加轻、重端部分控制，并打开校准抗打断窗口。</p><p>完整归衡不提供独立减伤；重端护持保留为到达 +2 时当前场上角色获得 25% 减伤，持续 5 秒。校准窗口不提供 Stellar 反应伤害增幅。</p></article>
         </div>
       </div>
     </section>
@@ -110,8 +110,8 @@
         <div class="section-head" data-reveal><div><div class="eyebrow">02 / SKILLS & NUMBERS</div><h2>完整可推演的第二版参数</h2></div><p>以下均为内部平衡目标，不代表已通过实机或服务器环境验证。</p></div>
         <div class="spec-grid three" data-reveal>
           <article class="panel spec-card"><div class="panel-label">LEVEL 90 / 基础属性</div><h3>辅助向底盘</h3><ul><li>生命值：12,858</li><li>攻击力：223</li><li>防御力：743</li><li>突破：元素充能效率 32.0%</li></ul></article>
-          <article class="panel spec-card"><div class="panel-label">E / 双相巡衡</div><h3>18 秒后台协同</h3><ul><li>冷却：18 秒</li><li>巡衡刻度：首个 1.5 秒，之后每 2 秒自动结算</li><li>猫响应共享固定 GCD：2.5 秒</li><li>再施放间隔：6 秒</li><li>微粒：首次 4 + 首次猫响应 1</li></ul></article>
-          <article class="panel spec-card"><div class="panel-label">Q / 雪原校准</div><h3>先回中，再让两端协同</h3><ul><li>持续：至多 12 秒，随巡衡结束</li><li>UI：显示实际剩余时间</li><li>冷却：15 秒</li><li>能量：50</li><li>不重置既有刻度；之后间隔为 1.5 秒</li><li>伴随响应：主响应的 55%</li></ul></article>
+          <article class="panel spec-card"><div class="panel-label">E / 双相巡衡</div><h3>18 秒后台协同</h3><ul><li>冷却：18 秒</li><li>固定时间轴：首个 1.5 秒，之后每 2 秒；零点测区内每 1.5 秒</li><li>最近一次有效命中只用于锁定目标；无有效目标时跳过且不暂停时间轴</li><li>猫响应共享固定 GCD：2.5 秒</li><li>再施放间隔：6 秒</li><li>微粒：首次 4 + 首次猫响应 1</li></ul></article>
+          <article class="panel spec-card"><div class="panel-label">Q / 雪原校准</div><h3>先回中，再让两端协同</h3><ul><li>持续：至多 12 秒，随巡衡结束</li><li>UI：显示实际剩余时间</li><li>冷却：15 秒</li><li>能量：50</li><li>不重置既有刻度；测区内后续间隔为 1.5 秒</li><li>伴随响应：对应主响应 ×55% 的普通冰伤</li></ul></article>
         </div>
         <div class="spec-table-wrap" style="margin-top:18px" data-reveal>
           <table class="spec-table">
@@ -129,7 +129,7 @@
         <div class="spec-table-wrap" style="margin-top:18px" data-reveal>
           <table class="spec-table">
             <thead><tr><th>Q 倍率</th><th>1 级</th><th>6 级</th><th>10 级</th><th>13 级</th></tr></thead>
-            <tbody><tr><td>初始伤害</td><td>242%</td><td>306%</td><td>360%</td><td>405%</td></tr><tr><td>伴随响应</td><td>55%</td><td>55%</td><td>55%</td><td>55%</td></tr></tbody>
+            <tbody><tr><td>初始伤害</td><td>242%</td><td>306%</td><td>360%</td><td>405%</td></tr><tr><td>伴随响应</td><td>主响应 ×55%</td><td>主响应 ×55%</td><td>主响应 ×55%</td><td>主响应 ×55%</td></tr></tbody>
           </table>
         </div>
         <details><summary>普通攻击 10 级倍率</summary><p>一段 53.4%，二段 48.8%，三段 61.7%，四段 78.2%；重击 156.4%，消耗 50 点体力；下坠期间 112.3%，低空 / 高空冲击 224.6% / 280.6%。普通攻击不是核心输出轴。</p></details>
@@ -142,6 +142,7 @@
         <div class="spec-table-wrap" data-reveal><table class="spec-table"><thead><tr><th>来源</th><th>附着量</th><th>ICD / 限制</th></tr></thead><tbody>
           <tr><td>战技初次施放</td><td>1U 冰</td><td>无 ICD</td></tr><tr><td>巡衡刻度</td><td>1U 冰</td><td>每个目标独立 2.5 秒时间 ICD；不使用 3 次命中判定</td></tr><tr><td>普莎 / 伊嘉主响应</td><td>1U 冰</td><td>每个目标独立 2.5 秒时间 ICD；H 另受共享 2.5 秒路线 GCD</td></tr><tr><td>普通 / 完整归衡</td><td>1U 冰</td><td>无 ICD；受 4 秒归衡间隔限制</td></tr><tr><td>爆发初始</td><td>2U 冰</td><td>无 ICD</td></tr><tr><td>爆发伴随响应</td><td>不附着</td><td>不移动 H、不生成微粒</td></tr>
         </tbody></table></div>
+        <p class="micro" data-reveal>娜蒂娅自己的巡衡刻度、主响应与伴随响应均按普通冰元素伤害处理；Stellar 原生反应自身的场地、伤害、能量与 Radiance 结算不计入下方娜蒂娅原始倍率预算。</p>
       </div>
     </section>
 
@@ -168,7 +169,7 @@
     <section class="section" id="validation">
       <div class="shell">
         <div class="section-head" data-reveal><div><div class="eyebrow">06 / VALIDATION BOUNDARY</div><h2>这是设计目标，不是实机证明</h2></div><p>后续需在单体、群怪、首领、低帧率与高延迟环境分别验证。</p></div>
-        <div class="boundary" data-reveal><strong>20 秒预算：</strong>只放 E 的基础下限为 659% 攻击力；自动时间轴的 C0 抽象单体预设为轻端 2,189%、重端 2,312%、双路线 2,210.5%。完整归衡的伤害只略高于普通归衡，收益优先来自控制、防护与抗打断。这些是内部原始倍率检查，不是实机证明；仍需测试零点测区与巡衡绑定、2.5 秒路线 GCD、时间 ICD、减伤取高值、充能循环与 C6 的 6 秒额外位移节流。</div>
+        <div class="boundary" data-reveal><strong>20 秒预算：</strong>只放 E 的基础下限为 659% 攻击力；自动时间轴的 C0 抽象单体预设为轻端 2,240%、重端 2,363%、双路线 2,261.5%。伴随响应按对应主响应 ×55% 计算，零点测区结束瞬间不补发刻度；完整归衡的伤害只略高于普通归衡，收益优先来自控制、重端护持与抗打断。这些是内部原始倍率检查，不是实机证明；仍需测试零点测区与巡衡绑定、2.5 秒路线 GCD、时间 ICD、充能循环与 C6 的 6 秒额外位移节流。</div>
         <p class="source-note">本页是独立数值型玩法规格；角色档案与明信片只承担核心设计与纪念表达。</p>
       </div>
     </section>

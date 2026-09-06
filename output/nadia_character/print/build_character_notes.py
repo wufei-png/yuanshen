@@ -171,13 +171,22 @@ def build_notes_page(markdown: str) -> str:
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="娜蒂娅「两衡之间」纯文字版角色档案">
+  <meta name="theme-color" content="#071426">
+  <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%23071426"/><circle cx="12" cy="12" r="9" fill="none" stroke="%239be8ff" stroke-width="1.6"/><circle cx="12" cy="12" r="5.6" fill="none" stroke="%239be8ff" stroke-width="1.2"/><circle cx="12" cy="12" r="1.7" fill="%23e6c77c"/></svg>'>
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="娜蒂娅｜两衡之间 · 文字档案">
+  <meta property="og:description" content="娜蒂娅「两衡之间」纯文字版角色档案：视觉标准与完整故事「第三条曲线」。">
+  <meta property="og:image" content="assets/nadia_splash_v4_canonical_refined.png">
   <title>娜蒂娅｜两衡之间 · 文字档案</title>
   <link rel="stylesheet" href="theme.css">
+  <script src="ui.js" defer></script>
 </head>
 <body>
   <div class="ambient" aria-hidden="true">
     <div class="ambient-glow ambient-glow--one"></div>
     <div class="ambient-glow ambient-glow--two"></div>
+    <div class="ambient-aurora"></div>
+    <div class="ambient-stars"></div>
     <div class="ambient-snow-drift"><div class="ambient-snow"></div></div>
   </div>
   <header class="topbar">
@@ -212,6 +221,9 @@ def build_notes_page(markdown: str) -> str:
       <span>文字档案 · 由角色设定文档生成</span>
     </div>
   </footer>
+  <script>
+    document.querySelectorAll('.notes-shell > h1, .notes-shell > h2, .notes-shell > h3, .notes-shell > p, .notes-shell > blockquote, .notes-shell > hr').forEach((el) => el.setAttribute('data-reveal', ''));
+  </script>
 </body>
 </html>
 """

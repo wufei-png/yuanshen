@@ -272,7 +272,7 @@ def page_mechanic(c: canvas.Canvas) -> None:
         c.setFont("NadiaCJK", 8)
         c.drawCentredString(x + cell_w / 2, y - 36, value)
     draw_card(c, MARGIN, 70, PAGE_W - MARGIN * 2, 103, fill=WARM, stroke=HexColor("#E2CFB2"))
-    draw_text(c, "战技启动时 H = 0。Stellar Swirl 向轻端移动，Stellar-Conduct 向重端移动；再次施放战技或施放爆发都能主动回中。只到达 ±1 是普通归衡，曾到达 ±2 后回中才是完整归衡。", MARGIN + 16, 143, PAGE_W - MARGIN * 2 - 32, size=8.3, leading=13.4, color=INK)
+    draw_text(c, "战技启动时 H = 0。Stellar Swirl 与 Stellar-Conduct 先按原生规则结算，再让 H 向轻端或重端移动；再次施放战技或施放爆发都能主动回中。只到达 ±1 是普通归衡，曾到达 ±2 后回中才是完整归衡。", MARGIN + 16, 143, PAGE_W - MARGIN * 2 - 32, size=8.3, leading=13.4, color=INK)
     finish_page(c, 9, "衡标")
 
 
@@ -297,7 +297,7 @@ def page_phase(c: canvas.Canvas, page_no: int, index: str, title: str, subtitle:
 
 def page_skill(c: canvas.Canvas) -> None:
     start_page(c)
-    y = draw_section_header(c, PAGE_H, "12 / ELEMENTAL SKILL", "双相巡衡", "记录册一开，冰元素协同就已经开始；反应负责选择路线。")
+    y = draw_section_header(c, PAGE_H, "12 / ELEMENTAL SKILL", "双相巡衡", "记录册一开，冰元素协同就已经开始；Stellar 原生反应照常结算并选择路线。")
     c.saveState()
     clip = c.beginPath()
     clip.roundRect(MARGIN, y - 224, PAGE_W - MARGIN * 2, 214, 8)

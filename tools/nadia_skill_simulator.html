@@ -120,17 +120,17 @@
         <h1>衡标状态机推演器</h1>
         <span class="badge">开发用 · 不进入公开分享包</span>
       </div>
-      <p class="header-note">用于检查 H 的移动、端点记录、主动归衡、零点测区与 20 秒循环。它不是实际游戏客户端、服务器逻辑、敌人抗性或现场性能证明。</p>
+      <p class="header-note">用于检查 H 的移动、端点记录、主动归衡、零点测区与 20 秒循环。Stellar 原生反应的场地、伤害、能量与 Radiance 不在此工具中重演；它不是实际游戏客户端、服务器逻辑、敌人抗性或现场性能证明。</p>
     </div>
   </header>
 
   <main class="wrap">
-    <div class="notice"><strong>证据边界：</strong>状态机和技能常数来自 `docs/nadia_gameplay_system.md`；粒子换算、目标充能和原始倍率只用于透明的开发推演，任何可调假设都单独标注，不写回玩家版页面。</div>
+    <div class="notice"><strong>证据边界：</strong>状态机和技能常数来自 `docs/nadia_gameplay_system.md`；Stellar 原生反应的场地、伤害、能量与 Radiance 不在此工具中重演，粒子换算、目标充能和原始倍率只用于透明的开发推演，任何可调假设都单独标注，不写回玩家版页面。</div>
     <div class="workbench">
       <aside class="panel controls" aria-label="模拟控制">
         <div class="panel-label">Controls / 输入</div>
         <h2>自动时间轴</h2>
-        <p>按动作顺序输入事件；巡衡刻度由时间轴自动结算。共享 GCD 拒绝的反应会保留在日志中。</p>
+        <p>按动作顺序输入事件；巡衡刻度由固定时间轴自动结算。共享 GCD 拒绝的原生反应会保留在日志中，H 只记录当前场上角色的路线输入。</p>
         <div class="field">
           <label for="step-size">单次推进时间（秒）</label>
           <input id="step-size" type="number" min="0.1" max="10" step="0.1" value="0.5">
@@ -146,6 +146,7 @@
         </div>
         <label class="checkbox-line"><input id="c4-toggle" type="checkbox"> 使用 C4+：校准 8 秒；完整归衡每 6 秒恢复 8 能量</label>
         <label class="checkbox-line"><input id="c6-toggle" type="checkbox"> 使用 C6（含 C4）：归衡校读 3 秒、伴随 75% / 控制 50%、测区完整归衡 +50%、额外位移每 6 秒一次</label>
+        <label class="checkbox-line"><input id="target-valid-toggle" type="checkbox" checked> 抽象目标有效；取消后巡衡刻度只记录跳过，不暂停时间轴</label>
         <div class="button-grid">
           <button class="primary" data-action="skill">首次 E / 再次 E</button>
           <button data-action="light">Stellar Swirl</button>
@@ -194,7 +195,7 @@
             <div class="metric"><span class="metric-label">轻 / 重范围</span><strong class="metric-value" id="metric-range">0 / 0</strong><span class="metric-note">H 的最低 / 最高位置</span></div>
             <div class="metric"><span class="metric-label">巡衡 / 测区覆盖</span><strong class="metric-value" id="metric-coverage">0<small> s</small></strong><span class="metric-note">本次时间轴的累计有效时长</span></div>
             <div class="metric"><span class="metric-label">时间 ICD</span><strong class="metric-value" id="metric-applications">0</strong><span class="metric-note" id="metric-icd">成功附着 0 · 时间 ICD 拒绝 0</span></div>
-            <div class="metric"><span class="metric-label">当前防护</span><strong class="metric-value" id="metric-protection">无</strong><span class="metric-note" id="metric-protection-detail">重端护持与归衡减伤取较高值</span></div>
+            <div class="metric"><span class="metric-label">当前防护</span><strong class="metric-value" id="metric-protection">无</strong><span class="metric-note" id="metric-protection-detail">仅重端护持提供减伤；归衡提供校准抗打断</span></div>
           </div>
         </div>
 
@@ -211,11 +212,11 @@
         <h2>这里检查什么</h2>
         <ul>
           <li>H 只在 −2 至 +2 之间移动；同端溢出被夹紧。</li>
-          <li>两只猫共享固定 2.5 秒路线 GCD；GCD 内反应照常结算，但不触发猫响应或移动 H。</li>
-          <li>巡衡刻度首次在 1.5 秒自动结算，基础每 2 秒；Q 不重置既有时钟，之后才改为 1.5 秒。</li>
+          <li>两只猫共享固定 2.5 秒路线 GCD；GCD 内的原生反应照常结算，但不触发猫响应或移动 H；多目标也最多移动一格。</li>
+          <li>巡衡刻度首次在 1.5 秒自动结算，基础每 2 秒；Q 不重置既有时钟，测区内改为 1.5 秒，结束时按基础节拍继续。</li>
           <li>H 为 0 的再次施放不伪造归衡收益，也不重置自动刻度；Q 仅在巡衡存在时建立至多 12 秒且随巡衡结束的测区。</li>
-          <li>巡衡刻度与主响应采用独立的每目标时间 ICD；伴随响应不移动 H、不附着元素、不生成微粒。</li>
-          <li>重端护持 15% / 5 秒、完整归衡 10% / 4 秒取较高值；校准只提供抗打断。</li>
+          <li>巡衡刻度与主响应采用独立的每目标时间 ICD；猫响应是普通冰伤，伴随响应按主响应 ×55%，不移动 H、不附着元素、不生成微粒。</li>
+          <li>重端护持 25% / 5 秒；完整归衡不提供减伤，只打开校准抗打断；本工具不改写原生 Stellar 场地与伤害。</li>
         </ul>
       </article>
       <article class="panel">
@@ -248,8 +249,6 @@
         c4Energy: 8,
         heavyProtection: 25,
         heavyProtectionDuration: 5,
-        returnProtection: 15,
-        returnProtectionDuration: 4,
         companion: .55,
         c6Companion: .75,
         companionControl: .35,
@@ -302,7 +301,6 @@
         lastResponseApplication: -Infinity,
         calibrationUntil: 0,
         heavyProtectionUntil: 0,
-        returnProtectionUntil: 0,
         lastC4Energy: -Infinity,
         lastC6Stride: -Infinity,
         particles: 0,
@@ -380,6 +378,9 @@
         if (state.zeroField && state.time >= state.zeroUntil - EPSILON) {
           state.zeroField = false;
           state.c6BoostNextRoute = false;
+          if (state.patrol) {
+            state.nextTick = Math.max(state.nextTick, state.time + C.patrolTickInterval);
+          }
           if (writeLog) log('零点测区结束：回到常规巡衡节拍。', 'state');
         }
       }
@@ -403,21 +404,22 @@
 
       function protectionState() {
         const heavy = state.time < state.heavyProtectionUntil - EPSILON;
-        const returned = state.time < state.returnProtectionUntil - EPSILON;
         const calibration = state.time < state.calibrationUntil - EPSILON;
         return {
-          value: Math.max(heavy ? C.heavyProtection : 0, returned ? C.returnProtection : 0),
+          value: heavy ? C.heavyProtection : 0,
           heavy,
-          returned,
           calibration,
           heavyRemaining: heavy ? state.heavyProtectionUntil - state.time : 0,
-          returnRemaining: returned ? state.returnProtectionUntil - state.time : 0,
           calibrationRemaining: calibration ? state.calibrationUntil - state.time : 0
         };
       }
 
       function resolvePatrolTick(source, automatic) {
         if (!state.patrol) return reject(`${source}无效：当前没有开启双相巡衡。`);
+        if (!$('#target-valid-toggle').checked) {
+          log(`${source}跳过：锁定目标失效或范围内无有效敌人；本次不造成伤害，时间轴继续。`, 'state');
+          return false;
+        }
         state.raw += C.patrolTick;
         state.metrics.base += 1;
         const aura = applyTimeIcd('patrol', source);
@@ -501,7 +503,6 @@
         const fullDamage = C.fullReturn * c6FullBoost;
         state.raw += fullDamage;
         state.metrics.full += 1;
-        state.returnProtectionUntil = state.time + C.returnProtectionDuration;
         state.calibrationUntil = state.time + calibrationDuration();
         const aura = applyNoIcd('完整归衡', 1);
         let c4Text = '';
@@ -526,7 +527,7 @@
             c6Text = `；C6 额外位移还需 ${strideWait.toFixed(1)} s`;
           }
         }
-        log(`${source}：H ${signedH(before)} → 0，触发完整归衡 +${fullDamage.toFixed(0)}%；当前场上角色获得 ${C.returnProtection}% 减伤 ${C.returnProtectionDuration} s、校准抗打断 ${calibrationDuration()} s；${aura}${c4Text}${c6Text}${c6FullBoost > 1 ? '；C6 测区内完整归衡 +50%' : ''}。`);
+        log(`${source}：H ${signedH(before)} → 0，触发完整归衡 +${fullDamage.toFixed(0)}%；当前场上角色获得校准抗打断 ${calibrationDuration()} s（不提供额外减伤）；${aura}${c4Text}${c6Text}${c6FullBoost > 1 ? '；C6 测区内完整归衡 +50%' : ''}。`);
         return true;
       }
 
@@ -654,7 +655,7 @@
           time: 0, h: 0, endpoint: null, stable: 0, patrol: false, patrolStart: null, patrolUntil: 0,
           zeroField: false, zeroStart: null, zeroUntil: 0, nextTick: Infinity, lastSkill: -Infinity, lastRoute: -Infinity,
           lastReturn: -Infinity, lastRecast: -Infinity, lastBurst: -Infinity, lastPatrolApplication: -Infinity,
-          lastResponseApplication: -Infinity, calibrationUntil: 0, heavyProtectionUntil: 0, returnProtectionUntil: 0,
+          lastResponseApplication: -Infinity, calibrationUntil: 0, heavyProtectionUntil: 0,
           lastC4Energy: -Infinity, lastC6Stride: -Infinity, particles: 0, directEnergy: 0, firstResponseParticle: false,
           c6BoostNextRoute: false, raw: 0, minH: 0, maxH: 0, patrolSeconds: 0, zeroSeconds: 0, events: [], metrics: emptyMetrics()
         });
@@ -715,7 +716,7 @@
         $('#metric-applications').textContent = String(state.metrics.applications);
         $('#metric-icd').textContent = `成功附着 ${state.metrics.applications} · 时间 ICD 拒绝 ${state.metrics.icdBlocked}`;
         $('#metric-protection').textContent = protection.value ? `${protection.value}%` : '无';
-        $('#metric-protection-detail').textContent = `重端 ${protection.heavy ? formatSeconds(protection.heavyRemaining) : '无'} · 归衡 ${protection.returned ? formatSeconds(protection.returnRemaining) : '无'} · 校准 ${protection.calibration ? formatSeconds(protection.calibrationRemaining) : '无'}`;
+        $('#metric-protection-detail').textContent = `重端 ${protection.heavy ? formatSeconds(protection.heavyRemaining) : '无'} · 归衡无减伤 · 校准 ${protection.calibration ? formatSeconds(protection.calibrationRemaining) : '无'}`;
         $('#log-count').textContent = `${state.events.length} events · 拒绝 ${state.metrics.rejected}`;
         const logNode = $('#event-log');
         logNode.innerHTML = '';
