@@ -137,14 +137,19 @@
         </div>
         <div class="field">
           <label for="er-target">目标元素充能效率（%）</label>
-          <input id="er-target" type="number" min="0" max="500" step="5" value="180">
+          <input id="er-target" type="number" min="0" max="500" step="0.1" value="183.8">
         </div>
         <div class="field">
-          <label for="particle-energy">每颗粒有效能量（开发假设）</label>
-          <input id="particle-energy" type="number" min="0" max="10" step="0.1" value="1.8">
-          <small>不是正式游戏常数；只用于显示透明的估算值。</small>
+          <label for="particle-energy">自产冰微粒基础能量 / 颗</label>
+          <input id="particle-energy" type="number" min="0" max="10" step="0.1" value="3.0">
+          <small>默认 3.0 表示娜蒂娅前台接取自产同色微粒；若测试后台接取可改为 1.8。</small>
         </div>
-        <label class="checkbox-line"><input id="c4-toggle" type="checkbox"> 使用 C4+：校准 8 秒；完整归衡每 6 秒恢复 8 能量</label>
+        <div class="field">
+          <label for="external-energy">队友 / 敌人基础能量（充能乘算前）</label>
+          <input id="external-energy" type="number" min="0" max="100" step="0.1" value="0">
+          <small>把队友产球、敌人掉球等换算后单列；不与自产微粒混写。</small>
+        </div>
+        <label class="checkbox-line"><input id="c4-toggle" type="checkbox"> 使用 C4+（含 C2）：校准 8 秒、重端减抗 20%，完整归衡每 6 秒恢复 8 能量</label>
         <label class="checkbox-line"><input id="c6-toggle" type="checkbox"> 使用 C6（含 C4）：归衡校读 3 秒、伴随 75% / 控制 50%、测区完整归衡 +50%、额外位移每 6 秒一次</label>
         <label class="checkbox-line"><input id="target-valid-toggle" type="checkbox" checked> 抽象目标有效；取消后巡衡刻度只记录跳过，不暂停时间轴</label>
         <div class="button-grid">
@@ -152,7 +157,7 @@
           <button data-action="light">Stellar Swirl</button>
           <button data-action="heavy">Stellar-Conduct</button>
           <button data-action="recast">归衡校读</button>
-          <button data-action="burst">Q / 雪原校准</button>
+          <button id="burst-button" data-action="burst">Q / 仅初始伤害</button>
           <button id="advance-step">+自定义步长</button>
           <button data-advance="1">+1 s</button>
           <button data-advance="2.5">+2.5 s</button>
@@ -191,11 +196,12 @@
             <div class="metric"><span class="metric-label">归衡</span><strong class="metric-value" id="metric-returns">0</strong><span class="metric-note" id="metric-return-detail">普通 0 · 完整 0</span></div>
             <div class="metric"><span class="metric-label">原始倍率预算</span><strong class="metric-value" id="metric-raw">0<small>%</small></strong><span class="metric-note">10 级表的表现预算</span></div>
             <div class="metric"><span class="metric-label">巡衡粒子</span><strong class="metric-value" id="metric-particles">0</strong><span class="metric-note">每轮 E 4 + 首次响应 1；显示累计</span></div>
-            <div class="metric"><span class="metric-label">估算有效能量</span><strong class="metric-value" id="metric-energy">0<small> pt</small></strong><span class="metric-note">可调粒子假设 × 充能，加上 C4 直回能</span></div>
+            <div class="metric"><span class="metric-label">估算有效能量</span><strong class="metric-value" id="metric-energy">0<small> pt</small></strong><span class="metric-note" id="metric-energy-detail">自产与外部基础能量 × 充能，再加 C4 直回能</span></div>
+            <div class="metric"><span class="metric-label">充能转个人伤害</span><strong class="metric-value" id="metric-er-damage">0<small>%</small></strong><span class="metric-note">超过 100% 的部分 ×0.25%，上限 30%</span></div>
             <div class="metric"><span class="metric-label">轻 / 重范围</span><strong class="metric-value" id="metric-range">0 / 0</strong><span class="metric-note">H 的最低 / 最高位置</span></div>
             <div class="metric"><span class="metric-label">巡衡 / 测区覆盖</span><strong class="metric-value" id="metric-coverage">0<small> s</small></strong><span class="metric-note">本次时间轴的累计有效时长</span></div>
-            <div class="metric"><span class="metric-label">时间 ICD</span><strong class="metric-value" id="metric-applications">0</strong><span class="metric-note" id="metric-icd">成功附着 0 · 时间 ICD 拒绝 0</span></div>
-            <div class="metric"><span class="metric-label">当前防护</span><strong class="metric-value" id="metric-protection">无</strong><span class="metric-note" id="metric-protection-detail">仅重端护持提供减伤；归衡提供校准抗打断</span></div>
+            <div class="metric"><span class="metric-label">标准附着 ICD</span><strong class="metric-value" id="metric-applications">0</strong><span class="metric-note" id="metric-icd">成功 0 · 抑制 0 · E / Q 两组</span></div>
+            <div class="metric"><span class="metric-label">校准减抗</span><strong class="metric-value" id="metric-calibration">无</strong><span class="metric-note" id="metric-calibration-detail">完整归衡按路线减抗并提供抗打断；无减伤</span></div>
           </div>
         </div>
 
@@ -214,15 +220,15 @@
           <li>H 只在 −2 至 +2 之间移动；同端溢出被夹紧。</li>
           <li>两只猫共享固定 2.5 秒路线 GCD；GCD 内的原生反应照常结算，但不触发猫响应或移动 H；多目标也最多移动一格。</li>
           <li>巡衡刻度首次在 1.5 秒自动结算，基础每 2 秒；Q 不重置既有时钟，测区内改为 1.5 秒，结束时按基础节拍继续。</li>
-          <li>H 为 0 的再次施放不伪造归衡收益，也不重置自动刻度；Q 仅在巡衡存在时建立至多 12 秒且随巡衡结束的测区。</li>
-          <li>巡衡刻度与主响应采用独立的每目标时间 ICD；猫响应是普通冰伤，伴随响应按主响应 ×55%，不移动 H、不附着元素、不生成微粒。</li>
-          <li>重端护持 25% / 5 秒；完整归衡不提供减伤，只打开校准抗打断；本工具不改写原生 Stellar 场地与伤害。</li>
+          <li>H 为 0 的再次施放不伪造归衡收益，也不重置自动刻度；没有巡衡时 Q 只造成初始伤害，有巡衡时才建立至多 12 秒且随巡衡结束的测区。</li>
+          <li>E 初始、刻度、主响应与归衡共享巡衡附着组；Q 初始与伴随共享独立的测区附着组。两组均按每目标标准 2.5 秒 / 3 次命中 ICD，所有成功附着均为 1U。</li>
+          <li>重端以较高主响应和高削韧换取不提供减伤；完整归衡按路线对敌减抗并为当前场上角色提供校准抗打断。本工具不改写原生 Stellar 场地与伤害。</li>
         </ul>
       </article>
       <article class="panel">
         <div class="panel-label">Boundary / 证据边界</div>
         <h2>不要把估算当证明</h2>
-        <p>“原始倍率预算”只按玩法规格中的 10 级表现系数加总，不计算暴击、抗性、增伤、敌人数量或实际帧率。“估算有效能量”也只是为了暴露充能假设；真正的游戏内能量、反应结算和设备表现仍需独立测试。</p>
+        <p>“原始倍率预算”只按玩法规格中的 10 级表现系数加总，不计算暴击、抗性、充能转伤、武器增伤、敌人数量或实际帧率。“估算有效能量”把自产球接取和队友 / 敌人基础能量公开为可调输入；真正的游戏内能量、反应结算和设备表现仍需独立测试。</p>
       </article>
     </section>
   </main>
@@ -247,8 +253,8 @@
         calibration: 6,
         c4Calibration: 8,
         c4Energy: 8,
-        heavyProtection: 25,
-        heavyProtectionDuration: 5,
+        resShred: 15,
+        c2HeavyResShred: 20,
         companion: .55,
         c6Companion: .75,
         companionControl: .35,
@@ -258,10 +264,13 @@
         initialSkill: 101,
         patrolTick: 62,
         lightResponse: 95,
-        heavyResponse: 110,
+        heavyResponse: 130,
         normalReturn: 150,
         fullReturn: 190,
-        burstInitial: 360
+        burstInitial: 360,
+        erDamagePerPoint: .25,
+        erDamageCap: 30,
+        burstCost: 50
       });
 
       const $ = (selector) => document.querySelector(selector);
@@ -297,10 +306,14 @@
         lastReturn: -Infinity,
         lastRecast: -Infinity,
         lastBurst: -Infinity,
-        lastPatrolApplication: -Infinity,
-        lastResponseApplication: -Infinity,
+        eApplicationAt: -Infinity,
+        eApplicationHits: 0,
+        qApplicationAt: -Infinity,
+        qApplicationHits: 0,
         calibrationUntil: 0,
-        heavyProtectionUntil: 0,
+        resShredUntil: 0,
+        resShredKind: null,
+        resShredValue: 0,
         lastC4Energy: -Infinity,
         lastC6Stride: -Infinity,
         particles: 0,
@@ -385,33 +398,51 @@
         }
       }
 
-      function applyNoIcd(label, units) {
-        state.metrics.applications += 1;
-        return `${label}附着 ${units}U 冰`;
-      }
-
-      function applyTimeIcd(group, label) {
-        const key = group === 'patrol' ? 'lastPatrolApplication' : 'lastResponseApplication';
-        const wait = remaining(state[key], C.applicationIcd);
-        if (wait > EPSILON) {
-          state.metrics.icdBlocked += 1;
-          return `${label}伤害结算，冰附着受 ${C.applicationIcd.toFixed(1)} s 时间 ICD 抑制（还需 ${wait.toFixed(1)} s）`;
+      function applyStandardIcd(group, label) {
+        const isSkillGroup = group === 'skill';
+        const lastKey = isSkillGroup ? 'eApplicationAt' : 'qApplicationAt';
+        const hitsKey = isSkillGroup ? 'eApplicationHits' : 'qApplicationHits';
+        const groupLabel = isSkillGroup ? '巡衡组' : '测区组';
+        const firstApplication = !Number.isFinite(state[lastKey]);
+        state[hitsKey] += 1;
+        const wait = remaining(state[lastKey], C.applicationIcd);
+        const timeReady = wait <= EPSILON;
+        const hitReady = state[hitsKey] >= 3;
+        if (timeReady || hitReady) {
+          const reason = firstApplication ? '首个命中' : timeReady && hitReady ? '时间与第 3 次命中均就绪' : timeReady ? '2.5 秒就绪' : '第 3 次命中就绪';
+          state[lastKey] = state.time;
+          state[hitsKey] = 0;
+          state.metrics.applications += 1;
+          return `${label}附着 1U 冰（${groupLabel}：${reason}）`;
         }
-        state[key] = state.time;
-        state.metrics.applications += 1;
-        return `${label}附着 1U 冰`;
+        state.metrics.icdBlocked += 1;
+        return `${label}伤害结算，冰附着受${groupLabel}标准 ICD 抑制（时间还需 ${wait.toFixed(1)} s；命中计数 ${state[hitsKey]} / 3）`;
       }
 
-      function protectionState() {
-        const heavy = state.time < state.heavyProtectionUntil - EPSILON;
-        const calibration = state.time < state.calibrationUntil - EPSILON;
+      function icdGroupStatus(group) {
+        const isSkillGroup = group === 'skill';
+        const last = state[isSkillGroup ? 'eApplicationAt' : 'qApplicationAt'];
+        const hits = state[isSkillGroup ? 'eApplicationHits' : 'qApplicationHits'];
+        if (!Number.isFinite(last)) return '未开始';
+        const wait = remaining(last, C.applicationIcd);
+        return wait <= EPSILON ? '时间就绪' : `${wait.toFixed(1)}s 或 ${hits}/3`;
+      }
+
+      function calibrationState() {
+        const interruption = state.time < state.calibrationUntil - EPSILON;
+        const shred = state.time < state.resShredUntil - EPSILON;
         return {
-          value: heavy ? C.heavyProtection : 0,
-          heavy,
-          calibration,
-          heavyRemaining: heavy ? state.heavyProtectionUntil - state.time : 0,
-          calibrationRemaining: calibration ? state.calibrationUntil - state.time : 0
+          interruption,
+          interruptionRemaining: interruption ? state.calibrationUntil - state.time : 0,
+          shred,
+          shredRemaining: shred ? state.resShredUntil - state.time : 0,
+          kind: shred ? state.resShredKind : null,
+          value: shred ? state.resShredValue : 0
         };
+      }
+
+      function erDamageBonus(er) {
+        return Math.min(C.erDamageCap, Math.max(0, er - 100) * C.erDamagePerPoint);
       }
 
       function resolvePatrolTick(source, automatic) {
@@ -422,7 +453,7 @@
         }
         state.raw += C.patrolTick;
         state.metrics.base += 1;
-        const aura = applyTimeIcd('patrol', source);
+        const aura = applyStandardIcd('skill', source);
         const cadence = state.zeroField ? '零点测区节拍' : '基础节拍';
         const target = automatic ? '最近命中目标优先（抽象目标有效）' : '校读补发（不改动自动时钟）';
         log(`${source}结算 +${C.patrolTick}%（${cadence}；${target}；${aura}）。`);
@@ -476,25 +507,26 @@
         state.firstResponseParticle = false;
         state.raw += C.initialSkill;
         state.metrics.skill += 1;
-        const aura = applyNoIcd('首次 E', 1);
+        const aura = applyStandardIcd('skill', '首次 E');
         log(`首次施放 E：巡衡开启至 ${formatTime(state.patrolUntil)} s，H 写入 0；首个自动刻度为 ${formatTime(state.nextTick)} s，获得 4 个冰元素微粒，${aura}。`);
         render();
       }
 
       function finalizeReturn(source, before, full) {
+        const endpointAtReturn = state.endpoint;
         state.endpoint = null;
         state.stable = 0;
         state.c6BoostNextRoute = false;
         const wait = remaining(state.lastReturn, C.returnCooldown);
         if (wait > EPSILON) {
-          reject(`${source}：H ${signedH(before)} → 0；归衡伤害、防护与校准受 4.0 s 间隔限制，还需 ${wait.toFixed(2)} s。`);
+          reject(`${source}：H ${signedH(before)} → 0；归衡伤害与校准受 4.0 s 间隔限制，还需 ${wait.toFixed(2)} s。`);
           return false;
         }
         state.lastReturn = state.time;
         if (!full) {
           state.raw += C.normalReturn;
           state.metrics.normal += 1;
-          const aura = applyNoIcd('普通归衡', 1);
+          const aura = applyStandardIcd('skill', '普通归衡');
           log(`${source}：H ${signedH(before)} → 0，触发普通归衡 +${C.normalReturn}%；${aura}。`);
           return true;
         }
@@ -504,7 +536,11 @@
         state.raw += fullDamage;
         state.metrics.full += 1;
         state.calibrationUntil = state.time + calibrationDuration();
-        const aura = applyNoIcd('完整归衡', 1);
+        const shredValue = endpointAtReturn === 'heavy' && isC4() ? C.c2HeavyResShred : C.resShred;
+        state.resShredKind = endpointAtReturn === 'light' ? '冰 / 风' : '冰 / 雷';
+        state.resShredValue = shredValue;
+        state.resShredUntil = state.time + calibrationDuration();
+        const aura = applyStandardIcd('skill', '完整归衡');
         let c4Text = '';
         if (isC4()) {
           const c4Wait = remaining(state.lastC4Energy, 6);
@@ -527,7 +563,7 @@
             c6Text = `；C6 额外位移还需 ${strideWait.toFixed(1)} s`;
           }
         }
-        log(`${source}：H ${signedH(before)} → 0，触发完整归衡 +${fullDamage.toFixed(0)}%；当前场上角色获得校准抗打断 ${calibrationDuration()} s（不提供额外减伤）；${aura}${c4Text}${c6Text}${c6FullBoost > 1 ? '；C6 测区内完整归衡 +50%' : ''}。`);
+        log(`${source}：H ${signedH(before)} → 0，触发完整归衡 +${fullDamage.toFixed(0)}%；当前场上角色获得校准抗打断 ${calibrationDuration()} s，命中敌人${state.resShredKind}抗性 -${shredValue}% / ${calibrationDuration()} s（不提供减伤）；${aura}${c4Text}${c6Text}${c6FullBoost > 1 ? '；C6 测区内完整归衡 +50%' : ''}。`);
         return true;
       }
 
@@ -572,13 +608,13 @@
         } else {
           state.stable = 0;
         }
-        if (!isLight && next === 2) {
-          state.heavyProtectionUntil = state.time + C.heavyProtectionDuration;
-        }
-        const main = isLight ? C.lightResponse : C.heavyResponse;
+        const baseMain = isLight ? C.lightResponse : C.heavyResponse;
+        const stableBoost = 1 + state.stable * .1;
+        const c2EndpointBoost = isC4() && reachedEndpoint ? 1.25 : 1;
+        const main = baseMain * stableBoost * c2EndpointBoost;
         state.raw += main;
         state.metrics[endpointName] += 1;
-        const aura = applyTimeIcd('response', label);
+        const aura = applyStandardIcd('skill', label);
         let companionText = '';
         if (state.zeroField) {
           const ratio = isC6() ? C.c6Companion : C.companion;
@@ -586,11 +622,14 @@
           const companion = main * ratio;
           state.raw += companion;
           state.metrics.companion += 1;
-          companionText = `；零点伴随 +${companion.toFixed(1)}%（主响应 ${Math.round(control * 100)}% 控制）`;
+          const companionAura = applyStandardIcd('burst', '零点伴随');
+          companionText = `；零点伴随 +${companion.toFixed(1)}%（主响应 ${Math.round(control * 100)}% 控制；${companionAura}）`;
         }
-        const endpointText = reachedEndpoint ? (isLight ? '；轻端观测记录' : `；重端护持 ${C.heavyProtection}% / ${C.heavyProtectionDuration} s`) : '';
+        const lightPull = isC4() ? 60 : 40;
+        const endpointText = reachedEndpoint ? (isLight ? `；轻端观测记录，中型敌人牵引为小型的 ${lightPull}%` : '；重端观测记录（较高伤害 / 高削韧，无减伤）') : isLight ? '；中型敌人牵引为小型的 25%' : '';
+        const damageBoostText = stableBoost > 1 || c2EndpointBoost > 1 ? `；响应倍率含${stableBoost > 1 ? `稳定读数 +${Math.round((stableBoost - 1) * 100)}%` : ''}${stableBoost > 1 && c2EndpointBoost > 1 ? '、' : ''}${c2EndpointBoost > 1 ? 'C2 端点 +25%' : ''}` : '';
         const boostText = c6Boost ? '；C6 路线额外移动一格（6 s 节流）' : '';
-        log(`${label}：H ${signedH(before)} → ${signedH(next)}；主响应 +${main}%；${aura}${endpointText}${boostText}${companionText}。`);
+        log(`${label}：H ${signedH(before)} → ${signedH(next)}；主响应 +${main.toFixed(1)}%；${aura}${endpointText}${damageBoostText}${boostText}${companionText}。`);
         if (next === 0 && before !== 0) {
           finalizeReturn(`${label}反向回中`, before, fullAtReturn);
         }
@@ -635,7 +674,7 @@
         state.lastBurst = state.time;
         state.raw += C.burstInitial;
         state.metrics.burst += 1;
-        const aura = applyNoIcd('Q 初始伤害', 2);
+        const aura = applyStandardIcd('burst', 'Q 初始伤害');
         if (!state.patrol) {
           log(`施放 Q：初始伤害 +${C.burstInitial}%；${aura}。当前没有巡衡，因此不建立零点测区。`);
           render();
@@ -654,8 +693,9 @@
         Object.assign(state, {
           time: 0, h: 0, endpoint: null, stable: 0, patrol: false, patrolStart: null, patrolUntil: 0,
           zeroField: false, zeroStart: null, zeroUntil: 0, nextTick: Infinity, lastSkill: -Infinity, lastRoute: -Infinity,
-          lastReturn: -Infinity, lastRecast: -Infinity, lastBurst: -Infinity, lastPatrolApplication: -Infinity,
-          lastResponseApplication: -Infinity, calibrationUntil: 0, heavyProtectionUntil: 0,
+          lastReturn: -Infinity, lastRecast: -Infinity, lastBurst: -Infinity,
+          eApplicationAt: -Infinity, eApplicationHits: 0, qApplicationAt: -Infinity, qApplicationHits: 0,
+          calibrationUntil: 0, resShredUntil: 0, resShredKind: null, resShredValue: 0,
           lastC4Energy: -Infinity, lastC6Stride: -Infinity, particles: 0, directEnergy: 0, firstResponseParticle: false,
           c6BoostNextRoute: false, raw: 0, minH: 0, maxH: 0, patrolSeconds: 0, zeroSeconds: 0, events: [], metrics: emptyMetrics()
         });
@@ -690,17 +730,24 @@
         const routeTotal = state.metrics.light + state.metrics.heavy;
         const er = Number($('#er-target').value) || 0;
         const particleEnergy = Number($('#particle-energy').value) || 0;
-        const estimatedEnergy = state.particles * particleEnergy * er / 100 + state.directEnergy;
+        const externalEnergy = Number($('#external-energy').value) || 0;
+        const baseEnergy = state.particles * particleEnergy + externalEnergy;
+        const estimatedEnergy = baseEnergy * er / 100 + state.directEnergy;
+        const energyGap = Math.max(0, C.burstCost - estimatedEnergy);
+        const externalBaseNeeded = er > 0 ? Math.max(0, (C.burstCost - state.directEnergy) * 100 / er - state.particles * particleEnergy) : Infinity;
+        const erBonus = erDamageBonus(er);
         const patrolRemaining = state.patrol ? formatSeconds(state.patrolUntil - state.time) : '未开启';
         const zeroRemaining = state.zeroField ? formatSeconds(state.zeroUntil - state.time) : '未开启';
-        const protection = protectionState();
+        const calibration = calibrationState();
         const stateTitle = !state.patrol ? '等待首次巡衡' : state.zeroField ? '零点测区运行中' : state.h === 0 ? '归衡位置' : state.endpoint ? `${state.endpoint === 'light' ? '轻端' : '重端'}观测` : '路线移动中';
         const stateDetail = !state.patrol ? `H = ${signedH(state.h)} · 尚未开启双相巡衡` : `H = ${signedH(state.h)} · 端点记录：${endpointText}`;
         $('#state-title').textContent = stateTitle;
         $('#state-detail').textContent = stateDetail;
         $('#clock').textContent = formatTime(state.time);
         $('#state-badge').textContent = state.h < 0 ? `轻端 · ${signedH(state.h)}` : state.h > 0 ? `重端 · ${signedH(state.h)}` : '归衡 · 0';
-        $('#timers').textContent = `巡衡 ${patrolRemaining} · 零点测区 ${zeroRemaining} · 当前防护 ${protection.value ? `${protection.value}%` : '无'} · 校准 ${protection.calibration ? formatSeconds(protection.calibrationRemaining) : '无'}`;
+        const shredTimer = calibration.shred ? `${calibration.kind} -${calibration.value}% / ${formatSeconds(calibration.shredRemaining)}` : '无';
+        $('#timers').textContent = `巡衡 ${patrolRemaining} · 零点测区 ${zeroRemaining} · 对敌减抗 ${shredTimer} · 抗打断 ${calibration.interruption ? formatSeconds(calibration.interruptionRemaining) : '无'}`;
+        $('#burst-button').textContent = state.patrol ? `Q / 建立测区 ${formatSeconds(Math.min(C.zero, Math.max(0, state.patrolUntil - state.time)))}` : 'Q / 仅初始伤害';
         document.querySelectorAll('.h-cell').forEach((cell) => cell.classList.toggle('active', Number(cell.dataset.h) === state.h));
         $('#metric-endpoint').textContent = endpointText;
         $('#metric-stable').textContent = `稳定读数 ${state.stable} / 2`;
@@ -711,12 +758,14 @@
         $('#metric-raw').innerHTML = `${state.raw.toFixed(1)}<small>%</small>`;
         $('#metric-particles').textContent = String(state.particles);
         $('#metric-energy').innerHTML = `${estimatedEnergy.toFixed(1)}<small> pt</small>`;
+        $('#metric-energy-detail').textContent = energyGap <= EPSILON ? `估算已覆盖 ${C.burstCost} 能量成本；外部基础能量输入 ${externalEnergy.toFixed(1)}` : `距 ${C.burstCost} 尚差 ${energyGap.toFixed(1)}；还需外部基础能量 ${Number.isFinite(externalBaseNeeded) ? externalBaseNeeded.toFixed(1) : '无法估算'}`;
+        $('#metric-er-damage').innerHTML = `${erBonus.toFixed(2)}<small>%</small>`;
         $('#metric-range').textContent = `${state.minH} / ${state.maxH > 0 ? '+' : ''}${state.maxH}`;
         $('#metric-coverage').innerHTML = `${state.patrolSeconds.toFixed(1)} / ${state.zeroSeconds.toFixed(1)}<small> s</small>`;
         $('#metric-applications').textContent = String(state.metrics.applications);
-        $('#metric-icd').textContent = `成功附着 ${state.metrics.applications} · 时间 ICD 拒绝 ${state.metrics.icdBlocked}`;
-        $('#metric-protection').textContent = protection.value ? `${protection.value}%` : '无';
-        $('#metric-protection-detail').textContent = `重端 ${protection.heavy ? formatSeconds(protection.heavyRemaining) : '无'} · 归衡无减伤 · 校准 ${protection.calibration ? formatSeconds(protection.calibrationRemaining) : '无'}`;
+        $('#metric-icd').textContent = `成功 ${state.metrics.applications} · 抑制 ${state.metrics.icdBlocked} · E组 ${icdGroupStatus('skill')} · Q组 ${icdGroupStatus('burst')}`;
+        $('#metric-calibration').textContent = calibration.shred ? `${calibration.kind} -${calibration.value}%` : '无';
+        $('#metric-calibration-detail').textContent = `减抗 ${calibration.shred ? formatSeconds(calibration.shredRemaining) : '无'} · 抗打断 ${calibration.interruption ? formatSeconds(calibration.interruptionRemaining) : '无'} · 无减伤`;
         $('#log-count').textContent = `${state.events.length} events · 拒绝 ${state.metrics.rejected}`;
         const logNode = $('#event-log');
         logNode.innerHTML = '';
@@ -733,7 +782,7 @@
       }
 
       function snapshot() {
-        const protection = protectionState();
+        const calibration = calibrationState();
         return {
           time: state.time,
           h: state.h,
@@ -747,7 +796,11 @@
           particles: state.particles,
           directEnergy: state.directEnergy,
           metrics: { ...state.metrics },
-          protection,
+          calibration,
+          icd: {
+            skill: { lastApplication: state.eApplicationAt, hits: state.eApplicationHits },
+            burst: { lastApplication: state.qApplicationAt, hits: state.qApplicationHits }
+          },
           events: state.events.map((event) => ({ ...event }))
         };
       }
@@ -773,6 +826,7 @@
       });
       $('#er-target').addEventListener('input', render);
       $('#particle-energy').addEventListener('input', render);
+      $('#external-energy').addEventListener('input', render);
       document.querySelector('#step-size').addEventListener('change', (event) => {
         const value = clamp(Number(event.target.value) || .5, .1, 10);
         event.target.value = value;

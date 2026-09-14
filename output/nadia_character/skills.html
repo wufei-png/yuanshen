@@ -598,14 +598,14 @@
             <div class="panel-label">Q / 元素爆发</div>
             <h3>三体归零·雪原校准</h3>
             <p>先将非零衡标归零；巡衡仍在时建立至多 12 秒的零点测区，让两只猫互相补足响应。</p>
-            <div class="copy-rule">伴随响应是对应主响应 ×55% 的普通冰伤，只显示规则允许的伤害/控制反馈，不额外移动 H 或制造元素附着。</div>
+            <div class="copy-rule">伴随响应是对应主响应 ×55% 的普通冰伤，不移动 H、不生成微粒；它与 Q 初始共享标准 2.5 秒 / 3 次命中 ICD，可贡献有限的 1U 冰附着。</div>
           </article>
           <article class="panel ability-card ability-card--a">
             <div class="ability-icon"><svg class="icon icon--large"><use href="#icon-a"></use></svg></div>
             <div class="panel-label">Passive / 固有天赋</div>
             <h3>把稳定写成被动</h3>
-            <p class="passive-item"><strong>外观不可作为量值</strong> — H 停留在同一端点时积累稳定读数，离开端点时清除；不研究归衡也能稳定发挥。</p>
-            <p class="passive-item"><strong>误差本身也是记录</strong> — 完整归衡打开短暂校准窗口，提高当前场上角色的抗打断，不提供直接反应增伤。</p>
+            <p class="passive-item"><strong>外观不可作为量值</strong> — H 停留在同一端点时积累稳定读数；超过 100% 的元素充能效率还会有限转化为娜蒂娅的 E / Q 伤害。</p>
+            <p class="passive-item"><strong>误差本身也是记录</strong> — 完整归衡打开校准窗口，提高当前场上角色的抗打断，并按路线降低命中敌人的冰 / 风或冰 / 雷抗性；不提供减伤或直接反应增伤。</p>
             <p class="passive-item"><strong>雪原札记</strong> — 至冬显示区域特产位置，风雪与极寒中非战斗移动更省力；靠近普通猫时它们不会立刻逃跑。</p>
             <div class="copy-rule">三项被动都不增加需要额外盯住的资源条；奖励来自你已经做出的路线选择。</div>
           </article>
@@ -613,12 +613,12 @@
         <div class="state-card-grid" data-reveal aria-label="两相与归衡的玩家版说明">
           <article class="state-card state-card--light">
             <div class="state-card-head"><svg class="icon"><use href="#icon-light"></use></svg><h3>轻相 / 普莎</h3></div>
-            <p>普莎缓缓离地，雪粒反常地向上飘动。它负责牵引与多目标控制；大型敌人主要收到移动限制。</p>
+            <p>普莎缓缓离地，雪粒反常地向上飘动。它负责牵引与多目标控制；中型敌人只受到较弱牵引，不额外附加减速。</p>
             <div class="semantic"><span>上行弧</span><span>稀疏粒子</span><span>−</span></div>
           </article>
           <article class="state-card state-card--heavy">
             <div class="state-card-head"><svg class="icon"><use href="#icon-heavy"></use></svg><h3>重相 / 伊嘉</h3></div>
-            <p>伊嘉像普通猫一样跃起，却在落地时留下冰裂与压制。到达重端时，当前场上角色获得 25% / 5 秒的重端护持；首领战同样有效。</p>
+            <p>伊嘉像普通猫一样跃起，却在落地时留下冰裂、高削韧与较高伤害。它不提供减伤；从重端完整归衡后，命中敌人的冰 / 雷抗性降低。</p>
             <div class="semantic"><span>下沉楔</span><span>平行裂纹</span><span>+</span></div>
           </article>
           <article class="state-card state-card--zero">
@@ -714,13 +714,13 @@
             </figure>
             <div class="shot-body">
               <div class="shot-head"><div><div class="shot-number">BOARD 04 / HEAVY</div><h3>伊嘉 · 重端响应</h3><div class="shot-meta">响应时长目标 0.66 s</div></div><svg class="icon icon--small"><use href="#icon-heavy"></use></svg></div>
-              <p class="shot-summary">重点是“落点确认”，不是击飞；Boss 保持原地，但压制与当前场上角色的重端护持必须清楚。</p>
+              <p class="shot-summary">重点是“落点确认”，不是击飞；Boss 保持原地，但较高伤害、高削韧与重端读数必须清楚。</p>
               <ol class="timeline">
                 <li><strong>0.00–0.16</strong><span>伊嘉收身跃起，竖直预加载线向下；目标脚下出现不闭合裂纹。</span></li>
                 <li><strong>0.16–0.36</strong><span>伊嘉落地，镜头只下压 8°；<span class="hit">0.36 高削韧反馈</span>，不使用击飞式大冲击。</span></li>
-                <li><strong>0.36–0.66</strong><span>落点楔形收束为重心点；H 向重端移动一格，到达端点时当前场上角色显示护持边框。</span></li>
+                <li><strong>0.36–0.66</strong><span>落点楔形收束为重心点；H 向重端移动一格，到达端点时 `+2` 与三条垂线加亮。</span></li>
               </ol>
-              <div class="board-footnote">到达重端时裂纹变成三条平行垂线；当前场上角色显示“重端护持”与短计时，不使用敌方“输出降低”标记。</div>
+              <div class="board-footnote">到达重端时裂纹变成三条平行垂线；不显示减伤护框。从重端完整归衡后，命中敌人显示冰 / 雷双刻痕与减抗计时。</div>
             </div>
           </article>
 
@@ -774,7 +774,7 @@
             </article>
             <article class="language-row language-row--heavy">
               <div class="language-symbol"><svg class="icon icon--large"><use href="#icon-heavy"></use></svg></div>
-              <div><h3>重端 / 伊嘉</h3><p>主色为暖金，辅色为深冰蓝；向下楔形、竖直落线、密集下沉裂纹。读数带 `+`；到达端点时，当前场上角色以平行垂线护框显示重端护持。</p></div>
+              <div><h3>重端 / 伊嘉</h3><p>主色为暖金，辅色为深冰蓝；向下楔形、竖直落线、密集下沉裂纹。读数带 `+`；端点强化伤害与削韧，完整归衡后以冰 / 雷双刻痕显示对敌减抗。</p></div>
             </article>
             <article class="language-row language-row--zero">
               <div class="language-symbol"><svg class="icon icon--large"><use href="#icon-zero"></use></svg></div>
