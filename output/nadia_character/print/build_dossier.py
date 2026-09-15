@@ -272,7 +272,7 @@ def page_mechanic(c: canvas.Canvas) -> None:
         c.setFont("NadiaCJK", 8)
         c.drawCentredString(x + cell_w / 2, y - 36, value)
     draw_card(c, MARGIN, 70, PAGE_W - MARGIN * 2, 103, fill=WARM, stroke=HexColor("#E2CFB2"))
-    draw_text(c, "战技启动时 H = 0。Stellar Swirl 与 Stellar-Conduct 先按原生规则结算，再让 H 向轻端或重端移动；再次施放战技或施放爆发都能主动回中。只到达 ±1 是普通归衡，曾到达 ±2 后回中才是完整归衡。", MARGIN + 16, 143, PAGE_W - MARGIN * 2 - 32, size=8.3, leading=13.4, color=INK)
+    draw_text(c, "长按战技选择轻重，H从0开始。两种星反应都积累所选方向；校读或爆发主动回中。端点归衡强化窗口，本轮成长保留，基础辅助始终由巡衡提供。", MARGIN + 16, 143, PAGE_W - MARGIN * 2 - 32, size=8.3, leading=13.4, color=INK)
     finish_page(c, 9, "衡标")
 
 
@@ -297,7 +297,7 @@ def page_phase(c: canvas.Canvas, page_no: int, index: str, title: str, subtitle:
 
 def page_skill(c: canvas.Canvas) -> None:
     start_page(c)
-    y = draw_section_header(c, PAGE_H, "12 / ELEMENTAL SKILL", "双相巡衡", "记录册一开，冰元素协同就已经开始；Stellar 原生反应照常结算并选择路线。")
+    y = draw_section_header(c, PAGE_H, "12 / ELEMENTAL SKILL", "双相巡衡", "记录册一开，后台冰、团队星反应增益与路线减抗就开始生效。")
     c.saveState()
     clip = c.beginPath()
     clip.roundRect(MARGIN, y - 224, PAGE_W - MARGIN * 2, 214, 8)
@@ -307,7 +307,7 @@ def page_skill(c: canvas.Canvas) -> None:
     y -= 245
     gap = 12
     col_w = (PAGE_W - MARGIN * 2 - gap) / 2
-    for i, (name, body) in enumerate([("基础协同", "技能提供低频后台冰元素协同，没有风或雷队友时也不会失去基本功能。"), ("归衡校读", "再次施放战技可以把非零 H 主动带回 0，让单路线队也能完成归衡循环。")]):
+    for i, (name, body) in enumerate([("基础协同", "巡衡提供后台冰、团队星反应增益与范围减抗；轻重路线由玩家选择。"), ("归衡校读", "校读将非零H带回0，保留本轮成长；完整归衡再提供短暂额外增益。")]):
         x = MARGIN + i * (col_w + gap)
         draw_card(c, x, 81, col_w, y - 91, fill=white)
         label(c, f"0{i + 1}", x + 14, y - 28)
@@ -324,7 +324,7 @@ def page_burst(c: canvas.Canvas) -> None:
     draw_image_contain(c, ASSETS / "nadia_measurement_ring_v2_ingame.png", MARGIN + 8, y - 250, PAGE_W - MARGIN * 2 - 16, 236, padding=4)
     draw_card(c, MARGIN, 86, PAGE_W - MARGIN * 2, 132, fill=NAVY, stroke=HexColor("#274A70"))
     label(c, "ZERO-POINT FIELD", MARGIN + 16, 191, dark=True)
-    draw_text(c, "爆发先将非零 H 归零；巡衡存在时才建立零点测区。触发任一路线时，另一只猫提供较弱伴随响应；它按共享标准 ICD 贡献有限冰附着。", MARGIN + 16, 161, PAGE_W - MARGIN * 2 - 32, size=8.5, leading=13.8, color=white)
+    draw_text(c, "爆发先归衡，巡衡存在时建立零点测区。另一只猫追加较弱的直接星反应响应；不附着、不写H，挂冰由刻度承担。", MARGIN + 16, 161, PAGE_W - MARGIN * 2 - 32, size=8.5, leading=13.8, color=white)
     c.setFillColor(ICE)
     c.setFont("NadiaCJK", 10)
     c.drawCentredString(PAGE_W / 2, 105, "“误差确认。重新归零。”")
@@ -334,7 +334,7 @@ def page_burst(c: canvas.Canvas) -> None:
 def page_talents(c: canvas.Canvas) -> None:
     start_page(c)
     y = draw_section_header(c, PAGE_H, "14 / TALENTS", "误差本身也是记录", "端点停留提供稳定收益，完整归衡奖励主动操作。")
-    items = [("外观不可作为量值", "端点读数强化猫响应；超过 100% 的充能还会有限转化为娜蒂娅的战技与爆发伤害。"), ("误差本身也是记录", "完整归衡提供抗打断，并按路线降低命中敌人的冰 / 风或冰 / 雷抗性；不提供减伤。"), ("雪原札记", "在至冬探索时更容易发现部分区域特产，并改善雪原行进体验。")]
+    items = [("外观不可作为量值", "衡标积累团队成长，归衡后保留；充能有限转为个人普通与星反应增伤。"), ("误差本身也是记录", "完整归衡提供额外团队星反应增伤与抗打断；减抗已由巡衡稳定提供。"), ("雪原札记", "在至冬探索时更容易发现部分区域特产，并改善雪原行进体验。")]
     for i, (title, body) in enumerate(items):
         top = y - i * 113
         draw_card(c, MARGIN, top - 98, PAGE_W - MARGIN * 2, 89, fill=white)
@@ -353,7 +353,7 @@ def page_talents(c: canvas.Canvas) -> None:
 def page_constellations(c: canvas.Canvas) -> None:
     start_page(c)
     y = draw_section_header(c, PAGE_H, "15 / CONSTELLATION", "双衡仪座", "六条命之座让管理天平逐步走向完整的三体协同。")
-    items = [("一", "不要相信眼睛", "更快进入端点观测。"), ("二", "重新称量", "强化轻端牵引与重端减抗。"), ("三", "记录直到一致", "元素战技等级提高。"), ("四", "误差从不是零", "延长校准并改善循环。"), ("五", "零点只是起点", "元素爆发等级提高。"), ("六", "我们三个都在这里", "零点测区内完整协同。")]
+    items = [("一", "不要相信眼睛", "更快进入端点观测。"), ("二", "重新称量", "巡衡期间提高团队星反应擢升。"), ("三", "记录直到一致", "元素战技等级提高。"), ("四", "误差从不是零", "爆发支付能量后返还部分能量。"), ("五", "零点只是起点", "元素爆发等级提高。"), ("六", "我们三个都在这里", "零点测区内完整协同。")]
     gap_x, gap_y = 12, 11
     box_w = (PAGE_W - MARGIN * 2 - gap_x) / 2
     box_h = 92
@@ -476,8 +476,8 @@ def main() -> None:
     page_incident(c)
     page_curve(c)
     page_mechanic(c)
-    page_phase(c, 10, "09 / LIGHT PHASE", "向轻端", "Stellar Swirl 让衡标向普莎一侧移动。", "nadia_h_light_v1_ingame.png", "PUSHA RESPONSE", "普莎缓缓离地，雪粒反常地向上飘动。轻端强调牵引、浮动与多目标控制；到达 -2 后进入轻端观测。", "“普莎，慢一点。”")
-    page_phase(c, 11, "10 / HEAVY PHASE", "向重端", "Stellar-Conduct 让衡标向伊嘉一侧移动。", "nadia_h_heavy_v1_ingame.png", "IGLA RESPONSE", "伊嘉依旧轻巧跃起，却在落地时造成低沉冰裂。重端强调较高伤害与高削韧；完整归衡后降低敌人的冰与雷元素抗性。", "“伊嘉，落点确认。”")
+    page_phase(c, 10, "09 / LIGHT PHASE", "向轻端", "选择轻端后，任意星反应积累普莎一侧。", "nadia_h_light_v1_ingame.png", "PUSHA RESPONSE", "普莎缓缓离地，雪粒反常地向上飘动。轻端强调牵引、浮动与多目标控制；到达 -2 后进入轻端观测。", "“普莎，慢一点。”")
+    page_phase(c, 11, "10 / HEAVY PHASE", "向重端", "选择重端后，任意星反应积累伊嘉一侧。", "nadia_h_heavy_v1_ingame.png", "IGLA RESPONSE", "伊嘉依旧轻巧跃起，却在落地时造成低沉冰裂。重端强调较高伤害与削韧；巡衡持续降低范围内敌人的冰与雷抗性。", "“伊嘉，落点确认。”")
     page_phase(c, 12, "11 / RETURN TO ZERO", "归衡", "再次施放战技或施放爆发，主动把非零 H 带回中央。", "nadia_h_zero_v1_ingame.png", "RETURN RESPONSE", "普莎从上方缓缓下降，伊嘉从下方跃起。轻与重不互相抵消，而是在同一位置短暂共同稳定战场。", "“从一端回到中央。很好，归衡。”")
     page_skill(c)
     page_burst(c)

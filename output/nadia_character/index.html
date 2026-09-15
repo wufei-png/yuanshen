@@ -55,7 +55,7 @@
           <span class="badge gold">★★★★★</span>
           <span class="badge">民间异常记录员</span>
           <span class="badge">双衡仪座</span>
-          <span class="badge">后台副输出 · 条件减抗</span>
+          <span class="badge">稳定星反应辅助 · 路线减抗</span>
           <span class="badge">雪原调查记录</span>
         </div>
         <div class="hero-actions" data-reveal style="transition-delay:450ms">
@@ -264,7 +264,7 @@
       <div class="shell">
         <div class="section-head" data-reveal>
           <div><div class="eyebrow">03 / Combat</div><h2>让失衡成为一种方法</h2></div>
-          <p>Stellar 原生反应先按自身规则结算，再把衡标推向轻端或重端；再次施放战技与爆发负责主动回中。试着完成一次端点到归衡的循环。</p>
+          <p>先选择轻重路线，两种星反应都积累所选方向。归衡保留本轮成长；基础辅助不依赖反复切回。下方是操作顺序演示，不模拟时间和伤害。</p>
         </div>
         <div class="combat-layout" data-reveal>
           <div class="panel combat-art">
@@ -273,7 +273,7 @@
           <div class="panel combat-copy">
             <div class="panel-label">衡标 / H</div>
             <h3>衡标</h3>
-            <p class="copy">双相巡衡从归衡位置开始。Stellar Swirl 将 H 推向轻端，Stellar-Conduct 将 H 推向重端；再次施放战技或施放爆发，可以主动把非零 H 带回中央。零点测区只会在巡衡仍存在时建立。</p>
+            <p class="copy">先选择轻端或重端，再输入任意星反应。两种反应都推动所选路线；战技校读与爆发可以归衡，本轮成长保留。</p>
             <div class="meter-wrap" aria-label="衡标状态">
               <div class="meter-label">轻端 / 普莎</div>
               <div class="meter" id="meter" role="meter" aria-valuemin="-2" aria-valuemax="2" aria-valuenow="0" aria-label="衡标">
@@ -283,8 +283,9 @@
             </div>
             <p class="state-line" id="state-line" aria-live="polite"><strong>归衡</strong>：H = 0，等待选择路线。</p>
             <div class="controls">
-              <button class="control-button primary" data-action="light">触发 Stellar Swirl</button>
-              <button class="control-button" data-action="heavy">触发 Stellar-Conduct</button>
+              <button class="control-button" data-action="select">长按E / 切换轻重</button>
+              <button class="control-button primary" data-action="light">输入星扩散</button>
+              <button class="control-button" data-action="heavy">输入星超导</button>
               <button class="control-button" data-action="return">E 再施放 / 归衡校读</button>
               <button class="control-button" data-action="burst">Q / 雪原校准</button>
             </div>
@@ -294,7 +295,7 @@
           <article class="panel ability-card">
             <div class="panel-label">E / 元素战技</div>
             <h3>双相巡衡</h3>
-            <p>打开记录册，两只猫进入巡衡。技能本身提供后台冰元素协同；Stellar 原生反应照常结算并选择路线，H 只记录方向；普莎负责牵引，伊嘉负责较高伤害与削韧，完整归衡按路线降低敌人抗性。</p>
+            <p>打开记录册即可获得后台冰、队伍星反应增益和路线减抗。轻重由玩家选择；两种反应都能积累H，普莎负责牵引，伊嘉负责落点与削韧。</p>
           </article>
           <article class="panel ability-card">
             <div class="panel-label">Q / 元素爆发</div>
@@ -303,7 +304,7 @@
           </article>
           <article class="panel ability-card">
             <div class="panel-label">固有天赋 ×3</div>
-            <h3>稳定读数 · 校准窗口 · 雪原札记</h3>
+            <h3>本轮成长 · 校准窗口 · 雪原札记</h3>
             <p>外观不可作为量值、误差本身也是记录与探索天赋雪原札记的完整说明，见 <a href="skills.html#abilities">技能表现页</a>。</p>
           </article>
         </div>
@@ -355,14 +356,14 @@
           <article class="panel profile-card copy">
             <div class="panel-label">C1 - C3</div>
             <p><strong>第一条：不要相信眼睛</strong><br>更快进入轻端或重端观测。</p>
-            <p><strong>第二条：重新称量</strong><br>强化轻相牵引与重端完整归衡减抗。</p>
+            <p><strong>第二条：重新称量</strong><br>巡衡期间强化全队星反应擢升。</p>
             <p><strong>第三条：记录直到一致</strong><br>元素战技等级提高。</p>
           </article>
           <article class="panel profile-card copy">
             <div class="panel-label">C4 - C6</div>
-            <p><strong>第四条：误差从不是零</strong><br>校准窗口延长，并以每 6 秒一次的回能改善循环。</p>
+            <p><strong>第四条：误差从不是零</strong><br>成功施放爆发并支付能量后返还8点，改善后续循环。</p>
             <p><strong>第五条：零点只是起点</strong><br>元素爆发等级提高。</p>
-            <p><strong>最后一条：我们三个都在这里</strong><br>零点测区内伴随响应提高至主响应的 75%、完整归衡伤害提高 50%，并加快主动回中的节奏。</p>
+            <p><strong>最后一条：我们三个都在这里</strong><br>冰、风、雷减抗同时生效，强化星反应擢升与伴随响应，不要求高频切回。</p>
           </article>
         </div>
       </div>
@@ -540,6 +541,8 @@
       const stateLine = document.querySelector('#state-line');
       let h = 0;
       let endpoint = null;
+      let selected = -1;
+      let growth = 0;
       let eventText = 'H = 0，等待选择路线。';
       const render = (prev) => {
         cells.forEach((cell, index) => {
@@ -571,14 +574,10 @@
         stateLine.innerHTML = `<strong>${state[0]}</strong>：${state[1]}`;
       };
       const route = (delta, name) => {
-        h = Math.max(-2, Math.min(2, h + delta));
+        h = selected * Math.min(2, Math.abs(h) + 1);
+        growth = Math.max(growth, Math.abs(h));
         if (Math.abs(h) === 2) endpoint = h < 0 ? 'light' : 'heavy';
-        if (h === 0) {
-          eventText = endpoint ? '反向路线完成完整归衡，轻与重开始共同稳定战场。' : '反向路线完成普通归衡。';
-          endpoint = null;
-        } else {
-          eventText = `${name} 使 H ${delta < 0 ? '向左' : '向右'}移动到 ${h > 0 ? '+' : ''}${h}。`;
-        }
+        eventText = `${name}积累所选${selected < 0 ? '轻端' : '重端'}，H = ${h}；本轮成长${growth}档。`;
       };
       const returnToZero = (source) => {
         if (h === 0) {
@@ -586,7 +585,7 @@
           return;
         }
         eventText = endpoint
-          ? `${source === 'burst' ? '元素爆发' : '归衡校读'}完成完整归衡，轻与重开始共同稳定战场。`
+          ? `${source === 'burst' ? '元素爆发' : '归衡校读'}完成完整归衡，获得额外窗口，本轮成长保留。`
           : `${source === 'burst' ? '元素爆发' : '归衡校读'}完成普通归衡。`;
         if (endpoint) {
           stateLine.classList.remove('flash');
@@ -600,6 +599,7 @@
         button.addEventListener('click', () => {
           const action = button.dataset.action;
           const prev = h;
+          if (action === 'select') { selected *= -1; h = 0; endpoint = null; eventText = `选择${selected < 0 ? '轻端' : '重端'}；不触发归衡奖励，本轮成长${growth}档保留。`; }
           if (action === 'light') route(-1, 'Stellar Swirl');
           if (action === 'heavy') route(1, 'Stellar-Conduct');
           if (action === 'return') returnToZero('skill');
