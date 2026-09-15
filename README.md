@@ -33,3 +33,18 @@ python3 output/nadia_character/print/build_postcards.py
 ## 隐私与贡献边界
 
 `xiting/*.jpg` 是仅供本地创作参考的私人照片，已被忽略，禁止加入公开 HTML、PDF、ZIP 或 Git 提交。新增素材应使用生成后的角色资产，并保持现有的小写命名和版本后缀。提交前运行 `git diff --check`，并参阅 [`AGENTS.md`](AGENTS.md) 了解完整的贡献和审阅要求。
+
+## 第三版玩法验证
+
+现行规则以 [玩法规格](docs/nadia_gameplay_system.md) 为准。更新后运行：
+
+```sh
+node tools/test_nadia_simulator.cjs
+python3 output/nadia_character/print/build_gameplay.py
+python3 output/nadia_character/print/build_character_notes.py
+python3 output/nadia_character/print/build_dossier.py
+python3 output/nadia_character/print/build_postcards.py
+git diff --check
+```
+
+模拟器只检查原创机制、显式能量与分类型系数；原生反应是外部输入，不能用它证明整队DPS或实战T0。

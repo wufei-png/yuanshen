@@ -22,7 +22,7 @@ Use two-space indentation in HTML/CSS and four spaces in Python. Python should u
 
 ## Testing Guidelines
 
-No automated test suite or CI workflow is present. For HTML changes, inspect all four public pages, navigation, card-flip keyboard behavior, audio playback, and the simulator when relevant. For print changes, run both generators, verify PDF page counts (20 and 48), dimensions, and visual framing. Materialize Git LFS objects before validating tracked ZIP deliverables.
+Run `node tools/test_nadia_simulator.cjs` for the focused gameplay regression scenarios; no CI workflow is present. These checks do not simulate native reactions or prove live team DPS. After canonical gameplay edits, run `python3 output/nadia_character/print/build_gameplay.py` and `python3 output/nadia_character/print/build_character_notes.py`. For HTML changes, inspect all five public pages (including character-notes), navigation, card-flip keyboard behavior, audio playback, and the simulator when relevant. For print changes, run both generators, verify PDF page counts (20 and 48), dimensions, and visual framing. Materialize Git LFS objects before validating tracked ZIP deliverables.
 
 ## Commit & Pull Request Guidelines
 
