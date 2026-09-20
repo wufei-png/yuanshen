@@ -4,6 +4,13 @@ let passed = 0;
 function test(name, fn) { fn(); passed++; console.log(`PASS ${name}`); }
 function near(a,b) {assert.ok(Math.abs(a-b)<1e-6, `${a} != ${b}`);}
 function endpoint(m) {m.reaction('swirl');m.advance(2.5);m.reaction('conduct',{onField:false});}
+test('E/Q talent tables match the level 1/6/10/13 specification',()=>{
+ assert.deepEqual(C.e1,{initial:68,tick:42,light:47,heavy:61,normal:101,full:128});
+ assert.deepEqual(C.e6,{initial:86,tick:53,light:60,heavy:77,normal:128,full:162});
+ assert.deepEqual(C.e10,{initial:101,tick:62,light:70,heavy:90,normal:150,full:190});
+ assert.deepEqual(C.e13,{initial:114,tick:70,light:79,heavy:101,normal:169,full:214});
+ assert.deepEqual([C.q1,C.q6,C.q10,C.q13],[242,306,360,405]);
+});
 test('C0 mixed front/back reactions reach selected endpoint; direct events do not',()=>{
  const m=create();m.castSkill();endpoint(m);assert.equal(m.snapshot().h,-2);assert.equal(m.snapshot().effects.characterBonus,50);
  m.advance(3);m.reaction('conduct',{kind:'damage'});assert.equal(m.snapshot().metrics.main,2);
@@ -55,6 +62,22 @@ test('equipment is post-hit; wearer reaction triggers artifact inside GCD',()=>{
 test('C6 does not double Cryo shred; death clears all ongoing character effects',()=>{
  const m=create({constellation:6});m.castSkill();endpoint(m);m.burst();assert.deepEqual(m.snapshot().effects.shred,{cryo:30,anemo:30,electro:30});
  m.leave();m.advance(10);assert.equal(m.snapshot().effects.characterBonus,0);assert.equal(m.snapshot().effects.elevation,0);assert.equal(m.snapshot().zero,false);
+});
+test('poise reduction is explicit and does not imply HP damage reduction',()=>{
+ const m=create();m.castSkill();endpoint(m);m.recastSkill();
+ let fx=m.snapshot().effects;assert.equal(fx.poiseDamageTakenReduction,50);
+ assert.equal(Object.hasOwn(fx,'interruption'),false);assert.equal(Object.hasOwn(fx,'damageReduction'),false);
+ m.advance(8);fx=m.snapshot().effects;assert.equal(fx.poiseDamageTakenReduction,0);
+});
+test('shred coverage records Cryo, Anemo and Electro independently',()=>{
+ const m=create();m.castSkill();m.advance(2);m.switchMode();m.advance(3);
+ let metrics=m.snapshot().metrics;
+ near(metrics.shredSeconds,5);near(metrics.cryoShredSeconds,5);
+ near(metrics.anemoShredSeconds,2);near(metrics.electroShredSeconds,3);
+ m.setTarget(false);m.advance(1);metrics=m.snapshot().metrics;
+ near(metrics.cryoShredSeconds,5);near(metrics.electroShredSeconds,3);
+ const c6=create({constellation:6});c6.castSkill();c6.advance(4);metrics=c6.snapshot().metrics;
+ near(metrics.cryoShredSeconds,4);near(metrics.anemoShredSeconds,4);near(metrics.electroShredSeconds,4);
 });
 test('energy inputs validated; background particle factor explicit',()=>{
  const m=create({energy:0,er:100});m.castSkill();assert.equal(m.snapshot().energy,12);m.setOnField(false);m.reaction('swirl');near(m.snapshot().energy,13.8);

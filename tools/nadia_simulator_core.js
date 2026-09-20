@@ -10,20 +10,24 @@
     zero: 12, routeCooldown: 2.5, recastCooldown: 6, returnCooldown: 4,
     switchCooldown: 1, calibration: 8, burstCooldown: 15, burstCost: 50,
     baseBonus: 40, growthPerStep: 5, calibrationBonus: 20, shred: 30,
+    poiseDamageTakenReduction: 50, initialParticles: 4, firstResponseParticles: 1,
+    activeIcdSeconds: 2.5, activeIcdHits: 3,
     companion: .55, c6Companion: .75, c2Elevation: 15, c6Elevation: 25,
     c4Refund: 8, weaponSelf: 24, weaponTeam: 12, weaponWindow: 20,
     weaponTeamDuration: 8, artifactDuration: 12, artifactBonus: 50,
     erDamagePerPoint: .25, erDamageCap: 30,
+    e1: Object.freeze({ initial: 68, tick: 42, light: 47, heavy: 61, normal: 101, full: 128 }),
+    e6: Object.freeze({ initial: 86, tick: 53, light: 60, heavy: 77, normal: 128, full: 162 }),
     e10: Object.freeze({ initial: 101, tick: 62, light: 70, heavy: 90, normal: 150, full: 190 }),
     e13: Object.freeze({ initial: 114, tick: 70, light: 79, heavy: 101, normal: 169, full: 214 }),
-    q10: 360, q13: 405
+    q1: 242, q6: 306, q10: 360, q13: 405
   });
   const EPS = 1e-8;
   function create(options = {}) {
     const config = { constellation: 0, er: 180, energy: 50, weapon: false, artifact: false, ...options };
     if (!Number.isInteger(config.constellation) || config.constellation < 0 || config.constellation > 6) throw new Error('命座须为0至6');
     if (!Number.isFinite(config.er) || config.er < 100) throw new Error('充能须至少100%');
-    if (!Number.isFinite(config.energy) || config.energy < 0 || config.energy > 50) throw new Error('初始能量须为0至50');
+    if (!Number.isFinite(config.energy) || config.energy < 0 || config.energy > C.burstCost) throw new Error('初始能量须为0至50');
     const talent = config.constellation >= 3 ? C.e13 : C.e10;
     let sequence = 0;
     const seen = new Set();
@@ -38,7 +42,8 @@
       metrics: { ticks: 0, skipped: 0, main: 0, companion: 0, normal: 0, full: 0,
         particles: 0, applications: 0, icdBlocked: 0, rejected: 0, duplicates: 0,
         gcdBlocked: 0, refund: 0, wastedEnergy: 0, patrolSeconds: 0,
-        calibrationSeconds: 0, shredSeconds: 0, bonusIntegral: 0 },
+        calibrationSeconds: 0, shredSeconds: 0, cryoShredSeconds: 0,
+        anemoShredSeconds: 0, electroShredSeconds: 0, bonusIntegral: 0 },
       events: []
     };
     const patrol = () => s.time < s.patrolUntil;
@@ -51,10 +56,10 @@
       const active = patrol();
       return {
         characterBonus: active ? C.baseBonus + s.growth * C.growthPerStep + (calibrated() ? C.calibrationBonus : 0) : 0,
-        elevation: active ? (config.constellation >= 6 ? 25 : config.constellation >= 2 ? 15 : 0) : 0,
-        shred: active && s.targetValid ? (config.constellation >= 6 ? { cryo: 30, anemo: 30, electro: 30 } :
-          { cryo: 30, anemo: s.mode === 'light' ? 30 : 0, electro: s.mode === 'heavy' ? 30 : 0 }) : { cryo: 0, anemo: 0, electro: 0 },
-        interruption: calibrated() ? 50 : 0,
+        elevation: active ? (config.constellation >= 6 ? C.c6Elevation : config.constellation >= 2 ? C.c2Elevation : 0) : 0,
+        shred: active && s.targetValid ? (config.constellation >= 6 ? { cryo: C.shred, anemo: C.shred, electro: C.shred } :
+          { cryo: C.shred, anemo: s.mode === 'light' ? C.shred : 0, electro: s.mode === 'heavy' ? C.shred : 0 }) : { cryo: 0, anemo: 0, electro: 0 },
+        poiseDamageTakenReduction: calibrated() ? C.poiseDamageTakenReduction : 0,
         weaponTeamBonus: config.weapon && s.time < s.weaponTeamUntil ? C.weaponTeam : 0,
         artifactTeamBonus: config.artifact && s.time < s.artifactUntil ? C.artifactBonus : 0,
         personalErBonus: Math.min(C.erDamageCap, (config.er - 100) * C.erDamagePerPoint)
@@ -91,11 +96,11 @@
       if (!s.targetValid) return;
       if (group === 'active') {
         const prior = icd.get(s.targetId);
-        if (!prior || s.time + EPS >= prior.timer + 2.5) {
+        if (!prior || s.time + EPS >= prior.timer + C.activeIcdSeconds) {
           icd.set(s.targetId, { timer: s.time, hits: 0 });
         } else {
           prior.hits++;
-          if (prior.hits < 3) { s.metrics.icdBlocked++; log(`${label}：主动组附着被ICD抑制`, 'icd'); return; }
+          if (prior.hits < C.activeIcdHits) { s.metrics.icdBlocked++; log(`${label}：主动组附着被ICD抑制`, 'icd'); return; }
           prior.hits = 0; // Hit-rule applications do not restart the timer.
         }
       }
@@ -127,7 +132,9 @@
         const fx = effects();
         if (patrol()) s.metrics.patrolSeconds += dt;
         if (calibrated()) s.metrics.calibrationSeconds += dt;
-        if (fx.shred.cryo) s.metrics.shredSeconds += dt;
+        if (fx.shred.cryo) { s.metrics.shredSeconds += dt; s.metrics.cryoShredSeconds += dt; }
+        if (fx.shred.anemo) s.metrics.anemoShredSeconds += dt;
+        if (fx.shred.electro) s.metrics.electroShredSeconds += dt;
         s.metrics.bonusIntegral += dt * fx.characterBonus;
         s.time = next;
         expire();
@@ -172,7 +179,7 @@
         s.nextTick = s.time + C.firstTick; s.h = 0; s.growth = 0; s.firstResponse = true;
         s.weaponUntil = s.time + C.weaponWindow;
         log('E启动 / 续开：22秒巡衡；重置本轮成长，不产生归衡奖励');
-        if (damage('ordinary', talent.initial, 'E初始')) particles(4);
+        if (damage('ordinary', talent.initial, 'E初始')) particles(C.initialParticles);
         apply('E初始', 'active');
         return true;
       }
@@ -198,8 +205,8 @@
       s.metrics.main++;
       const main = talent[s.mode] * (first && config.constellation >= 1 ? 1.2 : 1);
       damage(type, main, `${s.mode}主响应`);
-      if (first) particles(1);
-      if (zero()) { s.metrics.companion++; damage(type, main * (config.constellation >= 6 ? .75 : .55), '伴随响应（无附着）'); }
+      if (first) particles(C.firstResponseParticles);
+      if (zero()) { s.metrics.companion++; damage(type, main * (config.constellation >= 6 ? C.c6Companion : C.companion), '伴随响应（无附着）'); }
       return true;
     }
     function burst() {

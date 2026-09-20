@@ -161,10 +161,10 @@
       function render() {
         const s=sim.snapshot(), f=s.effects;
         $('state').textContent=`${s.time.toFixed(2)}秒 · ${s.mode==='light'?'轻端':'重端'} · H ${s.h} · 成长${s.growth}/2 · ${s.onField?'娜蒂娅前台':'队友前台'}`;
-        $('buffs').textContent=`角色星反应增伤 ${f.characterBonus}% · 擢升 ${f.elevation}% · 减抗 冰${f.shred.cryo}/风${f.shred.anemo}/雷${f.shred.electro}% · 抗削韧 ${f.interruption}%`;
+        $('buffs').textContent=`角色星反应增伤 ${f.characterBonus}% · 擢升 ${f.elevation}% · 减抗 冰${f.shred.cryo}/风${f.shred.anemo}/雷${f.shred.electro}% · 受到的削韧降低 ${f.poiseDamageTakenReduction}%`;
         $('timers').textContent=`巡衡剩余 ${Math.max(0,s.patrolUntil-s.time).toFixed(1)}秒 · 测区 ${Math.max(0,s.zeroUntil-s.time).toFixed(1)}秒 · 专武团队 ${f.weaponTeamBonus}% · 炉心 ${f.artifactTeamBonus}% · 个人充能转伤 ${f.personalErBonus.toFixed(2)}%`;
         $('numbers').textContent=`普通冰系数 ${s.coefficients.ordinary.toFixed(2)}% · 直接星扩散 ${s.coefficients.swirl.toFixed(2)}% · 直接星超导 ${s.coefficients.conduct.toFixed(2)}% · 能量 ${s.energy.toFixed(2)}/50 · 微粒 ${s.metrics.particles} · 附着 ${s.metrics.applications}`;
-        $('coverage').textContent=`巡衡 ${s.metrics.patrolSeconds.toFixed(2)}秒 · 减抗 ${s.metrics.shredSeconds.toFixed(2)}秒 · 校准 ${s.metrics.calibrationSeconds.toFixed(2)}秒 · 时间平均角色增伤 ${(s.time?s.metrics.bonusIntegral/s.time:0).toFixed(2)}% · 普通/完整归衡 ${s.metrics.normal}/${s.metrics.full}`;
+        $('coverage').textContent=`巡衡 ${s.metrics.patrolSeconds.toFixed(2)}秒 · 减抗 冰${s.metrics.cryoShredSeconds.toFixed(2)}/风${s.metrics.anemoShredSeconds.toFixed(2)}/雷${s.metrics.electroShredSeconds.toFixed(2)}秒 · 校准 ${s.metrics.calibrationSeconds.toFixed(2)}秒 · 时间平均角色增伤 ${(s.time?s.metrics.bonusIntegral/s.time:0).toFixed(2)}% · 普通/完整归衡 ${s.metrics.normal}/${s.metrics.full}`;
         $('events').replaceChildren(...s.events.slice(-100).reverse().map(e=>{const li=document.createElement('li');li.textContent=`${e.time.toFixed(2)}s ${e.text}`;return li;}));
         window.NadiaSimulator=sim;
       }
