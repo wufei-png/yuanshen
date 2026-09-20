@@ -27,10 +27,10 @@
 | 04 | 待机 | 猫毛 | 记录册里又有一根猫毛。<#>……算了，继续。 | `nadia_voice_04_fur.mp3` |
 | 05 | 待机 | 抱错了 | 今天也是稳定状态。下次抱你之前，我会先准备好。 | `nadia_voice_05_heavy_hug.mp3` |
 | 06 | 元素战技 | 开始记录 | 普莎，伊嘉——开始记录。 | `nadia_voice_06_skill.mp3` |
-| 07 | 轻端响应 | 轻端响应 | 轻端响应。普莎，慢一点。 | `nadia_voice_07_light_phase.mp3` |
-| 08 | 重端响应 | 重端响应 | 重端响应。伊嘉，落点确认。 | `nadia_voice_08_heavy_phase.mp3` |
-| 09 | 归衡响应 | 归衡 | 从一端回到中央。很好，归衡。 | `nadia_voice_09_return_zero.mp3` |
-| 10 | 元素爆发 | 重新归零 | 重新归零。<#>误差确认——开始校准。 | `nadia_voice_10_burst_start.mp3` |
+| 07 | 轻端响应 | 顺着风 | 普莎，顺着风——慢一点。 | `nadia_voice_07_light_phase.mp3` |
+| 08 | 重端响应 | 稳住落点 | 伊嘉，稳住落点。 | `nadia_voice_08_heavy_phase.mp3` |
+| 09 | 归衡响应 | 回到中间 | 回到中间。很好。 | `nadia_voice_09_return_zero.mp3` |
+| 10 | 元素爆发 | 再量一次 | 归零——再量一次。 | `nadia_voice_10_burst_start.mp3` |
 | 11 | 元素爆发结束 | 测量完成 | 轻与重，都记录好了。 | `nadia_voice_11_burst_end.mp3` |
 | 12 | 低血量 | 记录未完成 | 记录……还没有完成。 | `nadia_voice_12_low_hp.mp3` |
 | 13 | 获得宝箱 | 值得带回去 | 这份读数值得带回去。先别让猫碰到。 | `nadia_voice_13_treasure.mp3` |

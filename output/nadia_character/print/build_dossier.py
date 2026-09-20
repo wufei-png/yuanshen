@@ -327,7 +327,7 @@ def page_burst(c: canvas.Canvas) -> None:
     draw_text(c, "爆发先归衡，巡衡存在时建立零点测区。另一只猫追加较弱的直接星反应响应；不附着、不写H，挂冰由刻度承担。", MARGIN + 16, 161, PAGE_W - MARGIN * 2 - 32, size=8.5, leading=13.8, color=white)
     c.setFillColor(ICE)
     c.setFont("NadiaCJK", 10)
-    c.drawCentredString(PAGE_W / 2, 105, "“误差确认。重新归零。”")
+    c.drawCentredString(PAGE_W / 2, 105, "“归零——再量一次。”")
     finish_page(c, 14, "元素爆发", dark=True)
 
 
@@ -476,9 +476,9 @@ def main() -> None:
     page_incident(c)
     page_curve(c)
     page_mechanic(c)
-    page_phase(c, 10, "09 / LIGHT PHASE", "向轻端", "选择轻端后，任意星反应积累普莎一侧。", "nadia_h_light_v1_ingame.png", "PUSHA RESPONSE", "普莎缓缓离地，雪粒反常地向上飘动。轻端强调牵引、浮动与多目标控制；到达 -2 后进入轻端观测。", "“普莎，慢一点。”")
-    page_phase(c, 11, "10 / HEAVY PHASE", "向重端", "选择重端后，任意星反应积累伊嘉一侧。", "nadia_h_heavy_v1_ingame.png", "IGLA RESPONSE", "伊嘉依旧轻巧跃起，却在落地时造成低沉冰裂。重端强调较高伤害与削韧；巡衡持续降低范围内敌人的冰与雷抗性。", "“伊嘉，落点确认。”")
-    page_phase(c, 12, "11 / RETURN TO ZERO", "归衡", "再次施放战技或施放爆发，主动把非零 H 带回中央。", "nadia_h_zero_v1_ingame.png", "RETURN RESPONSE", "普莎从上方缓缓下降，伊嘉从下方跃起。轻与重不互相抵消，而是在同一位置短暂共同稳定战场。", "“从一端回到中央。很好，归衡。”")
+    page_phase(c, 10, "09 / LIGHT PHASE", "向轻端", "选择轻端后，任意星反应积累普莎一侧。", "nadia_h_light_v1_ingame.png", "PUSHA RESPONSE", "普莎缓缓离地，雪粒反常地向上飘动。轻端强调牵引、浮动与多目标控制；到达 -2 后进入轻端观测。", "“普莎，顺着风——慢一点。”")
+    page_phase(c, 11, "10 / HEAVY PHASE", "向重端", "选择重端后，任意星反应积累伊嘉一侧。", "nadia_h_heavy_v1_ingame.png", "IGLA RESPONSE", "伊嘉依旧轻巧跃起，却在落地时造成低沉冰裂。重端强调较高伤害与削韧；巡衡持续降低范围内敌人的冰与雷抗性。", "“伊嘉，稳住落点。”")
+    page_phase(c, 12, "11 / RETURN TO ZERO", "归衡", "再次施放战技或施放爆发，主动把非零 H 带回中央。", "nadia_h_zero_v1_ingame.png", "RETURN RESPONSE", "普莎从上方缓缓下降，伊嘉从下方跃起。轻与重不互相抵消，而是在同一位置短暂共同稳定战场。", "“回到中间。很好。”")
     page_skill(c)
     page_burst(c)
     page_talents(c)
